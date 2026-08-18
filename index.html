@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QR Generator Pro - Trình Tạo Mã QR Tối Giản & Chuyên Nghiệp | phongdang.io.vn</title>
+  <title>QR Generator Pro - Studio Tùy Biến Mã QR (Frame, Logo, Color) | phongdang.io.vn</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
 
   <!-- Google Fonts: Inter -->
@@ -46,39 +46,45 @@
 
     /* Fixed preview container */
     #qrPreview {
-      width: 240px;
-      height: 240px;
+      width: 250px;
+      height: 250px;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
-    #qrPreview svg, #qrPreview canvas {
-      width: 240px !important;
-      height: 240px !important;
-      max-width: 240px !important;
-      max-height: 240px !important;
+    #qrPreview canvas, #qrPreview svg {
+      max-width: 100% !important;
+      max-height: 100% !important;
+      object-fit: contain;
       display: block;
-      border-radius: 18px;
+      border-radius: 16px;
     }
 
     /* Custom Color Inputs */
     input[type="color"] {
       -webkit-appearance: none;
       border: none;
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
       overflow: hidden;
       cursor: pointer;
       padding: 0;
       background: transparent;
+      flex-shrink: 0;
     }
     input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 12px; }
+    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 10px; }
 
     /* Custom range slider */
     input[type="range"] {
       accent-color: #0ea5e9;
+    }
+
+    /* Palette swatch animation */
+    .palette-btn:hover {
+      transform: translateY(-2px);
     }
   </style>
 </head>
@@ -103,7 +109,7 @@
             <span>QR Generator Pro</span>
             <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 border border-sky-500/20">Studio</span>
           </div>
-          <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Tạo & Tùy biến mã QR chuyên nghiệp</div>
+          <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Tùy biến Frame • Logo • Màu sắc • Gradient</div>
         </div>
       </a>
 
@@ -129,7 +135,7 @@
     <div id="modalBackdrop" class="h-full w-full p-4 flex items-center justify-center cursor-pointer">
       <div class="w-full max-w-lg cursor-default" onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-3">
-          <span class="text-sm font-bold text-white">🔍 Phóng to HD (1000×1000 px)</span>
+          <span class="text-sm font-bold text-white">🔍 Xem trước phóng to HD (1000×1000 px)</span>
           <button id="closeFullscreenBtn"
             class="rounded-xl bg-white/10 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-white/20 transition cursor-pointer">
             Đóng ✕
@@ -147,129 +153,283 @@
   <main class="mx-auto max-w-6xl px-4 py-8 md:py-10">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-      <!-- Left: Controls -->
+      <!-- Left Column: Controls & Deep Customization -->
       <section class="lg:col-span-6 space-y-6">
-        <div class="rounded-3xl border border-slate-200/80 bg-white shadow-card dark:border-slate-800/80 dark:bg-slate-900/50 dark:shadow-cardDark overflow-hidden transition-all">
-          <div class="h-1.5 bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500"></div>
 
-          <div class="p-6 md:p-8">
-            <div class="flex items-center justify-between">
-              <div>
-                <h1 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Tạo Mã QR Nhanh</h1>
-                <p class="mt-1 text-xs md:text-sm text-slate-500 dark:text-slate-400">
-                  Tùy biến hình khối, màu sắc, logo và xuất file HD sắc nét.
-                </p>
+        <!-- Card 1: Content & URL -->
+        <div class="rounded-3xl border border-slate-200/80 bg-white shadow-card dark:border-slate-800/80 dark:bg-slate-900/50 dark:shadow-cardDark p-6 md:p-7 transition-all">
+          <div class="flex items-center gap-2.5 mb-4">
+            <span class="flex items-center justify-center w-7 h-7 rounded-xl bg-sky-500/10 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400 text-xs font-extrabold">1</span>
+            <h2 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">Nội dung / URL</h2>
+          </div>
+
+          <div id="urlWrap" class="rounded-2xl border border-slate-200 bg-slate-50 focus-within:bg-white focus-within:border-sky-500 focus-within:ring-4 focus-within:ring-sky-500/15 dark:border-slate-800 dark:bg-slate-950 dark:focus-within:bg-slate-950 dark:focus-within:border-sky-500/70 transition">
+            <input id="urlInput" type="text" placeholder="https://example.com" value="https://phongdang.io.vn"
+              class="w-full bg-transparent px-4 py-3.5 rounded-2xl outline-none text-slate-900 placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-600 text-sm font-medium" />
+          </div>
+        </div>
+
+        <!-- Card 2: Quick Color Palettes & Custom Colors -->
+        <div class="rounded-3xl border border-slate-200/80 bg-white shadow-card dark:border-slate-800/80 dark:bg-slate-900/50 dark:shadow-cardDark p-6 md:p-7 transition-all">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2.5">
+              <span class="flex items-center justify-center w-7 h-7 rounded-xl bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 text-xs font-extrabold">2</span>
+              <h2 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">Màu sắc & Gradient</h2>
+            </div>
+            <span class="text-[11px] font-semibold text-slate-400">8 Bảng màu phối sẵn</span>
+          </div>
+
+          <!-- Quick Palette Chips -->
+          <div class="grid grid-cols-4 sm:grid-cols-4 gap-2 mb-5">
+            <button type="button" class="palette-btn p-2 rounded-xl border border-slate-200 bg-slate-50/80 hover:border-slate-400 dark:border-slate-800 dark:bg-slate-950 flex flex-col items-center gap-1.5 transition text-left cursor-pointer" onclick="setPalette('#000000', '#000000', '#FFFFFF', 'solid', '#000000')">
+              <div class="flex gap-1"><span class="w-3.5 h-3.5 rounded-full bg-black"></span><span class="w-3.5 h-3.5 rounded-full bg-white border border-slate-300"></span></div>
+              <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Classic</span>
+            </button>
+            <button type="button" class="palette-btn p-2 rounded-xl border border-slate-200 bg-slate-50/80 hover:border-sky-400 dark:border-slate-800 dark:bg-slate-950 flex flex-col items-center gap-1.5 transition text-left cursor-pointer" onclick="setPalette('#0EA5E9', '#0284C7', '#FFFFFF', 'solid', '#0EA5E9')">
+              <div class="flex gap-1"><span class="w-3.5 h-3.5 rounded-full bg-sky-500"></span><span class="w-3.5 h-3.5 rounded-full bg-white border border-slate-300"></span></div>
+              <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Sky Blue</span>
+            </button>
+            <button type="button" class="palette-btn p-2 rounded-xl border border-slate-200 bg-slate-50/80 hover:border-indigo-400 dark:border-slate-800 dark:bg-slate-950 flex flex-col items-center gap-1.5 transition text-left cursor-pointer" onclick="setPalette('#6366F1', '#A855F7', '#FFFFFF', 'linear', '#6366F1')">
+              <div class="flex gap-1"><span class="w-3.5 h-3.5 rounded-full bg-indigo-500"></span><span class="w-3.5 h-3.5 rounded-full bg-purple-500"></span></div>
+              <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Gradient</span>
+            </button>
+            <button type="button" class="palette-btn p-2 rounded-xl border border-slate-200 bg-slate-50/80 hover:border-emerald-400 dark:border-slate-800 dark:bg-slate-950 flex flex-col items-center gap-1.5 transition text-left cursor-pointer" onclick="setPalette('#059669', '#10B981', '#FFFFFF', 'linear', '#059669')">
+              <div class="flex gap-1"><span class="w-3.5 h-3.5 rounded-full bg-emerald-600"></span><span class="w-3.5 h-3.5 rounded-full bg-emerald-400"></span></div>
+              <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Emerald</span>
+            </button>
+            <button type="button" class="palette-btn p-2 rounded-xl border border-slate-200 bg-slate-50/80 hover:border-amber-400 dark:border-slate-800 dark:bg-slate-950 flex flex-col items-center gap-1.5 transition text-left cursor-pointer" onclick="setPalette('#F59E0B', '#EF4444', '#FFFFFF', 'linear', '#F59E0B')">
+              <div class="flex gap-1"><span class="w-3.5 h-3.5 rounded-full bg-amber-500"></span><span class="w-3.5 h-3.5 rounded-full bg-rose-500"></span></div>
+              <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Sunset</span>
+            </button>
+            <button type="button" class="palette-btn p-2 rounded-xl border border-slate-200 bg-slate-50/80 hover:border-blue-600 dark:border-slate-800 dark:bg-slate-950 flex flex-col items-center gap-1.5 transition text-left cursor-pointer" onclick="setPalette('#005BAA', '#005BAA', '#FFFFFF', 'solid', '#005BAA')">
+              <div class="flex gap-1"><span class="w-3.5 h-3.5 rounded-full bg-[#005baa]"></span><span class="w-3.5 h-3.5 rounded-full bg-white border border-slate-300"></span></div>
+              <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">VietQR</span>
+            </button>
+            <button type="button" class="palette-btn p-2 rounded-xl border border-slate-200 bg-slate-50/80 hover:border-pink-400 dark:border-slate-800 dark:bg-slate-950 flex flex-col items-center gap-1.5 transition text-left cursor-pointer" onclick="setPalette('#EC4899', '#3B82F6', '#FFFFFF', 'linear', '#EC4899')">
+              <div class="flex gap-1"><span class="w-3.5 h-3.5 rounded-full bg-pink-500"></span><span class="w-3.5 h-3.5 rounded-full bg-blue-500"></span></div>
+              <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Neon</span>
+            </button>
+            <button type="button" class="palette-btn p-2 rounded-xl border border-slate-200 bg-slate-50/80 hover:border-yellow-600 dark:border-slate-800 dark:bg-slate-950 flex flex-col items-center gap-1.5 transition text-left cursor-pointer" onclick="setPalette('#D97706', '#78350F', '#FFFFFF', 'linear', '#D97706')">
+              <div class="flex gap-1"><span class="w-3.5 h-3.5 rounded-full bg-amber-600"></span><span class="w-3.5 h-3.5 rounded-full bg-amber-900"></span></div>
+              <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">Gold</span>
+            </button>
+          </div>
+
+          <!-- Color Mode (Solid vs Gradient) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-950">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5 block">Kiểu tô màu</label>
+              <select id="colorTypeSelect" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:border-sky-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 cursor-pointer">
+                <option value="solid" selected>Đơn sắc (Solid Color)</option>
+                <option value="linear">Gradient Tuyến Tính (Linear)</option>
+                <option value="radial">Gradient Tỏa Tròn (Radial)</option>
+              </select>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-950">
+              <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5 block">Nền trong suốt</label>
+              <label class="flex items-center gap-2.5 cursor-pointer py-1.5">
+                <input type="checkbox" id="bgTransparentCheck" class="w-4 h-4 rounded text-sky-500 cursor-pointer">
+                <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Trong suốt (PNG/SVG)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Color Pickers Row -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3 flex flex-col gap-2 dark:border-slate-800 dark:bg-slate-950">
+              <span class="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">Màu chính</span>
+              <div class="flex items-center gap-2">
+                <input type="color" id="colorInput" value="#0EA5E9" />
+                <span id="colorHexLabel" class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">#0EA5E9</span>
               </div>
             </div>
 
-            <!-- URL / Content Input -->
-            <div class="mt-6">
-              <label class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Nội dung / Đường dẫn URL</label>
-              <div id="urlWrap" class="mt-2 rounded-2xl border border-slate-200 bg-slate-50 focus-within:bg-white focus-within:border-sky-500 focus-within:ring-4 focus-within:ring-sky-500/15 dark:border-slate-800 dark:bg-slate-950 dark:focus-within:bg-slate-950 dark:focus-within:border-sky-500/70 transition">
-                <input id="urlInput" type="text" placeholder="https://example.com" value="https://phongdang.io.vn"
-                  class="w-full bg-transparent px-4 py-3.5 rounded-2xl outline-none text-slate-900 placeholder:text-slate-400 dark:text-white dark:placeholder:text-slate-600 text-sm font-medium" />
-              </div>
-              <p class="mt-1.5 text-[11px] text-slate-400 dark:text-slate-500">Gõ link bất kỳ rồi bấm Enter hoặc nút Tạo QR.</p>
-            </div>
-
-            <!-- Color Palette Options -->
-            <div class="mt-6">
-              <label class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Màu sắc chủ đạo</label>
-              <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5 flex items-center gap-3.5 dark:border-slate-800 dark:bg-slate-950 hover:border-slate-300 dark:hover:border-slate-700 transition">
-                  <input type="color" id="colorInput" value="#0EA5E9" />
-                  <div>
-                    <div class="font-bold text-slate-900 dark:text-white text-xs">Màu mã QR</div>
-                    <div class="text-[11px] text-slate-500 dark:text-slate-400">Điểm chấm & Khung góc</div>
-                  </div>
-                </div>
-                <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5 flex items-center gap-3.5 dark:border-slate-800 dark:bg-slate-950 hover:border-slate-300 dark:hover:border-slate-700 transition">
-                  <input type="color" id="bgColorInput" value="#FFFFFF" />
-                  <div>
-                    <div class="font-bold text-slate-900 dark:text-white text-xs">Màu nền</div>
-                    <div class="text-[11px] text-slate-500 dark:text-slate-400">Nên chọn màu sáng</div>
-                  </div>
-                </div>
+            <div id="color2Container" class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3 flex flex-col gap-2 dark:border-slate-800 dark:bg-slate-950 opacity-60">
+              <span class="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">Gradient 2</span>
+              <div class="flex items-center gap-2">
+                <input type="color" id="color2Input" value="#6366F1" disabled />
+                <span id="color2HexLabel" class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">#6366F1</span>
               </div>
             </div>
 
-            <!-- Shapes & Corners Options -->
-            <div class="mt-6">
-              <label class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Trang trí hình dạng</label>
-              <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-950">
-                  <div class="text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">Hạt dữ liệu (Dots)</div>
-                  <select id="dotsStyle"
-                    class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:border-sky-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 cursor-pointer shadow-sm">
-                    <option value="square">Vuông Chuẩn (Square)</option>
-                    <option value="dots" selected>Hạt Tròn (Dots)</option>
-                    <option value="rounded">Bo Góc (Rounded)</option>
-                    <option value="classy">Thanh Lịch (Classy)</option>
-                    <option value="classy-rounded">Thanh Lịch Bo (Classy Rounded)</option>
-                    <option value="extra-rounded">Bo Tròn Lớn (Extra Rounded)</option>
-                  </select>
-                </div>
-
-                <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-950">
-                  <div class="text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">Khung góc (Corners)</div>
-                  <select id="cornersStyle"
-                    class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:border-sky-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 cursor-pointer shadow-sm">
-                    <option value="square">Vuông (Square)</option>
-                    <option value="dot">Chấm Tròn (Dot)</option>
-                    <option value="extra-rounded" selected>Bo Viền Tròn (Extra Rounded)</option>
-                  </select>
-                </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3 flex flex-col gap-2 dark:border-slate-800 dark:bg-slate-950">
+              <span class="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">Màu mắt góc</span>
+              <div class="flex items-center gap-2">
+                <input type="color" id="cornerColorInput" value="#0EA5E9" />
+                <span id="cornerColorHexLabel" class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">#0EA5E9</span>
               </div>
             </div>
 
-            <!-- Logo Upload -->
-            <div class="mt-6">
-              <label class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Logo trung tâm (Tùy chọn)</label>
-              <div class="mt-2 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-950">
-                <input type="file" id="logoInput" accept="image/*"
-                  class="block w-full text-xs text-slate-500 dark:text-slate-400
-                    file:mr-3.5 file:py-1.5 file:px-3.5
-                    file:rounded-xl file:border-0
-                    file:text-xs file:font-bold
-                    file:bg-sky-500/10 file:text-sky-600 dark:file:bg-sky-500/20 dark:file:text-sky-300
-                    hover:file:bg-sky-500/20 cursor-pointer" />
-
-                <div class="mt-3.5 flex items-center gap-3 pt-2 border-t border-slate-200 dark:border-slate-800/80">
-                  <div class="text-xs font-semibold text-slate-600 dark:text-slate-300 w-28">Kích thước logo</div>
-                  <input id="logoSize" type="range" min="10" max="35" value="22" class="w-full cursor-pointer">
-                  <div id="logoSizeLabel" class="text-xs font-extrabold text-slate-800 dark:text-white w-10 text-right">22%</div>
-                </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3 flex flex-col gap-2 dark:border-slate-800 dark:bg-slate-950">
+              <span class="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">Màu nền QR</span>
+              <div class="flex items-center gap-2">
+                <input type="color" id="bgColorInput" value="#FFFFFF" />
+                <span id="bgColorHexLabel" class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">#FFFFFF</span>
               </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button id="generateBtn"
-                class="rounded-2xl py-3.5 font-bold text-xs md:text-sm bg-gradient-to-r from-sky-500 to-blue-600 text-white hover:from-sky-400 hover:to-blue-500 active:scale-[0.98] transition shadow-md shadow-sky-500/20 cursor-pointer flex items-center justify-center gap-2">
-                <span>✨ Tạo Mã QR</span>
-              </button>
-              <button id="clearBtn"
-                class="rounded-2xl py-3.5 font-bold text-xs md:text-sm border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 transition cursor-pointer flex items-center justify-center gap-2">
-                <span>✕ Làm mới</span>
-              </button>
-            </div>
-
-            <div class="mt-4 flex items-center gap-2 text-[11px] text-slate-400 dark:text-slate-500">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-              <span>Mẹo: Giữ nền sáng và màu QR tương phản cao để quét nhanh nhất.</span>
             </div>
           </div>
         </div>
+
+        <!-- Card 3: Frame & CTA Banner -->
+        <div class="rounded-3xl border border-slate-200/80 bg-white shadow-card dark:border-slate-800/80 dark:bg-slate-900/50 dark:shadow-cardDark p-6 md:p-7 transition-all">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2.5">
+              <span class="flex items-center justify-center w-7 h-7 rounded-xl bg-purple-500/10 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400 text-xs font-extrabold">3</span>
+              <h2 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">Khung Viền & Nhãn (Frame / CTA)</h2>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+            <div>
+              <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5 block">Kiểu dáng khung</label>
+              <select id="frameStyleSelect" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:border-sky-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 cursor-pointer">
+                <option value="none" selected>Không khung (Mặc định)</option>
+                <option value="bottom-badge">Huy hiệu dưới (Bottom Badge)</option>
+                <option value="top-banner">Banner trên (Top Banner)</option>
+                <option value="scan-me">Hộp viền Scan Me</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5 block">Chữ hiển thị</label>
+              <input id="frameTextInput" type="text" placeholder="SCAN ME / QUÉT MÃ" value="SCAN ME"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:border-sky-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100" />
+            </div>
+
+            <div>
+              <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5 block">Màu sắc khung</label>
+              <div class="flex items-center gap-2">
+                <input type="color" id="frameColorInput" value="#0EA5E9" />
+                <span id="frameColorHexLabel" class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">#0EA5E9</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Logo & Preset Icons -->
+        <div class="rounded-3xl border border-slate-200/80 bg-white shadow-card dark:border-slate-800/80 dark:bg-slate-900/50 dark:shadow-cardDark p-6 md:p-7 transition-all">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2.5">
+              <span class="flex items-center justify-center w-7 h-7 rounded-xl bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 text-xs font-extrabold">4</span>
+              <h2 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">Logo & Biểu Tượng Trung Tâm</h2>
+            </div>
+            <button id="removeLogoBtn" type="button" class="hidden text-xs font-bold text-rose-500 hover:text-rose-600 cursor-pointer">
+              ✕ Xóa logo
+            </button>
+          </div>
+
+          <!-- Quick Preset Icons -->
+          <div class="mb-4">
+            <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 block">Chọn nhanh biểu tượng</label>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="preset-icon-btn px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-sky-400 dark:border-slate-800 dark:bg-slate-950 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer" onclick="setPresetLogo('phongdang')">
+                <span class="w-4 h-4 rounded-full bg-sky-500 flex items-center justify-center text-[10px] text-white font-bold">P</span>
+                <span>PhongDang</span>
+              </button>
+              <button type="button" class="preset-icon-btn px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-blue-500 dark:border-slate-800 dark:bg-slate-950 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer" onclick="setPresetLogo('vietqr')">
+                <span class="text-[10px] font-extrabold text-[#005baa]">VQR</span>
+                <span>VietQR</span>
+              </button>
+              <button type="button" class="preset-icon-btn px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-400 dark:border-slate-800 dark:bg-slate-950 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer" onclick="setPresetLogo('wifi')">
+                <span>📶</span>
+                <span>WiFi</span>
+              </button>
+              <button type="button" class="preset-icon-btn px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-blue-400 dark:border-slate-800 dark:bg-slate-950 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer" onclick="setPresetLogo('facebook')">
+                <span class="text-blue-600 font-bold">f</span>
+                <span>Facebook</span>
+              </button>
+              <button type="button" class="preset-icon-btn px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-pink-400 dark:border-slate-800 dark:bg-slate-950 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer" onclick="setPresetLogo('instagram')">
+                <span>📷</span>
+                <span>Instagram</span>
+              </button>
+              <button type="button" class="preset-icon-btn px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-red-400 dark:border-slate-800 dark:bg-slate-950 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer" onclick="setPresetLogo('google')">
+                <span class="text-red-500 font-bold">G</span>
+                <span>Google</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- File Upload -->
+          <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-950 mb-3">
+            <input type="file" id="logoInput" accept="image/*"
+              class="block w-full text-xs text-slate-500 dark:text-slate-400
+                file:mr-3.5 file:py-1.5 file:px-3.5
+                file:rounded-xl file:border-0
+                file:text-xs file:font-bold
+                file:bg-sky-500/10 file:text-sky-600 dark:file:bg-sky-500/20 dark:file:text-sky-300
+                hover:file:bg-sky-500/20 cursor-pointer" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div class="flex items-center gap-3">
+              <div class="text-xs font-semibold text-slate-600 dark:text-slate-300 w-28">Kích thước logo</div>
+              <input id="logoSize" type="range" min="10" max="35" value="22" class="w-full cursor-pointer">
+              <div id="logoSizeLabel" class="text-xs font-extrabold text-slate-800 dark:text-white w-10 text-right">22%</div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="text-xs font-semibold text-slate-600 dark:text-slate-300 w-28">Khoảng đệm (Margin)</div>
+              <input id="logoMargin" type="range" min="0" max="20" value="6" class="w-full cursor-pointer">
+              <div id="logoMarginLabel" class="text-xs font-extrabold text-slate-800 dark:text-white w-10 text-right">6px</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Shapes (Dots & Corners) -->
+        <div class="rounded-3xl border border-slate-200/80 bg-white shadow-card dark:border-slate-800/80 dark:bg-slate-900/50 dark:shadow-cardDark p-6 md:p-7 transition-all">
+          <div class="flex items-center gap-2.5 mb-4">
+            <span class="flex items-center justify-center w-7 h-7 rounded-xl bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 text-xs font-extrabold">5</span>
+            <h2 class="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">Hình Khối Hạt & Mắt Góc (Shapes)</h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-950">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">Hạt dữ liệu (Dots)</div>
+              <select id="dotsStyle"
+                class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:border-sky-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 cursor-pointer shadow-sm">
+                <option value="square">Vuông Chuẩn (Square)</option>
+                <option value="dots" selected>Hạt Tròn (Dots)</option>
+                <option value="rounded">Bo Góc (Rounded)</option>
+                <option value="classy">Thanh Lịch (Classy)</option>
+                <option value="classy-rounded">Thanh Lịch Bo (Classy Rounded)</option>
+                <option value="extra-rounded">Bo Tròn Lớn (Extra Rounded)</option>
+              </select>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-950">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">Khung mắt góc (Corners)</div>
+              <select id="cornersStyle"
+                class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:border-sky-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 cursor-pointer shadow-sm">
+                <option value="square">Vuông (Square)</option>
+                <option value="dot">Chấm Tròn (Dot)</option>
+                <option value="extra-rounded" selected>Bo Viền Tròn (Extra Rounded)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button id="generateBtn"
+            class="rounded-2xl py-3.5 font-bold text-xs md:text-sm bg-gradient-to-r from-sky-500 to-blue-600 text-white hover:from-sky-400 hover:to-blue-500 active:scale-[0.98] transition shadow-md shadow-sky-500/20 cursor-pointer flex items-center justify-center gap-2">
+            <span>✨ Cập Nhật Mã QR</span>
+          </button>
+          <button id="clearBtn"
+            class="rounded-2xl py-3.5 font-bold text-xs md:text-sm border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 transition cursor-pointer flex items-center justify-center gap-2">
+            <span>✕ Làm mới</span>
+          </button>
+        </div>
+
       </section>
 
-      <!-- Right: Preview Stage -->
+      <!-- Right Column: Sticky Preview Stage -->
       <section class="lg:col-span-6">
         <div class="rounded-3xl border border-slate-200/80 bg-white shadow-card dark:border-slate-800/80 dark:bg-slate-900/50 dark:shadow-cardDark overflow-hidden sticky top-20 transition-all">
           <div class="p-6 md:p-8">
             <div class="flex items-start justify-between gap-4">
               <div>
                 <h2 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">Xem Trước Trực Tiếp</h2>
-                <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Nhấn vào ảnh mã để phóng to chi tiết.</p>
+                <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Tự động cập nhật theo thời gian thực.</p>
               </div>
 
               <div class="flex gap-1.5">
@@ -282,14 +442,22 @@
             <div id="emptyState" class="mt-6 rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center dark:border-slate-800 dark:bg-slate-950 hidden">
               <div class="text-3xl mb-2">🧩</div>
               <div class="font-bold text-slate-800 dark:text-white text-sm">Chưa có mã QR</div>
-              <div class="mt-1 text-xs text-slate-500">Nhập nội dung rồi bấm “Tạo Mã QR”.</div>
+              <div class="mt-1 text-xs text-slate-500">Nhập nội dung rồi bấm “Cập Nhật Mã QR”.</div>
             </div>
 
             <!-- Result Area -->
             <div id="resultArea" class="mt-6">
+              <!-- QR Canvas Preview Card with Frame Wrap -->
               <div id="qrCard"
-                class="rounded-3xl border border-slate-200 bg-slate-50/80 p-6 flex flex-col items-center justify-center hover:border-sky-500/40 dark:border-slate-800 dark:bg-slate-950/80 transition cursor-pointer group shadow-sm">
-                <div id="qrPreview" class="group-hover:scale-[1.03] transition-transform duration-200"></div>
+                class="rounded-3xl border border-slate-200 bg-slate-50/80 p-5 flex flex-col items-center justify-center hover:border-sky-500/40 dark:border-slate-800 dark:bg-slate-950/80 transition cursor-pointer group shadow-sm">
+                
+                <!-- Frame Wrapper Visual Canvas -->
+                <div id="qrFrameWrapper" class="flex flex-col items-center justify-center p-2 rounded-2xl transition-all max-w-full">
+                  <div id="topBannerBadge" class="hidden font-extrabold text-center uppercase tracking-wider py-1 px-4 rounded-t-xl w-full text-white text-xs mb-1">SCAN ME</div>
+                  <div id="qrPreview" class="group-hover:scale-[1.02] transition-transform duration-200"></div>
+                  <div id="bottomBannerBadge" class="hidden font-extrabold text-center uppercase tracking-wider py-1.5 px-4 rounded-b-xl w-full text-white text-xs mt-1">SCAN ME</div>
+                </div>
+
                 <div class="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 group-hover:text-sky-500 transition">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
                   <span>Bấm vào để phóng to toàn màn hình</span>
@@ -311,7 +479,7 @@
               </div>
 
               <div class="mt-3 text-center text-[11px] text-slate-400 dark:text-slate-500">
-                Xuất file chất lượng cao, tương thích in ấn và đồ họa.
+                Xuất file chất lượng cao, bao gồm cả Khung viền & Logo sắc nét.
               </div>
             </div>
           </div>
@@ -348,7 +516,6 @@
       localStorage.setItem("qr_theme", theme);
     }
 
-    // ===== Init Theme =====
     (function initTheme() {
       const saved = localStorage.getItem("qr_theme") || "dark";
       applyTheme(saved);
@@ -362,61 +529,231 @@
     // ===== Form & QR Elements =====
     const urlInput = document.getElementById("urlInput");
     const urlWrap = document.getElementById("urlWrap");
+
+    // Colors
+    const colorTypeSelect = document.getElementById("colorTypeSelect");
     const colorInput = document.getElementById("colorInput");
+    const colorHexLabel = document.getElementById("colorHexLabel");
+    const color2Input = document.getElementById("color2Input");
+    const color2HexLabel = document.getElementById("color2HexLabel");
+    const color2Container = document.getElementById("color2Container");
+    const cornerColorInput = document.getElementById("cornerColorInput");
+    const cornerColorHexLabel = document.getElementById("cornerColorHexLabel");
     const bgColorInput = document.getElementById("bgColorInput");
-    const dotsStyle = document.getElementById("dotsStyle");
-    const cornersStyle = document.getElementById("cornersStyle");
+    const bgColorHexLabel = document.getElementById("bgColorHexLabel");
+    const bgTransparentCheck = document.getElementById("bgTransparentCheck");
+
+    // Frames
+    const frameStyleSelect = document.getElementById("frameStyleSelect");
+    const frameTextInput = document.getElementById("frameTextInput");
+    const frameColorInput = document.getElementById("frameColorInput");
+    const frameColorHexLabel = document.getElementById("frameColorHexLabel");
+    const qrFrameWrapper = document.getElementById("qrFrameWrapper");
+    const topBannerBadge = document.getElementById("topBannerBadge");
+    const bottomBannerBadge = document.getElementById("bottomBannerBadge");
+
+    // Logo
     const logoInput = document.getElementById("logoInput");
     const logoSize = document.getElementById("logoSize");
     const logoSizeLabel = document.getElementById("logoSizeLabel");
+    const logoMargin = document.getElementById("logoMargin");
+    const logoMarginLabel = document.getElementById("logoMarginLabel");
+    const removeLogoBtn = document.getElementById("removeLogoBtn");
 
+    // Shapes
+    const dotsStyle = document.getElementById("dotsStyle");
+    const cornersStyle = document.getElementById("cornersStyle");
+
+    // Actions
     const generateBtn = document.getElementById("generateBtn");
     const clearBtn = document.getElementById("clearBtn");
-
     const emptyState = document.getElementById("emptyState");
     const resultArea = document.getElementById("resultArea");
-
     const qrPreview = document.getElementById("qrPreview");
     const qrCard = document.getElementById("qrCard");
-
     const downloadPngBtn = document.getElementById("downloadPngBtn");
     const downloadSvgBtn = document.getElementById("downloadSvgBtn");
 
-    // Fullscreen Modal Elements
+    // Fullscreen Modal
     const fullscreenModal = document.getElementById("fullscreenModal");
     const modalBackdrop = document.getElementById("modalBackdrop");
     const closeFullscreenBtn = document.getElementById("closeFullscreenBtn");
     const fullscreenImg = document.getElementById("fullscreenImg");
 
+    let currentLogoData = null;
     let qrCodePreview = null;
+
+    // Preset Icons Data URLs
+    const PRESET_LOGOS = {
+      phongdang: "./assets/favicon.svg",
+      vietqr: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23005BAA'/><text x='50' y='64' font-family='sans-serif' font-size='38' font-weight='900' fill='white' text-anchor='middle'>VQR</text></svg>",
+      wifi: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230EA5E9'><path d='M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.5c3.78 0 7.21 1.54 9.7 4.02L12 19.26 2.3 11.52C4.79 9.04 8.22 7.5 12 7.5z'/></svg>",
+      facebook: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231877F2'><path d='M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z'/></svg>",
+      instagram: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E1306C'><path d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z'/></svg>",
+      google: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23EA4335' d='M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z'/><path fill='%234285F4' d='M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z'/><path fill='%23FBBC05' d='M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z'/><path fill='%2334A853' d='M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16c1.8 3.7 5.6 7 10.1 7z'/></svg>"
+    };
+
+    window.setPresetLogo = function(presetKey) {
+      if (PRESET_LOGOS[presetKey]) {
+        currentLogoData = PRESET_LOGOS[presetKey];
+        removeLogoBtn.classList.remove("hidden");
+        generateQR();
+      }
+    };
+
+    window.setPalette = function(dotColor, dot2Color, bgColor, type, cornerColor) {
+      colorInput.value = dotColor;
+      colorHexLabel.textContent = dotColor.toUpperCase();
+
+      color2Input.value = dot2Color;
+      color2HexLabel.textContent = dot2Color.toUpperCase();
+
+      bgColorInput.value = bgColor;
+      bgColorHexLabel.textContent = bgColor.toUpperCase();
+      bgTransparentCheck.checked = false;
+
+      cornerColorInput.value = cornerColor;
+      cornerColorHexLabel.textContent = cornerColor.toUpperCase();
+
+      colorTypeSelect.value = type;
+      updateColorControlsState();
+      generateQR();
+    };
+
+    function updateColorControlsState() {
+      const isGradient = colorTypeSelect.value !== "solid";
+      color2Input.disabled = !isGradient;
+      color2Container.style.opacity = isGradient ? "1" : "0.5";
+    }
+
+    colorTypeSelect.addEventListener("change", () => {
+      updateColorControlsState();
+      generateQR();
+    });
+
+    colorInput.addEventListener("input", (e) => {
+      colorHexLabel.textContent = e.target.value.toUpperCase();
+      generateQR();
+    });
+    color2Input.addEventListener("input", (e) => {
+      color2HexLabel.textContent = e.target.value.toUpperCase();
+      generateQR();
+    });
+    cornerColorInput.addEventListener("input", (e) => {
+      cornerColorHexLabel.textContent = e.target.value.toUpperCase();
+      generateQR();
+    });
+    bgColorInput.addEventListener("input", (e) => {
+      bgColorHexLabel.textContent = e.target.value.toUpperCase();
+      generateQR();
+    });
+    bgTransparentCheck.addEventListener("change", () => {
+      generateQR();
+    });
+
+    // Frame controls
+    frameStyleSelect.addEventListener("change", updateFrameUI);
+    frameTextInput.addEventListener("input", updateFrameUI);
+    frameColorInput.addEventListener("input", (e) => {
+      frameColorHexLabel.textContent = e.target.value.toUpperCase();
+      updateFrameUI();
+    });
+
+    function updateFrameUI() {
+      const style = frameStyleSelect.value;
+      const text = (frameTextInput.value || "SCAN ME").trim();
+      const color = frameColorInput.value || "#0EA5E9";
+
+      topBannerBadge.classList.add("hidden");
+      bottomBannerBadge.classList.add("hidden");
+      qrFrameWrapper.style.border = "none";
+      qrFrameWrapper.style.backgroundColor = "transparent";
+
+      if (style === "bottom-badge") {
+        bottomBannerBadge.classList.remove("hidden");
+        bottomBannerBadge.textContent = text;
+        bottomBannerBadge.style.backgroundColor = color;
+        qrFrameWrapper.style.border = `3px solid ${color}`;
+        qrFrameWrapper.style.backgroundColor = bgTransparentCheck.checked ? "transparent" : bgColorInput.value;
+      } else if (style === "top-banner") {
+        topBannerBadge.classList.remove("hidden");
+        topBannerBadge.textContent = text;
+        topBannerBadge.style.backgroundColor = color;
+        qrFrameWrapper.style.border = `3px solid ${color}`;
+        qrFrameWrapper.style.backgroundColor = bgTransparentCheck.checked ? "transparent" : bgColorInput.value;
+      } else if (style === "scan-me") {
+        bottomBannerBadge.classList.remove("hidden");
+        bottomBannerBadge.textContent = text;
+        bottomBannerBadge.style.backgroundColor = color;
+        qrFrameWrapper.style.border = `2px dashed ${color}`;
+      }
+    }
+
+    // Logo handlers
+    logoInput.addEventListener("change", (e) => {
+      if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          currentLogoData = evt.target.result;
+          removeLogoBtn.classList.remove("hidden");
+          generateQR();
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    });
+
+    removeLogoBtn.addEventListener("click", () => {
+      currentLogoData = null;
+      logoInput.value = "";
+      removeLogoBtn.classList.add("hidden");
+      generateQR();
+    });
+
+    logoSize.addEventListener("input", (e) => {
+      logoSizeLabel.textContent = `${e.target.value}%`;
+      generateQR();
+    });
+
+    logoMargin.addEventListener("input", (e) => {
+      logoMarginLabel.textContent = `${e.target.value}px`;
+      generateQR();
+    });
+
+    dotsStyle.addEventListener("change", generateQR);
+    cornersStyle.addEventListener("change", generateQR);
 
     function pulseInvalid() {
       urlWrap.classList.add("ring-2", "ring-rose-500/70");
       setTimeout(() => urlWrap.classList.remove("ring-2", "ring-rose-500/70"), 550);
     }
 
-    function getLogoDataUrl(file) {
-      return new Promise((resolve) => {
-        if (!file) return resolve(null);
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => resolve(null);
-        reader.readAsDataURL(file);
-      });
-    }
-
     // Build QR options
-    async function buildOptions(size, renderType = "canvas") {
+    function buildOptions(size, renderType = "canvas") {
       const text = (urlInput.value || "").trim() || "https://phongdang.io.vn";
       const dotColor = colorInput.value || "#0EA5E9";
-      const bgColor = bgColorInput.value || "#FFFFFF";
+      const dot2Color = color2Input.value || "#6366F1";
+      const cornerColor = cornerColorInput.value || dotColor;
+      const isTransparent = bgTransparentCheck.checked;
+      const bgColor = isTransparent ? "transparent" : (bgColorInput.value || "#FFFFFF");
       const dotType = dotsStyle.value || "dots";
       const cornerType = cornersStyle.value || "extra-rounded";
+      const colorType = colorTypeSelect.value;
 
-      const file = logoInput.files && logoInput.files[0] ? logoInput.files[0] : null;
-      const logoDataUrl = await getLogoDataUrl(file);
+      // Dots gradient config
+      let dotsOptions = { type: dotType, color: dotColor };
+      if (colorType === "linear" || colorType === "radial") {
+        dotsOptions.gradient = {
+          type: colorType,
+          rotation: colorType === "linear" ? 45 : 0,
+          colorStops: [
+            { offset: 0, color: dotColor },
+            { offset: 1, color: dot2Color }
+          ]
+        };
+      }
 
       const logoPercent = Number(logoSize.value) || 22;
+      const marginPx = Number(logoMargin.value) || 6;
       const imageSize = Math.max(0.10, Math.min(0.35, logoPercent / 100));
 
       const options = {
@@ -424,19 +761,19 @@
         height: size,
         type: renderType,
         data: text,
-        margin: size >= 600 ? 16 : 10,
-        qrOptions: { errorCorrectionLevel: "H" },
-        dotsOptions: { type: dotType, color: dotColor },
-        cornersSquareOptions: { type: cornerType, color: dotColor },
-        cornersDotOptions: { type: (cornerType === "square" ? "square" : "dot"), color: dotColor },
+        margin: size >= 600 ? 16 : 8,
+        qrOptions: { errorCorrectionLevel: currentLogoData ? "H" : "Q" },
+        dotsOptions: dotsOptions,
+        cornersSquareOptions: { type: cornerType, color: cornerColor },
+        cornersDotOptions: { type: (cornerType === "square" ? "square" : "dot"), color: cornerColor },
         backgroundOptions: { color: bgColor }
       };
 
-      if (logoDataUrl) {
-        options.image = logoDataUrl;
+      if (currentLogoData) {
+        options.image = currentLogoData;
         options.imageOptions = {
           crossOrigin: "anonymous",
-          margin: size >= 600 ? 8 : 4,
+          margin: size >= 600 ? Math.round(marginPx * 1.5) : marginPx,
           imageSize: imageSize,
           hideBackgroundDots: true
         };
@@ -457,17 +794,99 @@
 
       try {
         qrPreview.innerHTML = "";
-
-        // Render preview with Canvas
-        const opts = await buildOptions(240, "canvas");
+        const opts = buildOptions(240, "canvas");
         qrCodePreview = new QRCodeStyling(opts);
         qrCodePreview.append(qrPreview);
 
         emptyState.classList.add("hidden");
         resultArea.classList.remove("hidden");
+        updateFrameUI();
       } catch (err) {
         console.error("Lỗi tạo mã QR:", err);
       }
+    }
+
+    // Composite Frame with Canvas for Full HD export
+    async function getCompositeFramedCanvas(targetSize = 1000) {
+      const qrStyling = new QRCodeStyling(buildOptions(targetSize, "canvas"));
+      const blob = await qrStyling.getRawData("png");
+      const qrImg = await new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.src = URL.createObjectURL(blob);
+      });
+
+      const frameStyle = frameStyleSelect.value;
+      if (frameStyle === "none") {
+        const canvas = document.createElement("canvas");
+        canvas.width = targetSize;
+        canvas.height = targetSize;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(qrImg, 0, 0);
+        return canvas;
+      }
+
+      const frameText = (frameTextInput.value || "SCAN ME").trim().toUpperCase();
+      const frameColor = frameColorInput.value || "#0EA5E9";
+      const isTransparent = bgTransparentCheck.checked;
+      const bgColor = isTransparent ? "transparent" : (bgColorInput.value || "#FFFFFF");
+
+      const bannerHeight = Math.round(targetSize * 0.16);
+      const totalWidth = targetSize + 40;
+      const totalHeight = targetSize + bannerHeight + 40;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = totalWidth;
+      canvas.height = totalHeight;
+      const ctx = canvas.getContext("2d");
+
+      // Draw container box
+      if (!isTransparent) {
+        ctx.fillStyle = bgColor;
+        ctx.roundRect(10, 10, totalWidth - 20, totalHeight - 20, 24);
+        ctx.fill();
+      }
+
+      // Draw frame border
+      ctx.lineWidth = 14;
+      ctx.strokeStyle = frameColor;
+      ctx.stroke();
+
+      if (frameStyle === "top-banner") {
+        // Draw top banner
+        ctx.fillStyle = frameColor;
+        ctx.beginPath();
+        ctx.roundRect(10, 10, totalWidth - 20, bannerHeight, [24, 24, 0, 0]);
+        ctx.fill();
+
+        // Draw Text
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = `bold ${Math.round(bannerHeight * 0.42)}px Inter, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(frameText, totalWidth / 2, 10 + bannerHeight / 2);
+
+        // Draw QR
+        ctx.drawImage(qrImg, 20, 20 + bannerHeight, targetSize, targetSize);
+      } else {
+        // Bottom badge or scan-me
+        ctx.drawImage(qrImg, 20, 20, targetSize, targetSize);
+
+        // Draw bottom banner
+        ctx.fillStyle = frameColor;
+        ctx.beginPath();
+        ctx.roundRect(10, totalHeight - bannerHeight - 10, totalWidth - 20, bannerHeight, [0, 0, 24, 24]);
+        ctx.fill();
+
+        // Draw Text
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = `bold ${Math.round(bannerHeight * 0.42)}px Inter, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(frameText, totalWidth / 2, totalHeight - bannerHeight / 2 - 10);
+      }
+
+      return canvas;
     }
 
     function downloadBlob(blob, filename) {
@@ -484,11 +903,10 @@
     async function downloadPNG() {
       try {
         downloadPngBtn.disabled = true;
-        const hd = new QRCodeStyling(await buildOptions(1000, "canvas"));
-        const blob = await hd.getRawData("png");
-        if (blob) {
-          downloadBlob(blob, "qrcode-hd.png");
-        }
+        const canvas = await getCompositeFramedCanvas(1000);
+        canvas.toBlob((blob) => {
+          if (blob) downloadBlob(blob, `qrcode-pro-${Date.now()}.png`);
+        }, "image/png");
       } catch (err) {
         console.error("Lỗi xuất PNG:", err);
       } finally {
@@ -499,10 +917,10 @@
     async function downloadSVG() {
       try {
         downloadSvgBtn.disabled = true;
-        const hd = new QRCodeStyling(await buildOptions(1000, "svg"));
+        const hd = new QRCodeStyling(buildOptions(1000, "svg"));
         const blob = await hd.getRawData("svg");
         if (blob) {
-          downloadBlob(blob, "qrcode.svg");
+          downloadBlob(blob, `qrcode-pro-${Date.now()}.svg`);
         }
       } catch (err) {
         console.error("Lỗi xuất SVG:", err);
@@ -513,15 +931,10 @@
 
     async function openFullscreen() {
       try {
-        const hd = new QRCodeStyling(await buildOptions(1000, "canvas"));
-        const blob = await hd.getRawData("png");
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          fullscreenImg.src = url;
-          fullscreenImg.dataset.blobUrl = url;
-          fullscreenModal.classList.remove("hidden");
-          document.body.style.overflow = "hidden";
-        }
+        const canvas = await getCompositeFramedCanvas(1000);
+        fullscreenImg.src = canvas.toDataURL("image/png");
+        fullscreenModal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
       } catch (err) {
         console.error("Lỗi mở fullscreen:", err);
       }
@@ -530,22 +943,16 @@
     function closeFullscreen() {
       fullscreenModal.classList.add("hidden");
       document.body.style.overflow = "";
-      const url = fullscreenImg.dataset.blobUrl;
-      if (url) URL.revokeObjectURL(url);
       fullscreenImg.src = "";
-      fullscreenImg.dataset.blobUrl = "";
     }
 
-    function regenIfReady() {
-      if (!resultArea.classList.contains("hidden")) {
-        generateQR();
-      }
-    }
-
-    // ===== Event Listeners =====
+    // ===== Events =====
     generateBtn.addEventListener("click", generateQR);
     clearBtn.addEventListener("click", () => {
       urlInput.value = "";
+      currentLogoData = null;
+      logoInput.value = "";
+      removeLogoBtn.classList.add("hidden");
       qrPreview.innerHTML = "";
       qrCodePreview = null;
       resultArea.classList.add("hidden");
@@ -563,17 +970,7 @@
 
     urlInput.addEventListener("keypress", (e) => { if (e.key === "Enter") generateQR(); });
 
-    colorInput.addEventListener("input", regenIfReady);
-    bgColorInput.addEventListener("input", regenIfReady);
-    dotsStyle.addEventListener("change", regenIfReady);
-    cornersStyle.addEventListener("change", regenIfReady);
-    logoInput.addEventListener("change", regenIfReady);
-    logoSize.addEventListener("input", () => {
-      logoSizeLabel.textContent = `${logoSize.value}%`;
-      regenIfReady();
-    });
-
-    // Auto-render on page load
+    // Auto-render on load
     window.addEventListener("DOMContentLoaded", () => {
       generateQR();
     });
