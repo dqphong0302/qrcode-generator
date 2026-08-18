@@ -5,19 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QR Generator Pro (Dots + SVG + Dark)</title>
 
+  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <!-- Tailwind CSS & QR Engine -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Inter", "sans-serif"] },
+          boxShadow: {
+            soft: "0 20px 60px rgba(0,0,0,0.35)"
+          }
+        }
+      }
+    };
+  </script>
+
   <style>
-    /* Preview fixed size: thumbnail won't be "too big" */
+    /* Custom Color Inputs & Preview styling */
     #qrPreview {
       width: 240px;
       height: 240px;
       display: grid;
       place-items: center;
     }
-    /* Force rendered svg/canvas to fit the preview frame */
     #qrPreview svg, #qrPreview canvas {
       width: 240px !important;
       height: 240px !important;
@@ -26,7 +44,6 @@
       display: block;
       border-radius: 18px;
     }
-
     input[type="color"] {
       -webkit-appearance: none;
       border: none;
@@ -35,51 +52,69 @@
       border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
+      padding: 0;
+      background: transparent;
     }
     input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
     input[type="color"]::-webkit-color-swatch { border: none; border-radius: 12px; }
   </style>
 </head>
 
-<body class="min-h-screen bg-slate-950 text-slate-100">
+<body class="min-h-screen bg-slate-950 text-slate-100 font-sans transition-colors duration-200">
   <!-- Topbar -->
   <header class="sticky top-0 z-40 border-b border-slate-800/60 bg-slate-950/70 backdrop-blur-xl">
     <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-500"></div>
+        <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </div>
         <div class="leading-tight">
-          <div class="font-extrabold tracking-tight text-white">QR Generator Pro</div>
+          <div class="font-extrabold tracking-tight text-white flex items-center gap-2">
+            <span>QR Generator Pro</span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30">Pro</span>
+          </div>
           <div class="text-xs text-slate-400">Dots / Corners / Logo / SVG Export</div>
         </div>
       </div>
 
-      <button id="themeToggle"
-        class="inline-flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900 px-3 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800 transition">
-        <span id="themeIcon">☀️</span>
-        <span id="themeLabel">Light</span>
-      </button>
+      <div class="flex items-center gap-3">
+        <a href="https://phongdang.io.vn" class="hidden sm:inline-flex text-xs font-semibold text-slate-400 hover:text-slate-200 transition">
+          phongdang.io.vn ↗
+        </a>
+        <button id="themeToggle"
+          class="inline-flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900 px-3 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800 transition">
+          <span id="themeIcon">☀️</span>
+          <span id="themeLabel">Light</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <!-- Fullscreen Modal -->
-  <div id="fullscreenModal" class="fixed inset-0 z-[100] hidden bg-black/70 backdrop-blur-md">
+  <div id="fullscreenModal" class="fixed inset-0 z-[100] hidden bg-black/75 backdrop-blur-md transition-opacity">
     <div id="modalBackdrop" class="h-full w-full p-4 flex items-center justify-center">
-      <div class="w-full max-w-3xl">
-        <div class="flex justify-end mb-3">
+      <div class="w-full max-w-xl">
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-sm font-bold text-slate-200">🔍 Xem trước phóng to HD (1000×1000)</span>
           <button id="closeFullscreenBtn"
             class="rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition">
             Đóng ✕
           </button>
         </div>
-        <div class="rounded-3xl border border-white/10 bg-slate-950 shadow-soft p-4">
-          <img id="fullscreenImg" alt="QR Full" class="w-full rounded-2xl bg-white" />
+        <div class="rounded-3xl border border-white/10 bg-slate-950 shadow-soft p-6 flex items-center justify-center">
+          <img id="fullscreenImg" alt="QR Full" class="max-w-full max-h-[70vh] rounded-2xl bg-white shadow-2xl" />
         </div>
-        <div class="mt-3 text-center text-xs text-white/70">Nhấn ra ngoài để đóng</div>
+        <div class="mt-3 text-center text-xs text-slate-400">Nhấn ra ngoài hoặc bấm phím ESC để đóng</div>
       </div>
     </div>
   </div>
 
-  <!-- Main -->
+  <!-- Main Grid -->
   <main class="mx-auto max-w-6xl px-4 py-10">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -91,35 +126,35 @@
           <div class="p-6 md:p-7">
             <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white">Tạo QR nhanh</h1>
             <p class="mt-2 text-sm text-slate-400">
-              Preview nhỏ gọn trong UI. Tải về vẫn HD 1000×1000 + SVG.
+              Preview nhỏ gọn trong UI. Tải về xuất HD 1000×1000 + file vector SVG.
             </p>
 
-            <!-- URL -->
+            <!-- URL / Content -->
             <div class="mt-6">
               <label class="text-xs font-extrabold uppercase tracking-wider text-slate-300">Nội dung / URL</label>
               <div id="urlWrap" class="mt-2 rounded-2xl border border-slate-800 bg-slate-950 focus-within:ring-4 ring-sky-500/20 transition">
-                <input id="urlInput" type="text" placeholder="https://example.com"
+                <input id="urlInput" type="text" placeholder="https://example.com" value="https://phongdang.io.vn"
                   class="w-full bg-transparent px-4 py-4 rounded-2xl outline-none text-white placeholder:text-slate-500" />
               </div>
-              <p class="mt-2 text-xs text-slate-500">Nhấn Enter để tạo.</p>
+              <p class="mt-2 text-xs text-slate-500">Nhập URL hoặc văn bản rồi nhấn Enter để cập nhật.</p>
             </div>
 
             <!-- Colors -->
             <div class="mt-6">
               <label class="text-xs font-extrabold uppercase tracking-wider text-slate-300">Màu sắc</label>
               <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4 flex items-center gap-4">
+                <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4 flex items-center gap-4 hover:border-slate-700 transition">
                   <input type="color" id="colorInput" value="#0EA5E9" />
                   <div>
                     <div class="font-bold text-white">Màu QR</div>
                     <div class="text-xs text-slate-500">Dots + Corners</div>
                   </div>
                 </div>
-                <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4 flex items-center gap-4">
+                <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4 flex items-center gap-4 hover:border-slate-700 transition">
                   <input type="color" id="bgColorInput" value="#FFFFFF" />
                   <div>
                     <div class="font-bold text-white">Nền QR</div>
-                    <div class="text-xs text-slate-500">Nên tương phản</div>
+                    <div class="text-xs text-slate-500">Nên chọn màu sáng</div>
                   </div>
                 </div>
               </div>
@@ -132,11 +167,11 @@
                 <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4">
                   <div class="text-sm font-bold text-white mb-2">Chấm (dots)</div>
                   <select id="dotsStyle"
-                    class="w-full rounded-xl border border-slate-800 bg-slate-900 px-3 py-3 text-slate-100 outline-none focus:border-sky-500/60">
-                    <option value="square">Square</option>
-                    <option value="dots" selected>Dots</option>
-                    <option value="rounded">Rounded</option>
-                    <option value="classy">Classy</option>
+                    class="w-full rounded-xl border border-slate-800 bg-slate-900 px-3 py-3 text-slate-100 outline-none focus:border-sky-500/60 cursor-pointer">
+                    <option value="square">Square (Vuông Chuẩn)</option>
+                    <option value="dots" selected>Dots (Tròn)</option>
+                    <option value="rounded">Rounded (Bo góc)</option>
+                    <option value="classy">Classy (Thanh lịch)</option>
                     <option value="classy-rounded">Classy Rounded</option>
                     <option value="extra-rounded">Extra Rounded</option>
                   </select>
@@ -145,10 +180,10 @@
                 <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4">
                   <div class="text-sm font-bold text-white mb-2">Mắt (corners)</div>
                   <select id="cornersStyle"
-                    class="w-full rounded-xl border border-slate-800 bg-slate-900 px-3 py-3 text-slate-100 outline-none focus:border-sky-500/60">
-                    <option value="square">Square</option>
-                    <option value="dot">Dot</option>
-                    <option value="extra-rounded" selected>Extra Rounded</option>
+                    class="w-full rounded-xl border border-slate-800 bg-slate-900 px-3 py-3 text-slate-100 outline-none focus:border-sky-500/60 cursor-pointer">
+                    <option value="square">Square (Vuông)</option>
+                    <option value="dot">Dot (Tròn)</option>
+                    <option value="extra-rounded" selected>Extra Rounded (Bo tròn)</option>
                   </select>
                 </div>
               </div>
@@ -168,7 +203,7 @@
 
                 <div class="mt-4 flex items-center gap-3">
                   <div class="text-sm font-semibold text-slate-300 w-28">Kích thước</div>
-                  <input id="logoSize" type="range" min="10" max="35" value="22" class="w-full">
+                  <input id="logoSize" type="range" min="10" max="35" value="22" class="w-full cursor-pointer accent-sky-500">
                   <div id="logoSizeLabel" class="text-sm font-extrabold text-white w-12 text-right">22%</div>
                 </div>
               </div>
@@ -177,17 +212,17 @@
             <!-- Actions -->
             <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button id="generateBtn"
-                class="rounded-2xl py-4 font-extrabold bg-sky-500 text-slate-950 hover:bg-sky-400 transition">
+                class="rounded-2xl py-4 font-extrabold bg-sky-500 text-slate-950 hover:bg-sky-400 active:scale-[0.98] transition shadow-lg shadow-sky-500/25">
                 ✨ Tạo QR
               </button>
               <button id="clearBtn"
-                class="rounded-2xl py-4 font-extrabold border border-slate-800 bg-slate-950 text-slate-200 hover:bg-slate-900 transition">
+                class="rounded-2xl py-4 font-extrabold border border-slate-800 bg-slate-950 text-slate-200 hover:bg-slate-900 active:scale-[0.98] transition">
                 Xoá
               </button>
             </div>
 
             <p class="mt-4 text-xs text-slate-500">
-              Tip: Dùng logo + bo tròn mạnh → giữ nền sáng và QR đậm để quét ổn định.
+              Tip: Dùng logo + bo tròn mạnh → giữ nền sáng và QR đậm để máy quét đọc ổn định 100%.
             </p>
           </div>
         </div>
@@ -195,12 +230,12 @@
 
       <!-- Right: Preview -->
       <section class="lg:col-span-6">
-        <div class="rounded-3xl border border-slate-800 bg-slate-900/50 shadow-soft overflow-hidden">
+        <div class="rounded-3xl border border-slate-800 bg-slate-900/50 shadow-soft overflow-hidden sticky top-24">
           <div class="p-6 md:p-7">
             <div class="flex items-start justify-between gap-4">
               <div>
                 <h2 class="text-2xl font-extrabold tracking-tight text-white">Preview</h2>
-                <p class="mt-1 text-sm text-slate-400">QR hiển thị nhỏ gọn. Nhấn để phóng to.</p>
+                <p class="mt-1 text-sm text-slate-400">QR hiển thị nhỏ gọn. Nhấn vào mã để phóng to.</p>
               </div>
 
               <div class="hidden sm:flex gap-2">
@@ -209,33 +244,34 @@
               </div>
             </div>
 
-            <!-- Empty -->
+            <!-- Empty State -->
             <div id="emptyState" class="mt-8 rounded-3xl border border-dashed border-slate-800 bg-slate-950 p-10 text-center">
               <div class="text-4xl">🧩</div>
               <div class="mt-2 font-extrabold text-white">Chưa có QR</div>
               <div class="mt-1 text-sm text-slate-500">Nhập nội dung rồi bấm “Tạo QR”.</div>
             </div>
 
-            <!-- Result -->
+            <!-- Result Area -->
             <div id="resultArea" class="mt-8 hidden">
               <div id="qrCard"
-                class="rounded-3xl border border-slate-800 bg-slate-950 p-6 flex items-center justify-center hover:border-sky-500/40 transition cursor-pointer">
-                <div id="qrPreview"></div>
+                class="rounded-3xl border border-slate-800 bg-slate-950 p-6 flex flex-col items-center justify-center hover:border-sky-500/40 transition cursor-pointer group">
+                <div id="qrPreview" class="group-hover:scale-105 transition-transform duration-200"></div>
+                <span class="mt-3 text-[11px] font-semibold text-slate-500 group-hover:text-sky-400 transition">🔍 Bấm để phóng to toàn màn hình</span>
               </div>
 
               <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button id="downloadPngBtn"
-                  class="rounded-2xl py-3 font-extrabold border border-sky-500/30 bg-sky-500/10 text-sky-200 hover:bg-sky-500/15 transition">
-                  ⬇ PNG (HD)
+                  class="rounded-2xl py-3.5 font-extrabold border border-sky-500/30 bg-sky-500/10 text-sky-200 hover:bg-sky-500/20 active:scale-[0.98] transition">
+                  ⬇ PNG (HD 1000px)
                 </button>
                 <button id="downloadSvgBtn"
-                  class="rounded-2xl py-3 font-extrabold border border-indigo-500/30 bg-indigo-500/10 text-indigo-200 hover:bg-indigo-500/15 transition">
-                  ⬇ SVG
+                  class="rounded-2xl py-3.5 font-extrabold border border-indigo-500/30 bg-indigo-500/10 text-indigo-200 hover:bg-indigo-500/20 active:scale-[0.98] transition">
+                  ⬇ SVG Vector
                 </button>
               </div>
 
               <div class="mt-3 text-xs text-slate-500">
-                PNG xuất 1000×1000. SVG sắc nét mọi kích thước.
+                PNG xuất độ phân giải 1000×1000. SVG sắc nét mọi kích thước in ấn.
               </div>
             </div>
           </div>
@@ -245,10 +281,13 @@
     </div>
   </main>
 
-  <footer class="border-t border-slate-800/60 bg-slate-950/60">
-    <div class="mx-auto max-w-6xl px-4 py-6 text-xs text-slate-500 flex flex-col sm:flex-row gap-2 justify-between">
-      <div>© 2025 QR Generator Pro</div>
-      <div>Made for clean UI + reliable export</div>
+  <footer class="border-t border-slate-800/60 bg-slate-950/60 mt-12">
+    <div class="mx-auto max-w-6xl px-4 py-6 text-xs text-slate-500 flex flex-col sm:flex-row gap-2 justify-between items-center">
+      <div>© 2025–2026 QR Generator Pro — phongdang.io.vn</div>
+      <div class="flex items-center gap-4">
+        <a href="https://qr.phongdang.io.vn" class="hover:text-slate-400 transition">qr.phongdang.io.vn</a>
+        <a href="https://github.com/dqphong0302/qrcode-generator" target="_blank" class="hover:text-slate-400 transition">GitHub</a>
+      </div>
     </div>
   </footer>
 
@@ -257,7 +296,7 @@
     (function initTheme() {
       const saved = localStorage.getItem("qr_theme");
       if (!saved) {
-        document.documentElement.classList.add("dark"); // default dark
+        document.documentElement.classList.add("dark");
         localStorage.setItem("qr_theme", "dark");
       } else {
         document.documentElement.classList.toggle("dark", saved === "dark");
@@ -273,11 +312,10 @@
       const isDark = document.documentElement.classList.contains("dark");
       themeIcon.textContent = isDark ? "☀️" : "🌙";
       themeLabel.textContent = isDark ? "Light" : "Dark";
-      // Optional: switch body background if light
       if (!isDark) {
-        document.body.className = "min-h-screen bg-slate-50 text-slate-900";
+        document.body.className = "min-h-screen bg-slate-50 text-slate-900 font-sans transition-colors duration-200";
       } else {
-        document.body.className = "min-h-screen bg-slate-950 text-slate-100";
+        document.body.className = "min-h-screen bg-slate-950 text-slate-100 font-sans transition-colors duration-200";
       }
     }
 
@@ -373,7 +411,7 @@
 
       qrPreview.innerHTML = "";
 
-      // PREVIEW SMALL (240px): fixes "thumbnail too big"
+      // PREVIEW SMALL (240px)
       qrCodePreview = new QRCodeStyling(await buildOptions(240));
       qrCodePreview.append(qrPreview);
 
@@ -394,7 +432,7 @@
 
     async function downloadPNG() {
       if (!qrCodePreview) return;
-      // HD RENDER SEPARATE (1000px)
+      // HD RENDER (1000px)
       const hd = new QRCodeStyling(await buildOptions(1000));
       const blob = await hd.getRawData("png");
       downloadBlob(blob, "qrcode.png");
@@ -402,7 +440,7 @@
 
     async function downloadSVG() {
       if (!qrCodePreview) return;
-      // HD RENDER SEPARATE (1000px)
+      // HD RENDER (1000px)
       const hd = new QRCodeStyling(await buildOptions(1000));
       const blob = await hd.getRawData("svg");
       downloadBlob(blob, "qrcode.svg");
@@ -448,6 +486,7 @@
     qrCard.addEventListener("click", openFullscreen);
     closeFullscreenBtn.addEventListener("click", (e) => { e.stopPropagation(); closeFullscreen(); });
     modalBackdrop.addEventListener("click", (e) => { if (e.target === modalBackdrop) closeFullscreen(); });
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeFullscreen(); });
 
     urlInput.addEventListener("keypress", (e) => { if (e.key === "Enter") generateQR(); });
 
@@ -459,6 +498,13 @@
     logoSize.addEventListener("input", () => {
       logoSizeLabel.textContent = `${logoSize.value}%`;
       regenIfReady();
+    });
+
+    // Generate initially on load if input has value
+    window.addEventListener("DOMContentLoaded", () => {
+      if (urlInput.value.trim()) {
+        generateQR();
+      }
     });
   </script>
 </body>
