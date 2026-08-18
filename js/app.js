@@ -365,7 +365,7 @@
   const Frame = {
     updateUI() {
       const style = DOM.frameStyleSelect.value;
-      const text = (DOM.frameTextInput.value || "SCAN ME").trim();
+      const text = (DOM.frameTextInput.value || "").trim();
       const color = DOM.frameColorInput.value || "#0284C7";
 
       DOM.topBannerBadge.classList.add("hidden");
@@ -374,21 +374,27 @@
       DOM.qrFrameWrapper.style.backgroundColor = "transparent";
 
       if (style === "bottom-badge") {
-        DOM.bottomBannerBadge.classList.remove("hidden");
-        DOM.bottomBannerBadge.textContent = text;
-        DOM.bottomBannerBadge.style.backgroundColor = color;
+        if (text) {
+          DOM.bottomBannerBadge.classList.remove("hidden");
+          DOM.bottomBannerBadge.textContent = text;
+          DOM.bottomBannerBadge.style.backgroundColor = color;
+        }
         DOM.qrFrameWrapper.style.border = `3px solid ${color}`;
         DOM.qrFrameWrapper.style.backgroundColor = DOM.bgTransparentCheck.checked ? "transparent" : DOM.bgColorInput.value;
       } else if (style === "top-banner") {
-        DOM.topBannerBadge.classList.remove("hidden");
-        DOM.topBannerBadge.textContent = text;
-        DOM.topBannerBadge.style.backgroundColor = color;
+        if (text) {
+          DOM.topBannerBadge.classList.remove("hidden");
+          DOM.topBannerBadge.textContent = text;
+          DOM.topBannerBadge.style.backgroundColor = color;
+        }
         DOM.qrFrameWrapper.style.border = `3px solid ${color}`;
         DOM.qrFrameWrapper.style.backgroundColor = DOM.bgTransparentCheck.checked ? "transparent" : DOM.bgColorInput.value;
       } else if (style === "scan-me") {
-        DOM.bottomBannerBadge.classList.remove("hidden");
-        DOM.bottomBannerBadge.textContent = text;
-        DOM.bottomBannerBadge.style.backgroundColor = color;
+        if (text) {
+          DOM.bottomBannerBadge.classList.remove("hidden");
+          DOM.bottomBannerBadge.textContent = text;
+          DOM.bottomBannerBadge.style.backgroundColor = color;
+        }
         DOM.qrFrameWrapper.style.border = `2px dashed ${color}`;
       }
     },
@@ -412,12 +418,12 @@
         return canvas;
       }
 
-      const frameText = (DOM.frameTextInput.value || "SCAN ME").trim().toUpperCase();
+      const frameText = (DOM.frameTextInput.value || "").trim().toUpperCase();
       const frameColor = DOM.frameColorInput.value || "#0284C7";
       const isTransparent = DOM.bgTransparentCheck.checked;
       const bgColor = isTransparent ? "transparent" : (DOM.bgColorInput.value || "#FFFFFF");
 
-      const bannerHeight = Math.round(targetSize * 0.16);
+      const bannerHeight = frameText ? Math.round(targetSize * 0.16) : 0;
       const totalWidth = targetSize + 40;
       const totalHeight = targetSize + bannerHeight + 40;
 
@@ -437,31 +443,35 @@
       ctx.stroke();
 
       if (frameStyle === "top-banner") {
-        ctx.fillStyle = frameColor;
-        ctx.beginPath();
-        ctx.roundRect(10, 10, totalWidth - 20, bannerHeight, [24, 24, 0, 0]);
-        ctx.fill();
+        if (frameText) {
+          ctx.fillStyle = frameColor;
+          ctx.beginPath();
+          ctx.roundRect(10, 10, totalWidth - 20, bannerHeight, [24, 24, 0, 0]);
+          ctx.fill();
 
-        ctx.fillStyle = "#FFFFFF";
-        ctx.font = `bold ${Math.round(bannerHeight * 0.42)}px Inter, sans-serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(frameText, totalWidth / 2, 10 + bannerHeight / 2);
+          ctx.fillStyle = "#FFFFFF";
+          ctx.font = `bold ${Math.round(bannerHeight * 0.42)}px Inter, sans-serif`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(frameText, totalWidth / 2, 10 + bannerHeight / 2);
+        }
 
         ctx.drawImage(qrImg, 20, 20 + bannerHeight, targetSize, targetSize);
       } else {
         ctx.drawImage(qrImg, 20, 20, targetSize, targetSize);
 
-        ctx.fillStyle = frameColor;
-        ctx.beginPath();
-        ctx.roundRect(10, totalHeight - bannerHeight - 10, totalWidth - 20, bannerHeight, [0, 0, 24, 24]);
-        ctx.fill();
+        if (frameText) {
+          ctx.fillStyle = frameColor;
+          ctx.beginPath();
+          ctx.roundRect(10, totalHeight - bannerHeight - 10, totalWidth - 20, bannerHeight, [0, 0, 24, 24]);
+          ctx.fill();
 
-        ctx.fillStyle = "#FFFFFF";
-        ctx.font = `bold ${Math.round(bannerHeight * 0.42)}px Inter, sans-serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(frameText, totalWidth / 2, totalHeight - bannerHeight / 2 - 10);
+          ctx.fillStyle = "#FFFFFF";
+          ctx.font = `bold ${Math.round(bannerHeight * 0.42)}px Inter, sans-serif`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(frameText, totalWidth / 2, totalHeight - bannerHeight / 2 - 10);
+        }
       }
 
       return canvas;
@@ -672,6 +682,7 @@
       DOM.logoInput.value = "";
       DOM.removeLogoBtn.classList.add("hidden");
       DOM.frameStyleSelect.value = "none";
+      DOM.frameTextInput.value = "";
       Palette.set('#0284C7', '#0369A1', '#FFFFFF', 'solid', '#0284C7');
       Toast.show("Đã đặt lại cấu hình mặc định", "🔄");
     });
