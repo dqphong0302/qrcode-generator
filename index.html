@@ -81,297 +81,300 @@
       <!-- Left Column: Controls & Tabs -->
       <section>
         <div class="card">
-          
-          <!-- Content Type Selector -->
-          <div class="form-group">
-            <span class="label-title">Loại nội dung</span>
-            <div class="type-pills">
-              <button type="button" class="type-pill active" data-type="url">
-                <span>🔗</span><span>Link / Web</span>
-              </button>
-              <button type="button" class="type-pill" data-type="wifi">
-                <span>📶</span><span>WiFi</span>
-              </button>
-              <button type="button" class="type-pill" data-type="vietqr">
-                <span>💳</span><span>VietQR</span>
-              </button>
-              <button type="button" class="type-pill" data-type="phone">
-                <span>📞</span><span>Số ĐT</span>
-              </button>
-              <button type="button" class="type-pill" data-type="email">
-                <span>✉️</span><span>Email</span>
-              </button>
-              <button type="button" class="type-pill" data-type="text">
-                <span>📝</span><span>Văn bản</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Dynamic Input Container -->
-          <div>
-            <!-- URL / Text Input (Default) -->
-            <div id="typeBlockUrl">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                <label id="inputLabel" class="label-title" style="margin-bottom: 0;">Đường dẫn Website (URL)</label>
-                <span style="font-size: 0.65rem; color: var(--text-subtle);">Tự động cập nhật</span>
-              </div>
-              <div id="urlWrap" class="input-box">
-                <input id="urlInput" type="text" placeholder="https://phongdang.io.vn" value="https://phongdang.io.vn" class="input-field" />
-                <button id="clearUrlBtn" type="button" class="btn-icon-clear" title="Xóa nội dung">✕</button>
-              </div>
-            </div>
-
-            <!-- WiFi Specific Input -->
-            <div id="typeBlockWifi" class="wifi-grid hidden">
-              <div>
-                <label class="label-title">Tên WiFi (SSID)</label>
-                <input id="wifiSsid" type="text" placeholder="Tên mạng WiFi" class="input-field select-field" />
-              </div>
-              <div>
-                <label class="label-title">Mật khẩu WiFi</label>
-                <input id="wifiPass" type="text" placeholder="Mật khẩu (nếu có)" class="input-field select-field" />
-              </div>
-            </div>
-
-            <!-- Phone Input -->
-            <div id="typeBlockPhone" class="hidden">
-              <label class="label-title">Số điện thoại liên hệ</label>
-              <input id="phoneInput" type="tel" placeholder="0901234567" class="input-field select-field" />
-            </div>
-
-            <!-- Email Input -->
-            <div id="typeBlockEmail" class="hidden">
-              <label class="label-title">Địa chỉ Email</label>
-              <input id="emailInput" type="email" placeholder="contact@phongdang.io.vn" class="input-field select-field" />
-            </div>
-          </div>
-
-          <!-- Customization Tabs Navigation -->
-          <div class="tabs-header">
-            <div class="tabs-nav">
-              <button type="button" class="nav-tab active" data-tab="colors">
-                <span>🎨 Màu sắc</span>
-              </button>
-              <button type="button" class="nav-tab" data-tab="frame">
-                <span>🖼️ Khung viền</span>
-              </button>
-              <button type="button" class="nav-tab" data-tab="logo">
-                <span>🌟 Logo</span>
-              </button>
-              <button type="button" class="nav-tab" data-tab="shapes">
-                <span>⚙️ Hình dáng</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Tab 1: Colors & Palettes -->
-          <div id="tabPanelColors" class="tab-panel">
-            <!-- 8 Quick Palette Chips -->
-            <div style="margin-bottom: 0.75rem;">
-              <span class="label-title">Bảng phối màu chuyên nghiệp (1-Click)</span>
-              <div class="palette-grid">
-                <button type="button" class="palette-btn" onclick="setPalette('#0f172a', '#0f172a', '#FFFFFF', 'solid', '#0f172a')">
-                  <div class="palette-dots"><span class="palette-dot" style="background: #0f172a;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
-                  <span class="palette-name">Classic</span>
+          <div class="card-body">
+            <!-- Content Type Selector -->
+            <div class="form-group">
+              <span class="label-title">Loại nội dung</span>
+              <div class="type-pills">
+                <button type="button" class="type-pill active" data-type="url">
+                  <span>🔗</span><span>Link / Web</span>
                 </button>
-                <button type="button" class="palette-btn" onclick="setPalette('#0284C7', '#0369A1', '#FFFFFF', 'solid', '#0284C7')">
-                  <div class="palette-dots"><span class="palette-dot" style="background: #0284c7;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
-                  <span class="palette-name">Doanh nghiệp</span>
-                </button>
-                <button type="button" class="palette-btn" onclick="setPalette('#005BAA', '#005BAA', '#FFFFFF', 'solid', '#005BAA')">
-                  <div class="palette-dots"><span class="palette-dot" style="background: #005baa;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
-                  <span class="palette-name">VietQR</span>
-                </button>
-                <button type="button" class="palette-btn" onclick="setPalette('#4F46E5', '#7C3AED', '#FFFFFF', 'linear', '#4F46E5')">
-                  <div class="palette-dots"><span class="palette-dot" style="background: #4f46e5;"></span><span class="palette-dot" style="background: #7c3aed;"></span></div>
-                  <span class="palette-name">Tech Indigo</span>
-                </button>
-                <button type="button" class="palette-btn" onclick="setPalette('#059669', '#10B981', '#FFFFFF', 'linear', '#059669')">
-                  <div class="palette-dots"><span class="palette-dot" style="background: #059669;"></span><span class="palette-dot" style="background: #10b981;"></span></div>
-                  <span class="palette-name">Emerald</span>
-                </button>
-                <button type="button" class="palette-btn" onclick="setPalette('#B45309', '#78350F', '#FFFFFF', 'linear', '#B45309')">
-                  <div class="palette-dots"><span class="palette-dot" style="background: #b45309;"></span><span class="palette-dot" style="background: #78350f;"></span></div>
-                  <span class="palette-name">Royal Gold</span>
-                </button>
-                <button type="button" class="palette-btn" onclick="setPalette('#E11D48', '#FB7185', '#FFFFFF', 'linear', '#E11D48')">
-                  <div class="palette-dots"><span class="palette-dot" style="background: #e11d48;"></span><span class="palette-dot" style="background: #fb7185;"></span></div>
-                  <span class="palette-name">Rose Ruby</span>
-                </button>
-                <button type="button" class="palette-btn" onclick="setPalette('#0891B2', '#0284C7', '#FFFFFF', 'linear', '#0891B2')">
-                  <div class="palette-dots"><span class="palette-dot" style="background: #0891b2;"></span><span class="palette-dot" style="background: #0284c7;"></span></div>
-                  <span class="palette-name">Ocean Cyan</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Detailed Color Pickers -->
-            <div class="color-pickers-grid">
-              <div class="color-picker-card">
-                <div>
-                  <span class="color-picker-label">Màu mã QR</span>
-                  <span id="colorHexLabel" class="color-hex">#0284C7</span>
-                </div>
-                <input type="color" id="colorInput" value="#0284C7" />
-              </div>
-
-              <div id="color2Container" class="color-picker-card" style="opacity: 0.5;">
-                <div>
-                  <span class="color-picker-label">Gradient 2</span>
-                  <span id="color2HexLabel" class="color-hex">#4F46E5</span>
-                </div>
-                <input type="color" id="color2Input" value="#4F46E5" disabled />
-              </div>
-
-              <div class="color-picker-card">
-                <div>
-                  <span class="color-picker-label">Mắt góc</span>
-                  <span id="cornerColorHexLabel" class="color-hex">#0284C7</span>
-                </div>
-                <input type="color" id="cornerColorInput" value="#0284C7" />
-              </div>
-
-              <div class="color-picker-card">
-                <div>
-                  <span class="color-picker-label">Màu nền</span>
-                  <span id="bgColorHexLabel" class="color-hex">#FFFFFF</span>
-                </div>
-                <input type="color" id="bgColorInput" value="#FFFFFF" />
-              </div>
-            </div>
-
-            <!-- Gradient Type & Transparent Toggle -->
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.6rem; font-size: 0.75rem;">
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span style="font-size: 0.72rem; color: var(--text-muted);">Kiểu tô:</span>
-                <select id="colorTypeSelect" class="select-field" style="width: auto; padding: 0.25rem 0.5rem;">
-                  <option value="solid" selected>Đơn sắc (Solid)</option>
-                  <option value="linear">Gradient Tuyến Tính</option>
-                  <option value="radial">Gradient Tỏa Tròn</option>
-                </select>
-              </div>
-
-              <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
-                <input type="checkbox" id="bgTransparentCheck" style="width: 14px; height: 14px; accent-color: var(--primary); cursor: pointer;">
-                <span style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted);">Nền trong suốt</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Tab 2: Frame & Banner -->
-          <div id="tabPanelFrame" class="tab-panel hidden">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.6rem;">
-              <div>
-                <label class="label-title">Kiểu khung viền</label>
-                <select id="frameStyleSelect" class="select-field">
-                  <option value="none" selected>Không khung (Chuẩn)</option>
-                  <option value="bottom-badge">Huy hiệu dưới (Bottom Badge)</option>
-                  <option value="top-banner">Banner trên (Top Banner)</option>
-                  <option value="scan-me">Khung viền Scan Me</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="label-title">Chữ hiển thị</label>
-                <input id="frameTextInput" type="text" placeholder="Nhập chữ (ví dụ: Quét mã, Website...)" value="" class="select-field" />
-              </div>
-
-              <div>
-                <label class="label-title">Màu sắc khung</label>
-                <div class="color-picker-card" style="padding: 0.35rem 0.6rem;">
-                  <span id="frameColorHexLabel" class="color-hex">#0284C7</span>
-                  <input type="color" id="frameColorInput" value="#0284C7" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tab 3: Logo & Presets -->
-          <div id="tabPanelLogo" class="tab-panel hidden">
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                <span class="label-title" style="margin-bottom: 0;">Biểu tượng chọn nhanh</span>
-                <button id="removeLogoBtn" type="button" class="hidden" style="font-size: 0.7rem; font-weight: 700; color: var(--danger); background: none; border: none; cursor: pointer;">
-                  ✕ Gỡ logo
-                </button>
-              </div>
-              <div class="preset-icons-wrap">
-                <button type="button" class="preset-icon-btn" onclick="setPresetLogo('phongdang')">
-                  <span style="width: 14px; height: 14px; border-radius: 50%; background: #0284c7; color: white; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800;">P</span>
-                  <span>PhongDang</span>
-                </button>
-                <button type="button" class="preset-icon-btn" onclick="setPresetLogo('vietqr')">
-                  <span style="font-size: 9px; font-weight: 900; color: #005baa;">VQR</span>
-                  <span>VietQR</span>
-                </button>
-                <button type="button" class="preset-icon-btn" onclick="setPresetLogo('wifi')">
+                <button type="button" class="type-pill" data-type="wifi">
                   <span>📶</span><span>WiFi</span>
                 </button>
-                <button type="button" class="preset-icon-btn" onclick="setPresetLogo('facebook')">
-                  <span style="color: #1877f2; font-weight: 800;">f</span><span>Facebook</span>
+                <button type="button" class="type-pill" data-type="vietqr">
+                  <span>💳</span><span>VietQR</span>
                 </button>
-                <button type="button" class="preset-icon-btn" onclick="setPresetLogo('zalo')">
-                  <span style="color: #0068ff; font-weight: 800;">Z</span><span>Zalo</span>
+                <button type="button" class="type-pill" data-type="phone">
+                  <span>📞</span><span>Số ĐT</span>
                 </button>
-                <button type="button" class="preset-icon-btn" onclick="setPresetLogo('google')">
-                  <span style="color: #ea4335; font-weight: 800;">G</span><span>Google</span>
+                <button type="button" class="type-pill" data-type="email">
+                  <span>✉️</span><span>Email</span>
+                </button>
+                <button type="button" class="type-pill" data-type="text">
+                  <span>📝</span><span>Văn bản</span>
                 </button>
               </div>
             </div>
 
-            <!-- Upload Logo Box -->
-            <div style="margin: 0.6rem 0;">
-              <input type="file" id="logoInput" accept="image/*" class="select-field" style="padding: 0.35rem 0.5rem;" />
+            <!-- Dynamic Input Container -->
+            <div>
+              <!-- URL / Text Input (Default) -->
+              <div id="typeBlockUrl">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                  <label id="inputLabel" class="label-title" style="margin-bottom: 0;">Đường dẫn Website (URL)</label>
+                  <span style="font-size: 0.65rem; color: var(--text-subtle);">Tự động cập nhật</span>
+                </div>
+                <div id="urlWrap" class="input-box">
+                  <input id="urlInput" type="text" placeholder="https://phongdang.io.vn" value="https://phongdang.io.vn" class="input-field" />
+                  <button id="clearUrlBtn" type="button" class="btn-icon-clear" title="Xóa nội dung">✕</button>
+                </div>
+              </div>
+
+              <!-- WiFi Specific Input -->
+              <div id="typeBlockWifi" class="wifi-grid hidden">
+                <div>
+                  <label class="label-title">Tên WiFi (SSID)</label>
+                  <input id="wifiSsid" type="text" placeholder="Tên mạng WiFi" class="input-field select-field" />
+                </div>
+                <div>
+                  <label class="label-title">Mật khẩu WiFi</label>
+                  <input id="wifiPass" type="text" placeholder="Mật khẩu (nếu có)" class="input-field select-field" />
+                </div>
+              </div>
+
+              <!-- Phone Input -->
+              <div id="typeBlockPhone" class="hidden">
+                <label class="label-title">Số điện thoại liên hệ</label>
+                <input id="phoneInput" type="tel" placeholder="0901234567" class="input-field select-field" />
+              </div>
+
+              <!-- Email Input -->
+              <div id="typeBlockEmail" class="hidden">
+                <label class="label-title">Địa chỉ Email</label>
+                <input id="emailInput" type="email" placeholder="contact@phongdang.io.vn" class="input-field select-field" />
+              </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.5rem;">
-              <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <span class="label-title" style="width: 60px; margin: 0;">Kích cỡ:</span>
-                <input id="logoSize" type="range" min="10" max="35" value="22">
-                <span id="logoSizeLabel" style="font-size: 0.72rem; font-weight: 700; width: 30px; text-align: right;">22%</span>
+            <!-- Customization Tabs Navigation -->
+            <div class="tabs-header">
+              <div class="tabs-nav">
+                <button type="button" class="nav-tab active" data-tab="colors">
+                  <span>🎨 Màu sắc</span>
+                </button>
+                <button type="button" class="nav-tab" data-tab="frame">
+                  <span>🖼️ Khung viền</span>
+                </button>
+                <button type="button" class="nav-tab" data-tab="logo">
+                  <span>🌟 Logo</span>
+                </button>
+                <button type="button" class="nav-tab" data-tab="shapes">
+                  <span>⚙️ Hình dáng</span>
+                </button>
               </div>
-              <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <span class="label-title" style="width: 70px; margin: 0;">Khoảng đệm:</span>
-                <input id="logoMargin" type="range" min="0" max="20" value="6">
-                <span id="logoMarginLabel" style="font-size: 0.72rem; font-weight: 700; width: 30px; text-align: right;">6px</span>
+            </div>
+
+            <!-- Tab 1: Colors & Palettes -->
+            <div id="tabPanelColors" class="tab-panel">
+              <!-- 8 Quick Palette Chips -->
+              <div style="margin-bottom: 0.75rem;">
+                <span class="label-title">Bảng phối màu chuyên nghiệp (1-Click)</span>
+                <div class="palette-grid">
+                  <button type="button" class="palette-btn" onclick="setPalette('#0f172a', '#0f172a', '#FFFFFF', 'solid', '#0f172a')">
+                    <div class="palette-dots"><span class="palette-dot" style="background: #0f172a;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
+                    <span class="palette-name">Classic</span>
+                  </button>
+                  <button type="button" class="palette-btn" onclick="setPalette('#0284C7', '#0369A1', '#FFFFFF', 'solid', '#0284C7')">
+                    <div class="palette-dots"><span class="palette-dot" style="background: #0284c7;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
+                    <span class="palette-name">Doanh nghiệp</span>
+                  </button>
+                  <button type="button" class="palette-btn" onclick="setPalette('#005BAA', '#005BAA', '#FFFFFF', 'solid', '#005BAA')">
+                    <div class="palette-dots"><span class="palette-dot" style="background: #005baa;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
+                    <span class="palette-name">VietQR</span>
+                  </button>
+                  <button type="button" class="palette-btn" onclick="setPalette('#4F46E5', '#7C3AED', '#FFFFFF', 'linear', '#4F46E5')">
+                    <div class="palette-dots"><span class="palette-dot" style="background: #4f46e5;"></span><span class="palette-dot" style="background: #7c3aed;"></span></div>
+                    <span class="palette-name">Tech Indigo</span>
+                  </button>
+                  <button type="button" class="palette-btn" onclick="setPalette('#059669', '#10B981', '#FFFFFF', 'linear', '#059669')">
+                    <div class="palette-dots"><span class="palette-dot" style="background: #059669;"></span><span class="palette-dot" style="background: #10b981;"></span></div>
+                    <span class="palette-name">Emerald</span>
+                  </button>
+                  <button type="button" class="palette-btn" onclick="setPalette('#B45309', '#78350F', '#FFFFFF', 'linear', '#B45309')">
+                    <div class="palette-dots"><span class="palette-dot" style="background: #b45309;"></span><span class="palette-dot" style="background: #78350f;"></span></div>
+                    <span class="palette-name">Royal Gold</span>
+                  </button>
+                  <button type="button" class="palette-btn" onclick="setPalette('#E11D48', '#FB7185', '#FFFFFF', 'linear', '#E11D48')">
+                    <div class="palette-dots"><span class="palette-dot" style="background: #e11d48;"></span><span class="palette-dot" style="background: #fb7185;"></span></div>
+                    <span class="palette-name">Rose Ruby</span>
+                  </button>
+                  <button type="button" class="palette-btn" onclick="setPalette('#0891B2', '#0284C7', '#FFFFFF', 'linear', '#0891B2')">
+                    <div class="palette-dots"><span class="palette-dot" style="background: #0891b2;"></span><span class="palette-dot" style="background: #0284c7;"></span></div>
+                    <span class="palette-name">Ocean Cyan</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Detailed Color Pickers -->
+              <div class="color-pickers-grid">
+                <div class="color-picker-card">
+                  <div>
+                    <span class="color-picker-label">Màu mã QR</span>
+                    <span id="colorHexLabel" class="color-hex">#0284C7</span>
+                  </div>
+                  <input type="color" id="colorInput" value="#0284C7" />
+                </div>
+
+                <div id="color2Container" class="color-picker-card" style="opacity: 0.5;">
+                  <div>
+                    <span class="color-picker-label">Gradient 2</span>
+                    <span id="color2HexLabel" class="color-hex">#4F46E5</span>
+                  </div>
+                  <input type="color" id="color2Input" value="#4F46E5" disabled />
+                </div>
+
+                <div class="color-picker-card">
+                  <div>
+                    <span class="color-picker-label">Mắt góc</span>
+                    <span id="cornerColorHexLabel" class="color-hex">#0284C7</span>
+                  </div>
+                  <input type="color" id="cornerColorInput" value="#0284C7" />
+                </div>
+
+                <div class="color-picker-card">
+                  <div>
+                    <span class="color-picker-label">Màu nền</span>
+                    <span id="bgColorHexLabel" class="color-hex">#FFFFFF</span>
+                  </div>
+                  <input type="color" id="bgColorInput" value="#FFFFFF" />
+                </div>
+              </div>
+
+              <!-- Gradient Type & Transparent Toggle -->
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.6rem; font-size: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Kiểu tô:</span>
+                  <select id="colorTypeSelect" class="select-field" style="width: auto; padding: 0.25rem 0.5rem;">
+                    <option value="solid" selected>Đơn sắc (Solid)</option>
+                    <option value="linear">Gradient Tuyến Tính</option>
+                    <option value="radial">Gradient Tỏa Tròn</option>
+                  </select>
+                </div>
+
+                <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                  <input type="checkbox" id="bgTransparentCheck" style="width: 14px; height: 14px; accent-color: var(--primary); cursor: pointer;">
+                  <span style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted);">Nền trong suốt</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Tab 2: Frame & Banner -->
+            <div id="tabPanelFrame" class="tab-panel hidden">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.6rem;">
+                <div>
+                  <label class="label-title">Kiểu khung viền</label>
+                  <select id="frameStyleSelect" class="select-field">
+                    <option value="none" selected>Không khung (Chuẩn)</option>
+                    <option value="bottom-badge">Huy hiệu dưới (Bottom Badge)</option>
+                    <option value="top-banner">Banner trên (Top Banner)</option>
+                    <option value="scan-me">Khung viền Scan Me</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="label-title">Chữ hiển thị</label>
+                  <input id="frameTextInput" type="text" placeholder="Nhập chữ (ví dụ: Quét mã, Website...)" value="" class="select-field" />
+                </div>
+
+                <div>
+                  <label class="label-title">Màu sắc khung</label>
+                  <div class="color-picker-card" style="padding: 0.35rem 0.6rem;">
+                    <span id="frameColorHexLabel" class="color-hex">#0284C7</span>
+                    <input type="color" id="frameColorInput" value="#0284C7" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: Logo & Presets -->
+            <div id="tabPanelLogo" class="tab-panel hidden">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                  <span class="label-title" style="margin-bottom: 0;">Biểu tượng chọn nhanh</span>
+                  <button id="removeLogoBtn" type="button" class="hidden" style="font-size: 0.7rem; font-weight: 700; color: var(--danger); background: none; border: none; cursor: pointer;">
+                    ✕ Gỡ logo
+                  </button>
+                </div>
+                <div class="preset-icons-wrap">
+                  <button type="button" class="preset-icon-btn" onclick="setPresetLogo('phongdang')">
+                    <span style="width: 14px; height: 14px; border-radius: 50%; background: #0284c7; color: white; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800;">P</span>
+                    <span>PhongDang</span>
+                  </button>
+                  <button type="button" class="preset-icon-btn" onclick="setPresetLogo('vietqr')">
+                    <span style="font-size: 9px; font-weight: 900; color: #005baa;">VQR</span>
+                    <span>VietQR</span>
+                  </button>
+                  <button type="button" class="preset-icon-btn" onclick="setPresetLogo('wifi')">
+                    <span>📶</span><span>WiFi</span>
+                  </button>
+                  <button type="button" class="preset-icon-btn" onclick="setPresetLogo('facebook')">
+                    <span style="color: #1877f2; font-weight: 800;">f</span><span>Facebook</span>
+                  </button>
+                  <button type="button" class="preset-icon-btn" onclick="setPresetLogo('zalo')">
+                    <span style="color: #0068ff; font-weight: 800;">Z</span><span>Zalo</span>
+                  </button>
+                  <button type="button" class="preset-icon-btn" onclick="setPresetLogo('google')">
+                    <span style="color: #ea4335; font-weight: 800;">G</span><span>Google</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Upload Logo Box -->
+              <div style="margin: 0.6rem 0;">
+                <input type="file" id="logoInput" accept="image/*" class="select-field" style="padding: 0.35rem 0.5rem;" />
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                  <span class="label-title" style="width: 60px; margin: 0;">Kích cỡ:</span>
+                  <input id="logoSize" type="range" min="10" max="35" value="22">
+                  <span id="logoSizeLabel" style="font-size: 0.72rem; font-weight: 700; width: 30px; text-align: right;">22%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                  <span class="label-title" style="width: 70px; margin: 0;">Khoảng đệm:</span>
+                  <input id="logoMargin" type="range" min="0" max="20" value="6">
+                  <span id="logoMarginLabel" style="font-size: 0.72rem; font-weight: 700; width: 30px; text-align: right;">6px</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 4: Shapes & Dots -->
+            <div id="tabPanelShapes" class="tab-panel hidden">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+                <div>
+                  <label class="label-title">Kiểu hạt (Dots Shape)</label>
+                  <select id="dotsStyle" class="select-field">
+                    <option value="square">Vuông Chuẩn (Square)</option>
+                    <option value="dots" selected>Hạt Tròn (Dots)</option>
+                    <option value="rounded">Bo Góc Nhẹ (Rounded)</option>
+                    <option value="classy">Thanh Lịch (Classy)</option>
+                    <option value="classy-rounded">Thanh Lịch Bo (Classy Rounded)</option>
+                    <option value="extra-rounded">Bo Tròn Lớn (Extra Rounded)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="label-title">Khung mắt góc (Corners)</label>
+                  <select id="cornersStyle" class="select-field">
+                    <option value="square">Vuông (Square)</option>
+                    <option value="dot">Chấm Tròn (Dot)</option>
+                    <option value="extra-rounded" selected>Bo Viền Tròn (Extra Rounded)</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Tab 4: Shapes & Dots -->
-          <div id="tabPanelShapes" class="tab-panel hidden">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
-              <div>
-                <label class="label-title">Kiểu hạt (Dots Shape)</label>
-                <select id="dotsStyle" class="select-field">
-                  <option value="square">Vuông Chuẩn (Square)</option>
-                  <option value="dots" selected>Hạt Tròn (Dots)</option>
-                  <option value="rounded">Bo Góc Nhẹ (Rounded)</option>
-                  <option value="classy">Thanh Lịch (Classy)</option>
-                  <option value="classy-rounded">Thanh Lịch Bo (Classy Rounded)</option>
-                  <option value="extra-rounded">Bo Tròn Lớn (Extra Rounded)</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="label-title">Khung mắt góc (Corners)</label>
-                <select id="cornersStyle" class="select-field">
-                  <option value="square">Vuông (Square)</option>
-                  <option value="dot">Chấm Tròn (Dot)</option>
-                  <option value="extra-rounded" selected>Bo Viền Tròn (Extra Rounded)</option>
-                </select>
-              </div>
+          <!-- Left Card Footer (Actions) -->
+          <div class="card-footer">
+            <div class="btn-grid">
+              <button id="generateBtn" class="btn btn-primary">
+                <span>✨ Cập Nhật QR</span>
+              </button>
+              <button id="clearBtn" class="btn btn-secondary">
+                <span>✕ Đặt lại mặc định</span>
+              </button>
             </div>
-          </div>
-
-          <!-- Bottom Action Buttons -->
-          <div class="btn-grid">
-            <button id="generateBtn" class="btn btn-primary">
-              <span>✨ Cập Nhật QR</span>
-            </button>
-            <button id="clearBtn" class="btn btn-secondary">
-              <span>✕ Đặt lại mặc định</span>
-            </button>
           </div>
 
         </div>
@@ -379,45 +382,49 @@
 
       <!-- Right Column: Live Sticky Preview Stage -->
       <section>
-        <div class="card card-sticky">
+        <div class="card">
           
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
-            <div style="display: flex; align-items: center; gap: 0.4rem;">
-              <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--success); display: inline-block;"></span>
-              <span style="font-size: 0.75rem; font-weight: 700;">Xem Trước Trực Tiếp</span>
-            </div>
-            <div style="display: flex; gap: 0.3rem;">
-              <span style="font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); background: var(--bg-card-subtle); color: var(--text-muted);">HD 1000px</span>
-              <span style="font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); background: var(--bg-card-subtle); color: var(--text-muted);">SVG</span>
-            </div>
-          </div>
-
-          <!-- Empty State -->
-          <div id="emptyState" class="hidden" style="border: 2px dashed var(--border-color); border-radius: var(--radius-lg); padding: 2rem; text-align: center;">
-            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🧩</div>
-            <div style="font-size: 0.75rem; font-weight: 700;">Chưa có mã QR</div>
-            <div style="font-size: 0.7rem; color: var(--text-subtle); margin-top: 0.25rem;">Nhập nội dung để hiển thị mã.</div>
-          </div>
-
-          <!-- Result Area -->
-          <div id="resultArea">
-            <div id="qrCard" class="preview-card">
-              
-              <!-- Frame Wrapper Visual Canvas -->
-              <div id="qrFrameWrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.5rem; border-radius: var(--radius-lg); transition: all 0.2s; max-width: 100%;">
-                <div id="topBannerBadge" class="hidden" style="font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.3rem 1rem; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); width: 100%; color: white; font-size: 0.75rem; margin-bottom: 0.25rem;"></div>
-                <div id="qrPreview"></div>
-                <div id="bottomBannerBadge" class="hidden" style="font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.35rem 1rem; border-bottom-left-radius: var(--radius-md); border-bottom-right-radius: var(--radius-md); width: 100%; color: white; font-size: 0.75rem; margin-top: 0.25rem;"></div>
+          <div class="card-body">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--success); display: inline-block;"></span>
+                <span style="font-size: 0.75rem; font-weight: 700;">Xem Trước Trực Tiếp</span>
               </div>
-
-              <div class="preview-hint">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
-                <span>Nhấn để xem phóng to HD</span>
+              <div style="display: flex; gap: 0.3rem;">
+                <span style="font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); background: var(--bg-card-subtle); color: var(--text-muted);">HD 1000px</span>
+                <span style="font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); background: var(--bg-card-subtle); color: var(--text-muted);">SVG</span>
               </div>
             </div>
 
-            <!-- Export Buttons -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.75rem;">
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden" style="border: 2px dashed var(--border-color); border-radius: var(--radius-lg); padding: 2rem; text-align: center; margin: auto 0;">
+              <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🧩</div>
+              <div style="font-size: 0.75rem; font-weight: 700;">Chưa có mã QR</div>
+              <div style="font-size: 0.7rem; color: var(--text-subtle); margin-top: 0.25rem;">Nhập nội dung để hiển thị mã.</div>
+            </div>
+
+            <!-- Result Area -->
+            <div id="resultArea" style="display: flex; flex-direction: column; justify-content: center; align-items: center; flex: 1; min-height: 260px;">
+              <div id="qrCard" class="preview-card" style="width: 100%;">
+                
+                <!-- Frame Wrapper Visual Canvas -->
+                <div id="qrFrameWrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.5rem; border-radius: var(--radius-lg); transition: all 0.2s; max-width: 100%;">
+                  <div id="topBannerBadge" class="hidden" style="font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.3rem 1rem; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); width: 100%; color: white; font-size: 0.75rem; margin-bottom: 0.25rem;"></div>
+                  <div id="qrPreview"></div>
+                  <div id="bottomBannerBadge" class="hidden" style="font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.35rem 1rem; border-bottom-left-radius: var(--radius-md); border-bottom-right-radius: var(--radius-md); width: 100%; color: white; font-size: 0.75rem; margin-top: 0.25rem;"></div>
+                </div>
+
+                <div class="preview-hint">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                  <span>Nhấn để xem phóng to HD</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Card Footer (Export & Copy) -->
+          <div class="card-footer">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
               <button id="downloadPngBtn" class="btn btn-download-png">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 <span>Tải PNG (HD)</span>
@@ -428,7 +435,6 @@
               </button>
             </div>
 
-            <!-- Extra Utilities: Copy to Clipboard -->
             <div style="margin-top: 0.5rem;">
               <button id="copyImageBtn" class="btn btn-secondary" style="width: 100%;">
                 <span>📋 Sao chép ảnh QR</span>

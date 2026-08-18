@@ -192,12 +192,13 @@ button, input, select {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 @media (min-width: 992px) {
   .app-grid {
-    grid-template-columns: 7fr 5fr;
+    grid-template-columns: 1.15fr 1fr;
+    align-items: stretch;
   }
 }
 
@@ -209,11 +210,22 @@ button, input, select {
   padding: 1.5rem;
   box-shadow: var(--shadow-card);
   transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
-.card-sticky {
-  position: sticky;
-  top: 5rem;
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
 }
 
 /* --------------------------------------------------------------------------
@@ -521,9 +533,6 @@ input[type="range"] {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.6rem;
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-subtle);
 }
 
 .btn {
