@@ -9,19 +9,7 @@
   "use strict";
 
   /* --------------------------------------------------------------------------
-     1. Preset Data (Logos, Palettes)
-     -------------------------------------------------------------------------- */
-  const PRESET_LOGOS = {
-    phongdang: "./assets/favicon.svg",
-    vietqr: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23005BAA'/><text x='50' y='64' font-family='sans-serif' font-size='38' font-weight='900' fill='white' text-anchor='middle'>VQR</text></svg>",
-    wifi: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230284C7'><path d='M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.5c3.78 0 7.21 1.54 9.7 4.02L12 19.26 2.3 11.52C4.79 9.04 8.22 7.5 12 7.5z'/></svg>",
-    facebook: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231877F2'><path d='M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z'/></svg>",
-    zalo: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230068FF'/><text x='50' y='68' font-family='sans-serif' font-size='48' font-weight='900' fill='white' text-anchor='middle'>Z</text></svg>",
-    google: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23EA4335' d='M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z'/><path fill='%234285F4' d='M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z'/><path fill='%23FBBC05' d='M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z'/><path fill='%2334A853' d='M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16c1.8 3.7 5.6 7 10.1 7z'/></svg>"
-  };
-
-  /* --------------------------------------------------------------------------
-     2. DOM Element References
+     1. DOM Element References
      -------------------------------------------------------------------------- */
   const DOM = {
     // Theme
@@ -207,7 +195,6 @@
           DOM.typeBlockUrl.classList.remove("hidden");
           DOM.inputLabel.textContent = "Đường dẫn VietQR / Thanh toán Napas";
           DOM.urlInput.placeholder = "https://img.vietqr.io/image/970415-123456789-compact.png";
-          Palette.setPresetLogo("vietqr");
           break;
       }
     },
@@ -235,7 +222,7 @@
   };
 
   /* --------------------------------------------------------------------------
-     7. Palette & Presets Module
+     7. Palette Module
      -------------------------------------------------------------------------- */
   const Palette = {
     set(dotColor, dot2Color, bgColor, type, cornerColor) {
@@ -257,14 +244,6 @@
       QREngine.generate();
     },
 
-    setPresetLogo(key) {
-      if (PRESET_LOGOS[key]) {
-        State.currentLogoData = PRESET_LOGOS[key];
-        DOM.removeLogoBtn.classList.remove("hidden");
-        QREngine.generate();
-      }
-    },
-
     updateColorState() {
       const isGradient = DOM.colorTypeSelect.value !== "solid";
       DOM.color2Input.disabled = !isGradient;
@@ -274,7 +253,6 @@
 
   // Expose palette helpers to window for inline onclicks
   window.setPalette = (d1, d2, bg, type, corner) => Palette.set(d1, d2, bg, type, corner);
-  window.setPresetLogo = (key) => Palette.setPresetLogo(key);
 
   /* --------------------------------------------------------------------------
      8. QR Code Engine (Generation & Config)

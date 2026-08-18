@@ -288,45 +288,24 @@
                 </div>
               </div>
 
-              <!-- Tab 3: Logo & Presets -->
+              <!-- Tab 3: Logo & Custom Upload -->
               <div id="tabPanelLogo" class="tab-panel hidden">
-                <div>
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                    <span class="label-title" style="margin-bottom: 0;">Biểu tượng chọn nhanh</span>
-                    <button id="removeLogoBtn" type="button" class="hidden" style="font-size: 0.7rem; font-weight: 700; color: var(--danger); background: none; border: none; cursor: pointer;">
-                      ✕ Gỡ logo
-                    </button>
-                  </div>
-                  <div class="preset-icons-wrap">
-                    <button type="button" class="preset-icon-btn" onclick="setPresetLogo('phongdang')">
-                      <span style="width: 14px; height: 14px; border-radius: 50%; background: #0284c7; color: white; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800;">P</span>
-                      <span>PhongDang</span>
-                    </button>
-                    <button type="button" class="preset-icon-btn" onclick="setPresetLogo('vietqr')">
-                      <span style="font-size: 9px; font-weight: 900; color: #005baa;">VQR</span>
-                      <span>VietQR</span>
-                    </button>
-                    <button type="button" class="preset-icon-btn" onclick="setPresetLogo('wifi')">
-                      <span>📶</span><span>WiFi</span>
-                    </button>
-                    <button type="button" class="preset-icon-btn" onclick="setPresetLogo('facebook')">
-                      <span style="color: #1877f2; font-weight: 800;">f</span><span>Facebook</span>
-                    </button>
-                    <button type="button" class="preset-icon-btn" onclick="setPresetLogo('zalo')">
-                      <span style="color: #0068ff; font-weight: 800;">Z</span><span>Zalo</span>
-                    </button>
-                    <button type="button" class="preset-icon-btn" onclick="setPresetLogo('google')">
-                      <span style="color: #ea4335; font-weight: 800;">G</span><span>Google</span>
-                    </button>
-                  </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                  <span class="label-title" style="margin-bottom: 0;">Tải logo từ máy tính</span>
+                  <button id="removeLogoBtn" type="button" class="hidden" style="font-size: 0.7rem; font-weight: 700; color: var(--danger); background: none; border: none; cursor: pointer;">
+                    ✕ Gỡ logo
+                  </button>
                 </div>
 
                 <!-- Upload Logo Box -->
-                <div style="margin: 0.6rem 0;">
-                  <input type="file" id="logoInput" accept="image/*" class="select-field" style="padding: 0.35rem 0.5rem;" />
+                <div style="margin-bottom: 0.75rem;">
+                  <input type="file" id="logoInput" accept="image/*" class="select-field" style="padding: 0.5rem 0.6rem; width: 100%;" />
+                  <span style="font-size: 0.68rem; color: var(--text-subtle); display: block; margin-top: 0.35rem;">
+                    Định dạng hỗ trợ: PNG, JPG, SVG, WebP. Tự động căn giữa tâm mã QR.
+                  </span>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; padding-top: 0.25rem;">
                   <div style="display: flex; align-items: center; gap: 0.4rem;">
                     <span class="label-title" style="width: 60px; margin: 0;">Kích cỡ:</span>
                     <input id="logoSize" type="range" min="10" max="35" value="22">
