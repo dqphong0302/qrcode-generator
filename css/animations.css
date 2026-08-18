@@ -1,0 +1,85 @@
+/* ===================================================================
+   QR Studio Animations - phongdang.io.vn
+   =================================================================== */
+
+/* Laser Scan Beam Animation */
+.scan-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #06b6d4 50%, transparent 100%);
+  box-shadow: 0 0 16px 3px rgba(6, 182, 212, 0.75);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 10;
+}
+
+.scan-beam.active {
+  opacity: 1;
+  animation: scanMove 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes scanMove {
+  0% {
+    top: 5%;
+    opacity: 0.2;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    top: 95%;
+    opacity: 0.2;
+  }
+}
+
+/* Pulsing Dots */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px var(--primary-glow);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(99, 102, 241, 0.6);
+  }
+}
+
+.pulse-active {
+  animation: pulseGlow 2s infinite;
+}
+
+/* Shimmer Loading */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Fade Scale In for Generated QR */
+.qr-rendered-in {
+  animation: qrScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes qrScaleIn {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
