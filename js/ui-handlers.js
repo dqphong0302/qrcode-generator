@@ -1,6 +1,6 @@
 /**
  * QR Generator Pro - UI Handlers & Reactive Orchestrator
- * Integrates Bilingual i18n, Style Modes, Quick Color Palettes, Contrast Analyzer, and Export
+ * Integrates Fullscreen Zoom, Batch A4 Print, Presets, i18n, Contrast Analyzer & Exports
  */
 
 import { QR_PRESETS } from './presets.js';
@@ -14,8 +14,8 @@ export class UIHandlers {
   constructor(qrEngine) {
     this.qrEngine = qrEngine;
     this.currentType = 'url';
-    this.styleMode = 'custom'; // 'classic' or 'custom'
-    this.styleState = { ...QR_PRESETS[0] }; // Start with classic standard
+    this.styleMode = 'custom';
+    this.styleState = { ...QR_PRESETS[0] };
     this.debounceTimer = null;
   }
 
@@ -32,6 +32,8 @@ export class UIHandlers {
     this.bindLogoUpload();
     this.bindActionButtons();
     this.bindPreviewToolbar();
+    this.bindFullscreenModal();
+    this.bindBatchGenerator();
     this.bindHistoryControls();
     this.bindInputsReactivity();
     this.renderHistoryList();
@@ -65,7 +67,6 @@ export class UIHandlers {
         this.updateThemeButtonIcon(newTheme);
         this.showToast(i18n.t(newTheme === 'dark' ? 'themeDark' : 'themeLight'), 'info');
       });
-      // Initial theme icon sync
       const savedTheme = localStorage.getItem('phongdang_theme') || 'dark';
       this.updateThemeButtonIcon(savedTheme);
     }
@@ -90,7 +91,6 @@ export class UIHandlers {
     const btnClassic = document.getElementById('modeClassicBtn');
     const btnCustom = document.getElementById('modeCustomBtn');
     const customAccordion = document.getElementById('customAccordionCard');
-    const presetsCard = document.getElementById('presetsCard');
 
     if (btnClassic && btnCustom) {
       btnClassic.addEventListener('click', () => {
@@ -98,7 +98,6 @@ export class UIHandlers {
         btnClassic.className = 'style-mode-btn active active-classic';
         btnCustom.className = 'style-mode-btn';
         
-        // Reset to Classic Black & White Standard
         const classicPreset = QR_PRESETS[0];
         this.applyPreset(classicPreset, false);
         
@@ -307,7 +306,7 @@ export class UIHandlers {
   }
 
   /**
-   * Type Tabs Switching (URL, WiFi, VietQR, vCard...)
+   * Type Tabs Switching
    */
   bindTypeTabs() {
     const tabs = document.querySelectorAll('.type-tab');
@@ -510,7 +509,6 @@ export class UIHandlers {
       });
     }
 
-    // Logo Sliders
     if (logoSizeRange) {
       logoSizeRange.addEventListener('input', (e) => {
         this.styleState.logoSize = parseInt(e.target.value, 10);
@@ -527,7 +525,6 @@ export class UIHandlers {
       });
     }
 
-    // Preset Icons
     document.querySelectorAll('[data-logo-src]').forEach(btn => {
       btn.addEventListener('click', () => {
         const src = btn.dataset.logoSrc;
@@ -564,10 +561,174 @@ export class UIHandlers {
   }
 
   /**
-   * Action buttons (Downloads, Copy, Fullscreen)
+   * Fullscreen Click-to-Zoom Modal (From original project)
+   */
+  bindFullscreenModal() {
+    const qrHolder = document.getElementById('qrCanvasContainer');
+    const modal = document.getElementById('fullscreenModal');
+    const closeBtn = document.getElementById('closeFullscreenBtn');
+    const backdrop = document.getElementById('modalBackdrop');
+    const modalImg = document.getElementById('fullscreenImg');
+
+    if (qrHolder && modal && modalImg) {
+      qrHolder.style.cursor = 'pointer';
+      qrHolder.addEventListener('click', async () => {
+        try {
+          const canvas = await this.qrEngine.renderHighResComposite(1200);
+          if (canvas) {
+            modalImg.src = canvas.toDataURL('image/png');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+          }
+        } catch (err) {
+          console.error('Fullscreen zoom error:', err);
+        }
+      });
+
+      const closeModal = () => {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      };
+
+      if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeModal(); });
+      if (backdrop) backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeModal(); });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
+    }
+  }
+
+  /**
+   * Batch A4 Sheet Generator (Inspired by chivan-qr)
+   */
+  bindBatchGenerator() {
+    const btnBatch = document.getElementById('btnBatchGenerate');
+    const batchInput = document.getElementById('batchTextarea');
+
+    if (btnBatch && batchInput) {
+      btnBatch.addEventListener('click', async () => {
+        const lines = batchInput.value.trim().split('\n').filter(l => l.trim().length > 0);
+        if (lines.length === 0) {
+          this.pulseInvalid(batchInput);
+          this.showToast(i18n.lang === 'vi' ? 'Vui lòng nhập ít nhất 1 dòng dữ liệu' : 'Please enter at least 1 line', 'error');
+          return;
+        }
+
+        btnBatch.disabled = true;
+        this.showToast(i18n.lang === 'vi' ? `Đang khởi tạo ${lines.length} mã QR...` : `Generating ${lines.length} QRs...`, 'info');
+
+        try {
+          // Open printable A4 window
+          const printWin = window.open('', '_blank');
+          if (!printWin) {
+            this.showToast('Vui lòng cho phép Pop-up để in trang A4', 'error');
+            btnBatch.disabled = false;
+            return;
+          }
+
+          let itemsHtml = '';
+          for (const line of lines) {
+            const parts = line.split('|');
+            const title = parts[0]?.trim() || 'QR Item';
+            const payload = parts[1]?.trim() || parts[0]?.trim();
+
+            const tempQR = new QRCodeStyling({
+              ...this.qrEngine.qrInstance._options,
+              width: 300,
+              height: 300,
+              data: payload
+            });
+
+            const blob = await tempQR.getRawData('png');
+            const dataUrl = await this.blobToDataUrl(blob);
+
+            itemsHtml += `
+              <div style="width: 34mm; height: 50mm; padding: 1.5mm; border: 0.4mm solid #000; border-radius: 1.5mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; page-break-inside: avoid; background: #fff;">
+                <div style="font-size: 6.5pt; font-weight: bold; line-height: 1.1; margin-bottom: 0.5mm; max-height: 8mm; overflow: hidden;">${title}</div>
+                <img src="${dataUrl}" style="width: 30mm; height: 30mm; display: block; margin: 0.5mm 0;" />
+                <div style="font-size: 6pt; color: #444; line-height: 1.1; word-break: break-all; max-height: 7mm; overflow: hidden;">${payload.length > 28 ? payload.substring(0, 26) + '...' : payload}</div>
+              </div>
+            `;
+          }
+
+          printWin.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="UTF-8">
+              <title>QR Generator Pro - Batch A4 Sheet Print</title>
+              <style>
+                @page { size: A4; margin: 8mm; }
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body {
+                  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+                  color: #000; background: #fff;
+                  display: grid;
+                  grid-template-columns: repeat(5, 34mm);
+                  grid-auto-rows: 50mm;
+                  column-gap: 5mm;
+                  row-gap: 3mm;
+                  justify-content: center;
+                  align-content: start;
+                  padding: 8mm;
+                }
+                @media print {
+                  body { padding: 0; }
+                }
+              </style>
+            </head>
+            <body>
+              ${itemsHtml}
+              <script>
+                window.onload = function() { window.print(); };
+              <\/script>
+            </body>
+            </html>
+          `);
+          printWin.document.close();
+        } catch (err) {
+          this.showToast('Lỗi tạo trang A4: ' + err.message, 'error');
+        } finally {
+          btnBatch.disabled = false;
+        }
+      });
+    }
+  }
+
+  blobToDataUrl(blob) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  pulseInvalid(element) {
+    if (!element) return;
+    element.style.borderColor = 'var(--rose)';
+    element.style.boxShadow = '0 0 0 3px rgba(244, 63, 94, 0.4)';
+    setTimeout(() => {
+      element.style.borderColor = '';
+      element.style.boxShadow = '';
+    }, 600);
+  }
+
+  /**
+   * Action buttons (Downloads, Copy, Clear/Reset)
    */
   bindActionButtons() {
     const resSelect = document.getElementById('exportResolution');
+
+    // Clear / Reset Button (from original project)
+    const btnClear = document.getElementById('btnClear');
+    if (btnClear) {
+      btnClear.addEventListener('click', () => {
+        const urlInput = document.getElementById('inputUrl');
+        const txtInput = document.getElementById('inputText');
+        if (urlInput) urlInput.value = '';
+        if (txtInput) txtInput.value = '';
+        this.triggerLiveUpdate();
+        this.showToast(i18n.lang === 'vi' ? 'Đã làm mới nội dung' : 'Form cleared', 'info');
+      });
+    }
 
     // PNG Download
     const btnDownloadPNG = document.getElementById('btnDownloadPNG');
@@ -670,7 +831,6 @@ export class UIHandlers {
     const btnToggleBeam = document.getElementById('btnToggleBeam');
     const btnBgMode = document.getElementById('btnBgMode');
 
-    // Laser Beam Toggle
     if (btnToggleBeam && scanBeam) {
       btnToggleBeam.addEventListener('click', () => {
         const isActive = scanBeam.classList.toggle('active');
@@ -679,7 +839,6 @@ export class UIHandlers {
       });
     }
 
-    // Background Mode Toggle
     let bgStateIndex = 0;
     const bgClasses = ['', 'bg-white', 'bg-checkerboard'];
     if (btnBgMode && stage) {
@@ -989,7 +1148,8 @@ export class UIHandlers {
       phone: i18n.t('typePhone'),
       sms: i18n.t('typeSms'),
       location: i18n.t('typeLocation'),
-      event: i18n.t('typeEvent')
+      event: i18n.t('typeEvent'),
+      batch: i18n.t('typeBatch')
     };
     return labels[type] || 'QR Code';
   }

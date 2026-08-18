@@ -35,6 +35,7 @@ export const translations = {
     typeSms: 'SMS',
     typeLocation: 'Vị Trí Bản Đồ',
     typeEvent: 'Sự Kiện',
+    typeBatch: 'In Hàng Loạt (A4)',
 
     // Form labels
     urlLabel: 'Địa chỉ Website / Đường dẫn URL',
@@ -70,6 +71,15 @@ export const translations = {
     eventStartLabel: 'Bắt đầu',
     eventEndLabel: 'Kết thúc',
     eventDescLabel: 'Mô tả sự kiện',
+
+    // Batch A4
+    batchLabel: 'Danh sách tạo hàng loạt (Mỗi dòng 1 mã: Tên | Dữ liệu)',
+    batchPlaceholder: 'Thiết bị 01 | https://phongdang.io.vn/item1\nThiết bị 02 | https://phongdang.io.vn/item2\nWiFi Khách | WIFI:S:Guest;T:WPA;P:12345678;;',
+    batchBtn: '🖨️ Xem & In Khung A4 (25 mã/trang)',
+
+    // Actions
+    btnGenerate: '✨ Cập Nhật QR',
+    btnClear: '🗑️ Xóa / Reset',
 
     // Accordions
     accColors: 'Màu Sắc & Gradient Điểm Mã',
@@ -134,11 +144,14 @@ export const translations = {
     importJsonBtn: 'Nạp JSON',
     clearHistoryBtn: 'Dọn sạch',
 
-    // Preview
+    // Preview & Modal
     liveStatus: 'Trực Tiếp (Live Ready)',
+    previewHint: '🔍 Nhấn vào ảnh QR để phóng to toàn màn hình',
+    modalCloseBtn: 'Đóng ✕',
+    modalDismissHint: 'Nhấn ra ngoài hoặc bấm ESC để đóng',
     resLabel: 'Độ phân giải xuất:',
     btnCopyImage: 'Sao Chép Ảnh Vào Clipboard',
-    btnDownloadPng: 'Tải PNG',
+    btnDownloadPng: 'Tải PNG (HD / 4K)',
     btnDownloadSvg: 'Tải SVG (Vector)',
     btnDownloadWebp: 'Tải WEBP',
     btnDownloadPdf: 'Xuất Thẻ PDF',
@@ -179,6 +192,7 @@ export const translations = {
     typeSms: 'SMS Message',
     typeLocation: 'Location (Map)',
     typeEvent: 'Event (Calendar)',
+    typeBatch: 'Batch Print (A4)',
 
     // Form labels
     urlLabel: 'Website Address / URL',
@@ -214,6 +228,15 @@ export const translations = {
     eventStartLabel: 'Start Time',
     eventEndLabel: 'End Time',
     eventDescLabel: 'Event Description',
+
+    // Batch A4
+    batchLabel: 'Batch QR List (One per line: Title | Payload)',
+    batchPlaceholder: 'Device 01 | https://phongdang.io.vn/item1\nDevice 02 | https://phongdang.io.vn/item2\nGuest WiFi | WIFI:S:Guest;T:WPA;P:12345678;;',
+    batchBtn: '🖨️ Generate & Print A4 Sheet (25 per page)',
+
+    // Actions
+    btnGenerate: '✨ Update QR',
+    btnClear: '🗑️ Clear / Reset',
 
     // Accordions
     accColors: 'Colors & Gradient Dots',
@@ -278,11 +301,14 @@ export const translations = {
     importJsonBtn: 'Import JSON',
     clearHistoryBtn: 'Clear',
 
-    // Preview
+    // Preview & Modal
     liveStatus: 'Live Ready',
+    previewHint: '🔍 Click QR code to view fullscreen HD',
+    modalCloseBtn: 'Close ✕',
+    modalDismissHint: 'Click outside or press ESC to close',
     resLabel: 'Export Resolution:',
     btnCopyImage: 'Copy Image to Clipboard',
-    btnDownloadPng: 'Download PNG',
+    btnDownloadPng: 'Download PNG (HD / 4K)',
     btnDownloadSvg: 'Download SVG (Vector)',
     btnDownloadWebp: 'Download WEBP',
     btnDownloadPdf: 'Export PDF Card',

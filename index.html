@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Generator Pro - Trình Tạo & Tùy Biến Mã QR Chuyên Nghiệp | phongdang.io.vn</title>
-  <meta name="description" content="QR Generator Pro - Tạo mã QR chuẩn (Mẫu Thường) hoặc tùy biến nâng cao (Màu sắc, Gradient, Khung viền, Logo, VietQR), xuất PNG 4K, SVG vector, WEBP, PDF và lưu lịch sử offline.">
-  <meta name="keywords" content="QR Generator Pro, tao ma qr, mau thuong, custom qr code, vietqr, qr wifi, vcard qr, qr studio phong dang">
+  <meta name="description" content="QR Generator Pro - Tạo mã QR chuẩn (Mẫu Thường) hoặc tùy biến nâng cao (Màu sắc, Gradient, Khung viền, Logo, VietQR, In A4), xuất PNG 4K, SVG vector, WEBP, PDF và lưu lịch sử offline.">
+  <meta name="keywords" content="QR Generator Pro, tao ma qr, mau thuong, custom qr code, vietqr, qr wifi, vcard qr, in qr a4, qr studio phong dang">
   <meta name="author" content="Phong Dang">
   <link rel="canonical" href="https://qr.phongdang.io.vn/">
 
@@ -88,6 +88,23 @@
     </div>
   </header>
 
+  <!-- Fullscreen Click-to-Zoom Modal -->
+  <div id="fullscreenModal" class="modal-overlay">
+    <div id="modalBackdrop" class="modal-backdrop" style="position: absolute; inset: 0;"></div>
+    <div class="modal-card" style="position: relative; z-index: 2; max-width: 580px; text-align: center;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <span style="font-weight: 700; font-size: 1.1rem; color: var(--text-main);">QR HD Fullscreen</span>
+        <button id="closeFullscreenBtn" class="btn btn-ghost btn-sm" data-i18n="modalCloseBtn">Đóng ✕</button>
+      </div>
+      <div style="background: #ffffff; padding: 1.25rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); display: inline-block;">
+        <img id="fullscreenImg" alt="QR Fullscreen" style="max-width: 100%; height: auto; display: block; border-radius: var(--radius-sm);">
+      </div>
+      <div style="margin-top: 1rem; font-size: 0.775rem; color: var(--text-subtle);" data-i18n="modalDismissHint">
+        Nhấn ra ngoài hoặc bấm ESC để đóng
+      </div>
+    </div>
+  </div>
+
   <!-- Main Workspace -->
   <main class="app-main">
     
@@ -105,6 +122,9 @@
             </svg>
             <span data-i18n="step1Title">1. Chọn Loại Nội Dung & Dữ Liệu</span>
           </div>
+          <button id="btnClear" class="btn btn-ghost btn-sm" style="color: var(--rose);" data-i18n="btnClear">
+            🗑️ Xóa / Reset
+          </button>
         </div>
 
         <!-- Scrollable Type Selector Tabs -->
@@ -129,6 +149,10 @@
             <button class="type-tab" data-type="text">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
               <span data-i18n="typeText">Văn Bản</span>
+            </button>
+            <button class="type-tab" data-type="batch">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+              <span data-i18n="typeBatch">In Hàng Loạt (A4)</span>
             </button>
             <button class="type-tab" data-type="email">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
@@ -267,7 +291,18 @@
             </div>
           </div>
 
-          <!-- 6. Email Form -->
+          <!-- 6. Batch Print A4 Form (Inspired by chivan-qr) -->
+          <div class="type-form-section" data-type-section="batch" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" data-i18n="batchLabel">Danh sách tạo hàng loạt (Mỗi dòng 1 mã: Tên | Dữ liệu)</label>
+              <textarea id="batchTextarea" class="form-textarea" style="min-height: 120px; font-family: var(--font-mono); font-size: 0.8rem;" placeholder="Thiết bị 01 | https://phongdang.io.vn/item1&#10;Thiết bị 02 | https://phongdang.io.vn/item2&#10;WiFi Khách | WIFI:S:Guest;T:WPA;P:12345678;;&#10;SĐT Cứu Hộ | tel:0901234567"></textarea>
+            </div>
+            <button id="btnBatchGenerate" class="btn btn-primary export-btn-full" data-i18n="batchBtn">
+              🖨️ Xem & In Khung A4 (25 mã/trang)
+            </button>
+          </div>
+
+          <!-- 7. Email Form -->
           <div class="type-form-section" data-type-section="email" style="display: none;">
             <div class="form-group">
               <label class="form-label" data-i18n="emailToLabel">Địa chỉ Email người nhận</label>
@@ -283,7 +318,7 @@
             </div>
           </div>
 
-          <!-- 7. Phone Form -->
+          <!-- 8. Phone Form -->
           <div class="type-form-section" data-type-section="phone" style="display: none;">
             <div class="form-group">
               <label class="form-label" data-i18n="phoneDirectLabel">Số điện thoại gọi trực tiếp</label>
@@ -291,7 +326,7 @@
             </div>
           </div>
 
-          <!-- 8. SMS Form -->
+          <!-- 9. SMS Form -->
           <div class="type-form-section" data-type-section="sms" style="display: none;">
             <div class="form-group">
               <label class="form-label" data-i18n="smsPhoneLabel">Số điện thoại nhận tin nhắn</label>
@@ -303,7 +338,7 @@
             </div>
           </div>
 
-          <!-- 9. Location Form -->
+          <!-- 10. Location Form -->
           <div class="type-form-section" data-type-section="location" style="display: none;">
             <div class="form-group">
               <label class="form-label" data-i18n="locSearchLabel">Tìm kiếm địa điểm (Google Maps)</label>
@@ -321,7 +356,7 @@
             </div>
           </div>
 
-          <!-- 10. Event Form -->
+          <!-- 11. Event Form -->
           <div class="type-form-section" data-type-section="event" style="display: none;">
             <div class="form-group">
               <label class="form-label" data-i18n="eventTitleLabel">Tên sự kiện *</label>
@@ -361,7 +396,7 @@
           </div>
         </div>
 
-        <!-- Prominent Style Mode Switcher -->
+        <!-- Style Mode Switcher -->
         <div class="style-mode-container">
           <button id="modeClassicBtn" class="style-mode-btn" data-i18n="modeClassic">
             ⬛ Mẫu Thường (Classic)
@@ -508,7 +543,7 @@
           <div class="accordion-item">
             <button class="accordion-header">
               <span class="accordion-title">
-                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 <span data-i18n="accLogo">Logo & Biểu Tượng Trung Tâm</span>
               </span>
               <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -672,14 +707,17 @@
         </div>
 
         <!-- Live Scanner Contrast Readability Badge -->
-        <div id="contrastBadge" class="contrast-badge-holder" style="width: 100%; margin-bottom: 1rem;">
+        <div id="contrastBadge" class="contrast-badge-holder" style="width: 100%; margin-bottom: 0.75rem;">
           🟢 Độ tương phản Rất Tốt (Dễ quét mã)
         </div>
 
-        <!-- Preview Stage Viewport with Laser Beam -->
-        <div id="previewStage" class="preview-stage-container">
+        <!-- Preview Stage Viewport with Laser Beam (Click to Zoom) -->
+        <div id="previewStage" class="preview-stage-container" title="Nhấn vào để phóng to toàn màn hình">
           <div id="scanBeam" class="scan-beam"></div>
           <div id="qrCanvasContainer" class="qr-canvas-holder qr-rendered-in"></div>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-subtle); margin-top: 0.4rem;" data-i18n="previewHint">
+          🔍 Nhấn vào ảnh QR để phóng to toàn màn hình
         </div>
 
         <!-- Export Resolution & Actions -->
