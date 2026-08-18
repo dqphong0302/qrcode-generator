@@ -1,24 +1,31 @@
 /**
- * QR Studio UI Handlers & Reactive Orchestrator
- * Connects DOM inputs, presets, history, export triggers, and live preview
+ * QR Generator Pro - UI Handlers & Reactive Orchestrator
+ * Integrates Bilingual i18n, Style Modes, Quick Color Palettes, Contrast Analyzer, and Export
  */
 
 import { QR_PRESETS } from './presets.js';
+import { COLOR_PALETTES, checkContrast } from './color-palettes.js';
 import { ContentBuilders, VIETNAM_BANKS } from './content-builders.js';
 import { StorageManager } from './storage.js';
 import { Exporter } from './exporter.js';
+import { i18n } from './i18n.js';
 
 export class UIHandlers {
   constructor(qrEngine) {
     this.qrEngine = qrEngine;
     this.currentType = 'url';
-    this.styleState = { ...QR_PRESETS[0] };
+    this.styleMode = 'custom'; // 'classic' or 'custom'
+    this.styleState = { ...QR_PRESETS[0] }; // Start with classic standard
     this.debounceTimer = null;
   }
 
   init() {
+    i18n.applyTranslations();
     this.renderBankOptions();
+    this.renderColorPalettes();
     this.renderPresets();
+    this.bindHeaderControls();
+    this.bindStyleModeSwitcher();
     this.bindTypeTabs();
     this.bindAccordions();
     this.bindStylePickers();
@@ -34,7 +41,84 @@ export class UIHandlers {
   }
 
   /**
-   * Populate Bank Select options for VietQR
+   * Header actions: Language switcher, Theme toggle
+   */
+  bindHeaderControls() {
+    const langBtn = document.getElementById('btnLangToggle');
+    if (langBtn) {
+      langBtn.addEventListener('click', () => {
+        const nextLang = i18n.toggleLang();
+        this.renderPresets();
+        this.renderHistoryList();
+        this.updateContrastBadge();
+        this.showToast(nextLang === 'vi' ? 'Đã đổi sang Tiếng Việt' : 'Switched to English', 'success');
+      });
+    }
+
+    const themeBtn = document.getElementById('btnThemeToggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('phongdang_theme', newTheme);
+        this.updateThemeButtonIcon(newTheme);
+        this.showToast(i18n.t(newTheme === 'dark' ? 'themeDark' : 'themeLight'), 'info');
+      });
+      // Initial theme icon sync
+      const savedTheme = localStorage.getItem('phongdang_theme') || 'dark';
+      this.updateThemeButtonIcon(savedTheme);
+    }
+  }
+
+  updateThemeButtonIcon(theme) {
+    const themeBtn = document.getElementById('btnThemeToggle');
+    if (!themeBtn) return;
+    if (theme === 'light') {
+      themeBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+      themeBtn.title = i18n.t('themeDark');
+    } else {
+      themeBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+      themeBtn.title = i18n.t('themeLight');
+    }
+  }
+
+  /**
+   * Style Mode Switcher: Classic Standard vs Custom Pro
+   */
+  bindStyleModeSwitcher() {
+    const btnClassic = document.getElementById('modeClassicBtn');
+    const btnCustom = document.getElementById('modeCustomBtn');
+    const customAccordion = document.getElementById('customAccordionCard');
+    const presetsCard = document.getElementById('presetsCard');
+
+    if (btnClassic && btnCustom) {
+      btnClassic.addEventListener('click', () => {
+        this.styleMode = 'classic';
+        btnClassic.className = 'style-mode-btn active active-classic';
+        btnCustom.className = 'style-mode-btn';
+        
+        // Reset to Classic Black & White Standard
+        const classicPreset = QR_PRESETS[0];
+        this.applyPreset(classicPreset, false);
+        
+        if (customAccordion) customAccordion.style.opacity = '0.7';
+        this.showToast(i18n.t('modeClassic'), 'info');
+      });
+
+      btnCustom.addEventListener('click', () => {
+        this.styleMode = 'custom';
+        btnCustom.className = 'style-mode-btn active active-custom';
+        btnClassic.className = 'style-mode-btn';
+        
+        if (customAccordion) customAccordion.style.opacity = '1';
+        this.showToast(i18n.t('modeCustom'), 'info');
+      });
+    }
+  }
+
+  /**
+   * Render Bank Options for VietQR
    */
   renderBankOptions() {
     const bankSelect = document.getElementById('vietqrBank');
@@ -46,6 +130,59 @@ export class UIHandlers {
   }
 
   /**
+   * Render Quick Color Palettes
+   */
+  renderColorPalettes() {
+    const container = document.getElementById('paletteSwatchesGrid');
+    if (!container) return;
+
+    container.innerHTML = COLOR_PALETTES.map((pal, idx) => `
+      <div class="palette-swatch-item ${idx === 0 ? 'active' : ''}" data-palette-id="${pal.id}">
+        <div class="swatch-dots">
+          <span class="swatch-color-dot" style="background: ${pal.dot1};"></span>
+          <span class="swatch-color-dot" style="background: ${pal.dot2};"></span>
+          <span class="swatch-color-dot" style="background: ${pal.bg};"></span>
+        </div>
+        <span class="swatch-name">${i18n.lang === 'vi' ? pal.nameVi : pal.name}</span>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('.palette-swatch-item').forEach(item => {
+      item.addEventListener('click', () => {
+        container.querySelectorAll('.palette-swatch-item').forEach(el => el.classList.remove('active'));
+        item.classList.add('active');
+
+        const palId = item.dataset.paletteId;
+        const pal = COLOR_PALETTES.find(p => p.id === palId);
+        if (pal) {
+          this.applyPalette(pal);
+        }
+      });
+    });
+  }
+
+  applyPalette(pal) {
+    this.styleState.dotsColor1 = pal.dot1;
+    this.styleState.dotsColor2 = pal.dot2;
+    this.styleState.cornersSquareColor = pal.cornerSquare;
+    this.styleState.cornersDotColor = pal.cornerDot;
+    this.styleState.bgColor = pal.bg;
+    this.styleState.bgTransparent = false;
+    this.styleState.frameColor = pal.frame;
+    this.styleState.frameTextColor = pal.frameText;
+
+    if (pal.dot1 === pal.dot2) {
+      this.styleState.dotsColorType = 'single';
+    } else {
+      this.styleState.dotsColorType = 'gradient-linear';
+    }
+
+    this.syncDOMWithStyleState();
+    this.triggerLiveUpdate();
+    this.showToast(`${i18n.lang === 'vi' ? 'Bảng màu' : 'Palette'}: ${i18n.lang === 'vi' ? pal.nameVi : pal.name}`, 'success');
+  }
+
+  /**
    * Render Preset Cards
    */
   renderPresets() {
@@ -54,10 +191,10 @@ export class UIHandlers {
 
     container.innerHTML = QR_PRESETS.map((preset, index) => `
       <div class="preset-card ${index === 0 ? 'active' : ''}" data-preset-id="${preset.id}">
-        <div class="preset-preview-thumb" style="background: ${preset.bgColor === 'transparent' ? '#182234' : preset.bgColor}; border: 1px solid rgba(255,255,255,0.1);">
-          <span style="background: ${preset.dotsColor1}; width: 14px; height: 14px; border-radius: 4px; display: inline-block;"></span>
+        <div class="preset-preview-thumb" style="background: ${preset.bgColor === 'transparent' ? '#182234' : preset.bgColor}; border: 1px solid rgba(255,255,255,0.15);">
+          <span style="background: ${preset.dotsColor1}; width: 16px; height: 16px; border-radius: ${preset.dotsType === 'square' ? '2px' : '6px'}; display: inline-block;"></span>
         </div>
-        <span class="preset-name">${preset.name}</span>
+        <span class="preset-name">${i18n.lang === 'vi' ? preset.name : preset.nameEn}</span>
       </div>
     `).join('');
 
@@ -74,20 +211,17 @@ export class UIHandlers {
     });
   }
 
-  /**
-   * Apply a style preset into state and DOM
-   */
-  applyPreset(preset) {
+  applyPreset(preset, showToast = true) {
     this.styleState = { ...this.styleState, ...preset };
-
-    // Update DOM Pickers
     this.syncDOMWithStyleState();
     this.triggerLiveUpdate();
-    this.showToast(`Đã áp dụng mẫu: ${preset.name}`, 'success');
+    if (showToast) {
+      this.showToast(`${i18n.lang === 'vi' ? 'Mẫu' : 'Preset'}: ${i18n.lang === 'vi' ? preset.name : preset.nameEn}`, 'success');
+    }
   }
 
   /**
-   * Sync DOM inputs with current style state
+   * Synchronize DOM inputs with styleState
    */
   syncDOMWithStyleState() {
     // Dots type
@@ -107,18 +241,34 @@ export class UIHandlers {
 
     // Colors
     const dotColor1 = document.getElementById('dotColor1');
+    const dotColor1Hex = document.getElementById('dotColor1Hex');
     const dotColor2 = document.getElementById('dotColor2');
+    const dotColor2Hex = document.getElementById('dotColor2Hex');
     const cornerSquareColor = document.getElementById('cornerSquareColor');
+    const cornerSquareColorHex = document.getElementById('cornerSquareColorHex');
     const cornerDotColor = document.getElementById('cornerDotColor');
+    const cornerDotColorHex = document.getElementById('cornerDotColorHex');
     const bgColor = document.getElementById('bgColor');
+    const bgColorHex = document.getElementById('bgColorHex');
     const bgTransparent = document.getElementById('bgTransparent');
 
     if (dotColor1) dotColor1.value = this.styleState.dotsColor1;
+    if (dotColor1Hex) dotColor1Hex.value = this.styleState.dotsColor1.toUpperCase();
     if (dotColor2) dotColor2.value = this.styleState.dotsColor2 || this.styleState.dotsColor1;
+    if (dotColor2Hex) dotColor2Hex.value = (this.styleState.dotsColor2 || this.styleState.dotsColor1).toUpperCase();
     if (cornerSquareColor) cornerSquareColor.value = this.styleState.cornersSquareColor;
+    if (cornerSquareColorHex) cornerSquareColorHex.value = this.styleState.cornersSquareColor.toUpperCase();
     if (cornerDotColor) cornerDotColor.value = this.styleState.cornersDotColor;
+    if (cornerDotColorHex) cornerDotColorHex.value = this.styleState.cornersDotColor.toUpperCase();
     if (bgColor) bgColor.value = this.styleState.bgColor === 'transparent' ? '#ffffff' : this.styleState.bgColor;
+    if (bgColorHex) bgColorHex.value = (this.styleState.bgColor === 'transparent' ? '#ffffff' : this.styleState.bgColor).toUpperCase();
     if (bgTransparent) bgTransparent.checked = !!this.styleState.bgTransparent;
+
+    // Gradient type
+    const gradSelect = document.getElementById('dotsColorType');
+    if (gradSelect) gradSelect.value = this.styleState.dotsColorType || 'single';
+    const color2Row = document.getElementById('dotColor2Row');
+    if (color2Row) color2Row.style.display = (this.styleState.dotsColorType === 'single') ? 'none' : 'flex';
 
     // Frame style
     document.querySelectorAll('[data-frame-style]').forEach(btn => {
@@ -128,6 +278,32 @@ export class UIHandlers {
     if (frameTextInput) frameTextInput.value = this.styleState.frameText || '';
     const frameColorInput = document.getElementById('frameColor');
     if (frameColorInput) frameColorInput.value = this.styleState.frameColor || '#6366f1';
+
+    this.updateContrastBadge();
+  }
+
+  /**
+   * Update Live Scanner Contrast Badge
+   */
+  updateContrastBadge() {
+    const badgeHolder = document.getElementById('contrastBadge');
+    if (!badgeHolder) return;
+
+    const fg = this.styleState.dotsColor1 || '#000000';
+    const bg = this.styleState.bgTransparent ? 'transparent' : (this.styleState.bgColor || '#ffffff');
+    const result = checkContrast(fg, bg, this.styleState.bgTransparent);
+
+    badgeHolder.textContent = i18n.lang === 'vi' ? result.labelVi : result.labelEn;
+    if (result.score === 'good') {
+      badgeHolder.style.color = 'var(--emerald)';
+      badgeHolder.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    } else if (result.score === 'medium') {
+      badgeHolder.style.color = 'var(--amber)';
+      badgeHolder.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    } else {
+      badgeHolder.style.color = 'var(--rose)';
+      badgeHolder.style.borderColor = 'rgba(244, 63, 94, 0.4)';
+    }
   }
 
   /**
@@ -216,6 +392,7 @@ export class UIHandlers {
         input.addEventListener('input', (e) => {
           this.styleState[stateKey] = e.target.value;
           if (hexText) hexText.value = e.target.value.toUpperCase();
+          this.updateContrastBadge();
           this.triggerLiveUpdate();
         });
       }
@@ -225,6 +402,7 @@ export class UIHandlers {
           if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
             this.styleState[stateKey] = val;
             if (input) input.value = val;
+            this.updateContrastBadge();
             this.triggerLiveUpdate();
           }
         });
@@ -256,6 +434,7 @@ export class UIHandlers {
     if (bgTransparent) {
       bgTransparent.addEventListener('change', (e) => {
         this.styleState.bgTransparent = e.target.checked;
+        this.updateContrastBadge();
         this.triggerLiveUpdate();
       });
     }
@@ -321,13 +500,13 @@ export class UIHandlers {
         if (uploadBox) {
           uploadBox.innerHTML = `
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 0.4rem; color: var(--primary-light);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <div style="font-size: 0.8rem; font-weight: 600;">Kéo & Thả hoặc Bấm chọn ảnh Logo</div>
-            <div style="font-size: 0.7rem; color: var(--text-subtle);">PNG, SVG, JPG (Tối đa 2MB)</div>
+            <div style="font-size: 0.8rem; font-weight: 600;">${i18n.t('logoUploadPrompt')}</div>
+            <div style="font-size: 0.7rem; color: var(--text-subtle);">${i18n.t('logoUploadHint')}</div>
           `;
         }
         removeBtn.style.display = 'none';
         this.triggerLiveUpdate();
-        this.showToast('Đã gỡ bỏ logo trung tâm', 'info');
+        this.showToast(i18n.lang === 'vi' ? 'Đã gỡ bỏ logo trung tâm' : 'Logo removed', 'info');
       });
     }
 
@@ -348,21 +527,21 @@ export class UIHandlers {
       });
     }
 
-    // Built-in Logo preset buttons
+    // Preset Icons
     document.querySelectorAll('[data-logo-src]').forEach(btn => {
       btn.addEventListener('click', () => {
         const src = btn.dataset.logoSrc;
         this.styleState.logo = src;
         if (removeBtn) removeBtn.style.display = 'inline-flex';
         this.triggerLiveUpdate();
-        this.showToast('Đã chọn biểu tượng trung tâm', 'success');
+        this.showToast(i18n.lang === 'vi' ? 'Đã chọn biểu tượng trung tâm' : 'Center icon selected', 'success');
       });
     });
   }
 
   handleLogoFile(file) {
     if (!file.type.startsWith('image/')) {
-      this.showToast('Vui lòng chọn tệp hình ảnh hợp lệ', 'error');
+      this.showToast(i18n.lang === 'vi' ? 'Vui lòng chọn tệp hình ảnh hợp lệ' : 'Please select a valid image file', 'error');
       return;
     }
 
@@ -374,12 +553,12 @@ export class UIHandlers {
       if (uploadBox) {
         uploadBox.innerHTML = `
           <img src="${e.target.result}" style="max-height: 48px; max-width: 48px; object-fit: contain; border-radius: 6px; margin-bottom: 0.25rem;">
-          <div style="font-size: 0.75rem; color: var(--emerald); font-weight: 600;">✓ Logo đã tải lên: ${file.name}</div>
+          <div style="font-size: 0.75rem; color: var(--emerald); font-weight: 600;">✓ ${file.name}</div>
         `;
       }
       if (removeBtn) removeBtn.style.display = 'inline-flex';
       this.triggerLiveUpdate();
-      this.showToast('Đã nạp logo thành công!', 'success');
+      this.showToast(i18n.lang === 'vi' ? 'Đã nạp logo thành công!' : 'Logo uploaded successfully!', 'success');
     };
     reader.readAsDataURL(file);
   }
@@ -397,11 +576,11 @@ export class UIHandlers {
         try {
           const res = parseInt(resSelect?.value || '1024', 10);
           btnDownloadPNG.disabled = true;
-          await Exporter.downloadPNG(this.qrEngine, res, `phongdang-qr-${this.currentType}-${Date.now()}.png`);
+          await Exporter.downloadPNG(this.qrEngine, res, `qr-generator-pro-${this.currentType}-${Date.now()}.png`);
           this.autoSaveToHistory();
-          this.showToast(`Đã xuất file PNG (${res}x${res}px) thành công!`, 'success');
+          this.showToast(i18n.lang === 'vi' ? `Đã xuất file PNG (${res}x${res}px)!` : `Exported PNG (${res}x${res}px)!`, 'success');
         } catch (err) {
-          this.showToast('Lỗi xuất file PNG: ' + err.message, 'error');
+          this.showToast('Error: ' + err.message, 'error');
         } finally {
           btnDownloadPNG.disabled = false;
         }
@@ -414,11 +593,11 @@ export class UIHandlers {
       btnDownloadSVG.addEventListener('click', async () => {
         try {
           btnDownloadSVG.disabled = true;
-          await Exporter.downloadSVG(this.qrEngine, `phongdang-qr-${this.currentType}.svg`);
+          await Exporter.downloadSVG(this.qrEngine, `qr-generator-pro-${this.currentType}.svg`);
           this.autoSaveToHistory();
-          this.showToast('Đã xuất file vector SVG thành công!', 'success');
+          this.showToast(i18n.lang === 'vi' ? 'Đã xuất file vector SVG!' : 'Exported SVG vector!', 'success');
         } catch (err) {
-          this.showToast('Lỗi xuất file SVG: ' + err.message, 'error');
+          this.showToast('Error: ' + err.message, 'error');
         } finally {
           btnDownloadSVG.disabled = false;
         }
@@ -432,11 +611,11 @@ export class UIHandlers {
         try {
           const res = parseInt(resSelect?.value || '1024', 10);
           btnDownloadWEBP.disabled = true;
-          await Exporter.downloadWEBP(this.qrEngine, res, `phongdang-qr-${this.currentType}.webp`);
+          await Exporter.downloadWEBP(this.qrEngine, res, `qr-generator-pro-${this.currentType}.webp`);
           this.autoSaveToHistory();
-          this.showToast('Đã xuất file WEBP thành công!', 'success');
+          this.showToast(i18n.lang === 'vi' ? 'Đã xuất file WEBP!' : 'Exported WEBP!', 'success');
         } catch (err) {
-          this.showToast('Lỗi xuất file WEBP: ' + err.message, 'error');
+          this.showToast('Error: ' + err.message, 'error');
         } finally {
           btnDownloadWEBP.disabled = false;
         }
@@ -453,11 +632,11 @@ export class UIHandlers {
             title: this.getPayloadTitle(),
             typeLabel: this.getTypeLabel(this.currentType)
           };
-          await Exporter.downloadPDF(this.qrEngine, meta, `phongdang-qr-card-${this.currentType}.pdf`);
+          await Exporter.downloadPDF(this.qrEngine, meta, `qr-generator-card-${this.currentType}.pdf`);
           this.autoSaveToHistory();
-          this.showToast('Đã xuất thẻ in PDF thành công!', 'success');
+          this.showToast(i18n.lang === 'vi' ? 'Đã xuất thẻ in PDF A5/A4!' : 'Exported PDF Card!', 'success');
         } catch (err) {
-          this.showToast('Lỗi xuất file PDF: ' + err.message, 'error');
+          this.showToast('Error: ' + err.message, 'error');
         } finally {
           btnDownloadPDF.disabled = false;
         }
@@ -472,9 +651,9 @@ export class UIHandlers {
           btnCopyImage.disabled = true;
           await Exporter.copyToClipboard(this.qrEngine);
           this.autoSaveToHistory();
-          this.showToast('Đã sao chép ảnh QR vào bộ nhớ tạm (Clipboard)! Dán trực tiếp vào Word/Canva/Zalo.', 'success');
+          this.showToast(i18n.lang === 'vi' ? 'Đã sao chép ảnh QR vào Clipboard (Dán vào Word/Canva/Zalo)!' : 'QR Image copied to Clipboard!', 'success');
         } catch (err) {
-          this.showToast('Không thể sao chép ảnh: ' + err.message, 'error');
+          this.showToast('Error: ' + err.message, 'error');
         } finally {
           btnCopyImage.disabled = false;
         }
@@ -483,7 +662,7 @@ export class UIHandlers {
   }
 
   /**
-   * Preview Toolbar (Background modes, Laser Beam toggle, Theme toggle)
+   * Preview Toolbar
    */
   bindPreviewToolbar() {
     const stage = document.getElementById('previewStage');
@@ -496,11 +675,11 @@ export class UIHandlers {
       btnToggleBeam.addEventListener('click', () => {
         const isActive = scanBeam.classList.toggle('active');
         btnToggleBeam.classList.toggle('active', isActive);
-        this.showToast(isActive ? 'Đã bật hiệu ứng quét Laser' : 'Đã tắt hiệu ứng Laser', 'info');
+        this.showToast(isActive ? (i18n.lang === 'vi' ? 'Đã bật quét Laser' : 'Laser beam active') : (i18n.lang === 'vi' ? 'Đã tắt quét Laser' : 'Laser beam off'), 'info');
       });
     }
 
-    // Background Mode Toggle (Dark / White / Checkerboard)
+    // Background Mode Toggle
     let bgStateIndex = 0;
     const bgClasses = ['', 'bg-white', 'bg-checkerboard'];
     if (btnBgMode && stage) {
@@ -509,22 +688,10 @@ export class UIHandlers {
         stage.className = `preview-stage-container ${bgClasses[bgStateIndex]}`;
       });
     }
-
-    // Theme Switch
-    const themeBtn = document.getElementById('btnThemeToggle');
-    if (themeBtn) {
-      themeBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('phongdang_theme', newTheme);
-        this.showToast(`Chế độ giao diện: ${newTheme === 'dark' ? 'Tối' : 'Sáng'}`, 'info');
-      });
-    }
   }
 
   /**
-   * LocalStorage History Controls & List Rendering
+   * History controls & list rendering
    */
   bindHistoryControls() {
     const btnExportJSON = document.getElementById('btnExportHistoryJSON');
@@ -536,7 +703,7 @@ export class UIHandlers {
     if (btnExportJSON) {
       btnExportJSON.addEventListener('click', () => {
         StorageManager.exportJSON();
-        this.showToast('Đã xuất sao lưu lịch sử JSON', 'success');
+        this.showToast(i18n.lang === 'vi' ? 'Đã xuất file sao lưu JSON' : 'Exported JSON backup', 'success');
       });
     }
 
@@ -548,9 +715,9 @@ export class UIHandlers {
           reader.onload = (evt) => {
             if (StorageManager.importJSON(evt.target.result)) {
               this.renderHistoryList();
-              this.showToast('Đã khôi phục dữ liệu lịch sử thành công!', 'success');
+              this.showToast(i18n.lang === 'vi' ? 'Đã khôi phục dữ liệu lịch sử!' : 'History imported successfully!', 'success');
             } else {
-              this.showToast('Tệp JSON không đúng định dạng', 'error');
+              this.showToast(i18n.lang === 'vi' ? 'Tệp JSON không hợp lệ' : 'Invalid JSON file', 'error');
             }
           };
           reader.readAsText(e.target.files[0]);
@@ -560,10 +727,11 @@ export class UIHandlers {
 
     if (btnClearHistory) {
       btnClearHistory.addEventListener('click', () => {
-        if (confirm('Bạn có chắc muốn dọn sạch lịch sử (giữ lại các mã có gắn sao ⭐)?')) {
+        const confirmMsg = i18n.lang === 'vi' ? 'Bạn có chắc muốn dọn sạch lịch sử (giữ lại mục có gắn sao ⭐)?' : 'Clear history (keep starred ⭐ items)?';
+        if (confirm(confirmMsg)) {
           StorageManager.clear(false);
           this.renderHistoryList();
-          this.showToast('Đã làm sạch danh sách lịch sử', 'info');
+          this.showToast(i18n.lang === 'vi' ? 'Đã làm sạch lịch sử' : 'History cleared', 'info');
         }
       });
     }
@@ -575,9 +743,6 @@ export class UIHandlers {
     }
   }
 
-  /**
-   * Render History List in Sidebar/Card
-   */
   renderHistoryList(query = '') {
     const listContainer = document.getElementById('historyList');
     if (!listContainer) return;
@@ -593,7 +758,7 @@ export class UIHandlers {
     if (items.length === 0) {
       listContainer.innerHTML = `
         <div style="text-align: center; padding: 1.5rem; color: var(--text-subtle); font-size: 0.8rem;">
-          ${query ? 'Không tìm thấy kết quả phù hợp' : 'Chưa có mã nào được lưu trong lịch sử.'}
+          ${query ? i18n.t('historyEmptySearch') : i18n.t('historyEmpty')}
         </div>
       `;
       return;
@@ -601,27 +766,26 @@ export class UIHandlers {
 
     listContainer.innerHTML = items.map(item => `
       <div class="history-item" data-id="${item.id}">
-        <div class="history-item-left" title="Bấm để khôi phục cấu hình này">
+        <div class="history-item-left" title="${i18n.lang === 'vi' ? 'Bấm để khôi phục' : 'Click to restore'}">
           <div class="history-thumb">
             ${item.thumbnail ? `<img src="${item.thumbnail}">` : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`}
           </div>
           <div class="history-meta">
-            <div class="history-title">${item.title || 'Mã QR'}</div>
-            <div class="history-time">${new Date(item.createdAt).toLocaleDateString('vi-VN')} • ${this.getTypeLabel(item.type)}</div>
+            <div class="history-title">${item.title || 'QR Code'}</div>
+            <div class="history-time">${new Date(item.createdAt).toLocaleDateString(i18n.lang === 'vi' ? 'vi-VN' : 'en-US')} • ${this.getTypeLabel(item.type)}</div>
           </div>
         </div>
         <div class="history-actions">
-          <button class="btn btn-ghost btn-sm btn-star" title="Gắn sao yêu thích" data-action="star">
+          <button class="btn btn-ghost btn-sm btn-star" title="Star" data-action="star">
             ${item.isStarred ? '⭐' : '☆'}
           </button>
-          <button class="btn btn-ghost btn-sm btn-delete" title="Xóa" data-action="delete" style="color: var(--rose);">
+          <button class="btn btn-ghost btn-sm btn-delete" title="Delete" data-action="delete" style="color: var(--rose);">
             ✕
           </button>
         </div>
       </div>
     `).join('');
 
-    // Bind item click to restore
     listContainer.querySelectorAll('.history-item').forEach(el => {
       const id = el.dataset.id;
       const item = items.find(i => i.id === id);
@@ -640,32 +804,26 @@ export class UIHandlers {
         e.stopPropagation();
         StorageManager.delete(id);
         this.renderHistoryList(query);
-        this.showToast('Đã xóa mục khỏi lịch sử', 'info');
+        this.showToast(i18n.lang === 'vi' ? 'Đã xóa mục' : 'Item deleted', 'info');
       });
     });
   }
 
-  /**
-   * Restore a historical QR configuration
-   */
   restoreHistoryItem(item) {
     if (!item) return;
 
-    // Switch tab
     const tab = document.querySelector(`.type-tab[data-type="${item.type}"]`);
     if (tab) tab.click();
 
-    // Populate inputs
     this.populateInputsForType(item.type, item.data);
 
-    // Populate style
     if (item.styleConfig) {
       this.styleState = { ...this.styleState, ...item.styleConfig };
       this.syncDOMWithStyleState();
     }
 
     this.triggerLiveUpdate();
-    this.showToast(`Đã khôi phục: ${item.title}`, 'success');
+    this.showToast(`${i18n.lang === 'vi' ? 'Đã khôi phục' : 'Restored'}: ${item.title}`, 'success');
   }
 
   populateInputsForType(type, data) {
@@ -697,9 +855,6 @@ export class UIHandlers {
     }
   }
 
-  /**
-   * Auto save to history on export/copy
-   */
   async autoSaveToHistory() {
     try {
       const canvas = await this.qrEngine.renderHighResComposite(120);
@@ -720,9 +875,6 @@ export class UIHandlers {
     }
   }
 
-  /**
-   * Form inputs change listeners
-   */
   bindInputsReactivity() {
     document.querySelectorAll('.form-input, .form-textarea, .form-select').forEach(input => {
       input.addEventListener('input', () => this.triggerLiveUpdate());
@@ -730,9 +882,6 @@ export class UIHandlers {
     });
   }
 
-  /**
-   * Trigger live preview re-rendering with debounce
-   */
   triggerLiveUpdate() {
     clearTimeout(this.debounceTimer);
     this.debounceTimer = setTimeout(async () => {
@@ -742,12 +891,10 @@ export class UIHandlers {
         data: payload
       };
       await this.qrEngine.update(config);
-    }, 80);
+      this.updateContrastBadge();
+    }, 70);
   }
 
-  /**
-   * Generate payload string based on current tab inputs
-   */
   generatePayload() {
     const data = this.getFormDataForType(this.currentType);
     const builder = ContentBuilders[this.currentType];
@@ -755,12 +902,8 @@ export class UIHandlers {
   }
 
   getFormDataForType(type) {
-    if (type === 'url') {
-      return { url: document.getElementById('inputUrl')?.value || '' };
-    }
-    if (type === 'text') {
-      return { text: document.getElementById('inputText')?.value || '' };
-    }
+    if (type === 'url') return { url: document.getElementById('inputUrl')?.value || '' };
+    if (type === 'text') return { text: document.getElementById('inputText')?.value || '' };
     if (type === 'wifi') {
       return {
         ssid: document.getElementById('wifiSsid')?.value || '',
@@ -797,9 +940,7 @@ export class UIHandlers {
         body: document.getElementById('emailBody')?.value || ''
       };
     }
-    if (type === 'phone') {
-      return { phone: document.getElementById('phoneTel')?.value || '' };
-    }
+    if (type === 'phone') return { phone: document.getElementById('phoneTel')?.value || '' };
     if (type === 'sms') {
       return {
         phone: document.getElementById('smsPhone')?.value || '',
@@ -827,35 +968,32 @@ export class UIHandlers {
 
   getPayloadTitle() {
     const data = this.getFormDataForType(this.currentType);
-    if (this.currentType === 'url') return data.url || 'Liên kết Web';
-    if (this.currentType === 'wifi') return `WiFi: ${data.ssid || 'Mạng không dây'}`;
-    if (this.currentType === 'vietqr') return `VietQR: ${data.accountNo || 'Tài khoản'}`;
-    if (this.currentType === 'vcard') return `Danh thiếp: ${data.fullName || 'Liên hệ'}`;
-    if (this.currentType === 'email') return `Email: ${data.email || 'Thư điện tử'}`;
-    if (this.currentType === 'phone') return `SĐT: ${data.phone || 'Cuộc gọi'}`;
-    if (this.currentType === 'sms') return `SMS: ${data.phone || 'Tin nhắn'}`;
-    return 'Mã QR Studio';
+    if (this.currentType === 'url') return data.url || 'Web URL';
+    if (this.currentType === 'wifi') return `WiFi: ${data.ssid || 'Network'}`;
+    if (this.currentType === 'vietqr') return `VietQR: ${data.accountNo || 'Banking'}`;
+    if (this.currentType === 'vcard') return `Contact: ${data.fullName || 'vCard'}`;
+    if (this.currentType === 'email') return `Email: ${data.email || 'Mail'}`;
+    if (this.currentType === 'phone') return `Tel: ${data.phone || 'Phone'}`;
+    if (this.currentType === 'sms') return `SMS: ${data.phone || 'Message'}`;
+    return 'QR Generator Pro';
   }
 
   getTypeLabel(type) {
     const labels = {
-      url: 'Liên kết Web',
-      text: 'Văn bản',
-      wifi: 'Mạng WiFi',
-      vietqr: 'VietQR Ngân hàng',
-      vcard: 'Danh thiếp vCard',
-      email: 'Email',
-      phone: 'Điện thoại',
-      sms: 'Tin nhắn SMS',
-      location: 'Vị trí bản đồ',
-      event: 'Lịch sự kiện'
+      url: i18n.t('typeUrl'),
+      text: i18n.t('typeText'),
+      wifi: i18n.t('typeWifi'),
+      vietqr: i18n.t('typeVietqr'),
+      vcard: i18n.t('typeVcard'),
+      email: i18n.t('typeEmail'),
+      phone: i18n.t('typePhone'),
+      sms: i18n.t('typeSms'),
+      location: i18n.t('typeLocation'),
+      event: i18n.t('typeEvent')
     };
-    return labels[type] || 'Mã QR';
+    return labels[type] || 'QR Code';
   }
 
-  /**
-   * Toast notification helper
-   */
   showToast(message, type = 'info') {
     const container = document.getElementById('toastContainer');
     if (!container) return;

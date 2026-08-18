@@ -1,7 +1,7 @@
 {
-  "name": "QR Studio - phongdang.io.vn",
-  "short_name": "QR Studio",
-  "description": "Trình tạo mã QR Code chuyên nghiệp, tùy biến không giới hạn, xuất đa định dạng (PNG, SVG, WEBP, PDF) và lưu lịch sử ngoại tuyến.",
+  "name": "QR Generator Pro - phongdang.io.vn",
+  "short_name": "QR Gen Pro",
+  "description": "Trình tạo mã QR Code chuyên nghiệp: Mẫu Thường chuẩn & Tùy biến nâng cao, xuất đa định dạng (PNG 4K, SVG, WEBP, PDF) và lưu lịch sử offline.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#090d16",

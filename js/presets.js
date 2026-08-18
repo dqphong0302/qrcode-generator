@@ -1,12 +1,34 @@
 /**
- * QR Studio Style Presets
+ * QR Generator Pro - Style Presets
  * Curated presets for instant professional looks
  */
 
 export const QR_PRESETS = [
   {
+    id: 'classic-standard',
+    name: 'Mẫu Thường (Classic Standard)',
+    nameEn: 'Classic Standard (B&W)',
+    category: 'classic',
+    dotsType: 'square',
+    dotsColorType: 'single',
+    dotsColor1: '#000000',
+    dotsColor2: '#000000',
+    cornersSquareType: 'square',
+    cornersSquareColor: '#000000',
+    cornersDotType: 'square',
+    cornersDotColor: '#000000',
+    bgColor: '#ffffff',
+    bgTransparent: false,
+    frameStyle: 'none',
+    frameText: '',
+    frameColor: '#000000',
+    frameTextColor: '#ffffff'
+  },
+  {
     id: 'phongdang-brand',
     name: 'PhongDang Blue',
+    nameEn: 'PhongDang Indigo',
+    category: 'creative',
     dotsType: 'extra-rounded',
     dotsColorType: 'gradient-linear',
     dotsColor1: '#38bdf8',
@@ -26,6 +48,8 @@ export const QR_PRESETS = [
   {
     id: 'cyber-neon',
     name: 'Cyber Neon',
+    nameEn: 'Cyberpunk Neon',
+    category: 'creative',
     dotsType: 'dots',
     dotsColorType: 'gradient-linear',
     dotsColor1: '#06b6d4',
@@ -44,25 +68,29 @@ export const QR_PRESETS = [
   },
   {
     id: 'minimal-mono',
-    name: 'Minimal Mono',
+    name: 'Minimal Rounded',
+    nameEn: 'Minimal Rounded',
+    category: 'modern',
     dotsType: 'rounded',
     dotsColorType: 'single',
-    dotsColor1: '#090d16',
-    dotsColor2: '#090d16',
-    cornersSquareType: 'rounded',
-    cornersSquareColor: '#090d16',
+    dotsColor1: '#0f172a',
+    dotsColor2: '#0f172a',
+    cornersSquareType: 'extra-rounded',
+    cornersSquareColor: '#0f172a',
     cornersDotType: 'square',
-    cornersDotColor: '#090d16',
+    cornersDotColor: '#0f172a',
     bgColor: '#ffffff',
     bgTransparent: false,
     frameStyle: 'none',
     frameText: '',
-    frameColor: '#090d16',
+    frameColor: '#0f172a',
     frameTextColor: '#ffffff'
   },
   {
     id: 'emerald-luxury',
     name: 'Emerald Tech',
+    nameEn: 'Emerald Mint',
+    category: 'business',
     dotsType: 'classy-rounded',
     dotsColorType: 'gradient-linear',
     dotsColor1: '#10b981',
@@ -82,6 +110,8 @@ export const QR_PRESETS = [
   {
     id: 'sunset-glow',
     name: 'Sunset Glow',
+    nameEn: 'Sunset Amber',
+    category: 'creative',
     dotsType: 'dots',
     dotsColorType: 'gradient-linear',
     dotsColor1: '#f43f5e',
@@ -101,6 +131,8 @@ export const QR_PRESETS = [
   {
     id: 'vietqr-napas',
     name: 'VietQR Napas',
+    nameEn: 'VietQR Banking',
+    category: 'business',
     dotsType: 'square',
     dotsColorType: 'single',
     dotsColor1: '#005baa',
@@ -119,6 +151,8 @@ export const QR_PRESETS = [
   {
     id: 'coffee-mocha',
     name: 'Coffee Mocha',
+    nameEn: 'Coffee Mocha',
+    category: 'business',
     dotsType: 'rounded',
     dotsColorType: 'gradient-linear',
     dotsColor1: '#854d0e',
@@ -137,7 +171,9 @@ export const QR_PRESETS = [
   },
   {
     id: 'glass-transparent',
-    name: 'Transparent Pure',
+    name: 'Transparent Vector',
+    nameEn: 'Transparent Vector',
+    category: 'modern',
     dotsType: 'classy',
     dotsColorType: 'single',
     dotsColor1: '#ffffff',
