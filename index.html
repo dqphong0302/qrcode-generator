@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QR Generator Pro (Dots + SVG + Dark)</title>
+  <title>QR Generator Pro (Dots + SVG + Dark) | phongdang.io.vn</title>
 
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS & QR Engine -->
+  <!-- Tailwind CSS & Local QR Engine -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
+  <script src="./assets/qr-code-styling.js"></script>
 
   <script>
     tailwind.config = {
@@ -29,12 +29,30 @@
   </script>
 
   <style>
-    /* Custom Color Inputs & Preview styling */
+    /* Complete self-contained fallback styles in case CDN is slow */
+    :root {
+      --bg-dark: #020617;
+      --card-dark: #0f172a;
+      --border-dark: #1e293b;
+      --text-dark: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #0ea5e9;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* Fixed preview container */
     #qrPreview {
       width: 240px;
       height: 240px;
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
     #qrPreview svg, #qrPreview canvas {
       width: 240px !important;
@@ -42,8 +60,11 @@
       max-width: 240px !important;
       max-height: 240px !important;
       display: block;
-      border-radius: 18px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     }
+
+    /* Color picker styling */
     input[type="color"] {
       -webkit-appearance: none;
       border: none;
@@ -57,12 +78,17 @@
     }
     input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
     input[type="color"]::-webkit-color-swatch { border: none; border-radius: 12px; }
+
+    /* Custom range slider */
+    input[type="range"] {
+      accent-color: #0ea5e9;
+    }
   </style>
 </head>
 
 <body class="min-h-screen bg-slate-950 text-slate-100 font-sans transition-colors duration-200">
   <!-- Topbar -->
-  <header class="sticky top-0 z-40 border-b border-slate-800/60 bg-slate-950/70 backdrop-blur-xl">
+  <header class="sticky top-0 z-40 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl">
     <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
@@ -96,9 +122,9 @@
   </header>
 
   <!-- Fullscreen Modal -->
-  <div id="fullscreenModal" class="fixed inset-0 z-[100] hidden bg-black/75 backdrop-blur-md transition-opacity">
-    <div id="modalBackdrop" class="h-full w-full p-4 flex items-center justify-center">
-      <div class="w-full max-w-xl">
+  <div id="fullscreenModal" class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-md transition-opacity">
+    <div id="modalBackdrop" class="h-full w-full p-4 flex items-center justify-center cursor-pointer">
+      <div class="w-full max-w-lg cursor-default" onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-3">
           <span class="text-sm font-bold text-slate-200">🔍 Xem trước phóng to HD (1000×1000)</span>
           <button id="closeFullscreenBtn"
@@ -115,7 +141,7 @@
   </div>
 
   <!-- Main Grid -->
-  <main class="mx-auto max-w-6xl px-4 py-10">
+  <main class="mx-auto max-w-6xl px-4 py-8 md:py-10">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
       <!-- Left: Controls -->
@@ -146,14 +172,14 @@
                 <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4 flex items-center gap-4 hover:border-slate-700 transition">
                   <input type="color" id="colorInput" value="#0EA5E9" />
                   <div>
-                    <div class="font-bold text-white">Màu QR</div>
+                    <div class="font-bold text-white text-sm">Màu QR</div>
                     <div class="text-xs text-slate-500">Dots + Corners</div>
                   </div>
                 </div>
                 <div class="rounded-2xl border border-slate-800 bg-slate-950 p-4 flex items-center gap-4 hover:border-slate-700 transition">
                   <input type="color" id="bgColorInput" value="#FFFFFF" />
                   <div>
-                    <div class="font-bold text-white">Nền QR</div>
+                    <div class="font-bold text-white text-sm">Nền QR</div>
                     <div class="text-xs text-slate-500">Nên chọn màu sáng</div>
                   </div>
                 </div>
@@ -212,11 +238,11 @@
             <!-- Actions -->
             <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button id="generateBtn"
-                class="rounded-2xl py-4 font-extrabold bg-sky-500 text-slate-950 hover:bg-sky-400 active:scale-[0.98] transition shadow-lg shadow-sky-500/25">
+                class="rounded-2xl py-4 font-extrabold bg-sky-500 text-slate-950 hover:bg-sky-400 active:scale-[0.98] transition shadow-lg shadow-sky-500/25 cursor-pointer">
                 ✨ Tạo QR
               </button>
               <button id="clearBtn"
-                class="rounded-2xl py-4 font-extrabold border border-slate-800 bg-slate-950 text-slate-200 hover:bg-slate-900 active:scale-[0.98] transition">
+                class="rounded-2xl py-4 font-extrabold border border-slate-800 bg-slate-950 text-slate-200 hover:bg-slate-900 active:scale-[0.98] transition cursor-pointer">
                 Xoá
               </button>
             </div>
@@ -230,7 +256,7 @@
 
       <!-- Right: Preview -->
       <section class="lg:col-span-6">
-        <div class="rounded-3xl border border-slate-800 bg-slate-900/50 shadow-soft overflow-hidden sticky top-24">
+        <div class="rounded-3xl border border-slate-800 bg-slate-900/50 shadow-soft overflow-hidden sticky top-20">
           <div class="p-6 md:p-7">
             <div class="flex items-start justify-between gap-4">
               <div>
@@ -245,27 +271,27 @@
             </div>
 
             <!-- Empty State -->
-            <div id="emptyState" class="mt-8 rounded-3xl border border-dashed border-slate-800 bg-slate-950 p-10 text-center">
+            <div id="emptyState" class="mt-8 rounded-3xl border border-dashed border-slate-800 bg-slate-950 p-10 text-center hidden">
               <div class="text-4xl">🧩</div>
               <div class="mt-2 font-extrabold text-white">Chưa có QR</div>
               <div class="mt-1 text-sm text-slate-500">Nhập nội dung rồi bấm “Tạo QR”.</div>
             </div>
 
             <!-- Result Area -->
-            <div id="resultArea" class="mt-8 hidden">
+            <div id="resultArea" class="mt-8">
               <div id="qrCard"
-                class="rounded-3xl border border-slate-800 bg-slate-950 p-6 flex flex-col items-center justify-center hover:border-sky-500/40 transition cursor-pointer group">
+                class="rounded-3xl border border-slate-800 bg-slate-950 p-6 flex flex-col items-center justify-center hover:border-sky-500/40 transition cursor-pointer group shadow-inner">
                 <div id="qrPreview" class="group-hover:scale-105 transition-transform duration-200"></div>
                 <span class="mt-3 text-[11px] font-semibold text-slate-500 group-hover:text-sky-400 transition">🔍 Bấm để phóng to toàn màn hình</span>
               </div>
 
               <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button id="downloadPngBtn"
-                  class="rounded-2xl py-3.5 font-extrabold border border-sky-500/30 bg-sky-500/10 text-sky-200 hover:bg-sky-500/20 active:scale-[0.98] transition">
+                  class="rounded-2xl py-3.5 font-extrabold border border-sky-500/30 bg-sky-500/10 text-sky-200 hover:bg-sky-500/20 active:scale-[0.98] transition cursor-pointer">
                   ⬇ PNG (HD 1000px)
                 </button>
                 <button id="downloadSvgBtn"
-                  class="rounded-2xl py-3.5 font-extrabold border border-indigo-500/30 bg-indigo-500/10 text-indigo-200 hover:bg-indigo-500/20 active:scale-[0.98] transition">
+                  class="rounded-2xl py-3.5 font-extrabold border border-indigo-500/30 bg-indigo-500/10 text-indigo-200 hover:bg-indigo-500/20 active:scale-[0.98] transition cursor-pointer">
                   ⬇ SVG Vector
                 </button>
               </div>
@@ -367,56 +393,74 @@
         if (!file) return resolve(null);
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
+        reader.onerror = () => resolve(null);
         reader.readAsDataURL(file);
       });
     }
 
-    // Build QR options with customizable size
-    async function buildOptions(size) {
-      const text = urlInput.value.trim();
-      const dotColor = colorInput.value;
-      const bgColor = bgColorInput.value;
-      const dotType = dotsStyle.value;
-      const cornerType = cornersStyle.value;
+    // Build QR options with customizable size and rendering type (canvas / svg)
+    async function buildOptions(size, renderType = "canvas") {
+      const text = (urlInput.value || "").trim() || "https://phongdang.io.vn";
+      const dotColor = colorInput.value || "#0EA5E9";
+      const bgColor = bgColorInput.value || "#FFFFFF";
+      const dotType = dotsStyle.value || "dots";
+      const cornerType = cornersStyle.value || "extra-rounded";
 
       const file = logoInput.files && logoInput.files[0] ? logoInput.files[0] : null;
       const logoDataUrl = await getLogoDataUrl(file);
 
-      const logoPercent = Number(logoSize.value); // 10..35
+      const logoPercent = Number(logoSize.value) || 22; // 10..35
       const imageSize = Math.max(0.10, Math.min(0.35, logoPercent / 100));
 
-      return {
+      const options = {
         width: size,
         height: size,
-        type: "svg",
+        type: renderType,
         data: text,
-        margin: size >= 600 ? 16 : 12,
+        margin: size >= 600 ? 16 : 10,
         qrOptions: { errorCorrectionLevel: "H" },
         dotsOptions: { type: dotType, color: dotColor },
         cornersSquareOptions: { type: cornerType, color: dotColor },
-        cornersDotOptions: { type: cornerType === "square" ? "square" : "dot", color: dotColor },
-        backgroundOptions: { color: bgColor },
-        image: logoDataUrl || undefined,
-        imageOptions: {
-          crossOrigin: "anonymous",
-          margin: size >= 600 ? 10 : 6,
-          imageSize: logoDataUrl ? imageSize : 0
-        }
+        cornersDotOptions: { type: (cornerType === "square" ? "square" : "dot"), color: dotColor },
+        backgroundOptions: { color: bgColor }
       };
+
+      if (logoDataUrl) {
+        options.image = logoDataUrl;
+        options.imageOptions = {
+          crossOrigin: "anonymous",
+          margin: size >= 600 ? 8 : 4,
+          imageSize: imageSize,
+          hideBackgroundDots: true
+        };
+      }
+
+      return options;
     }
 
     async function generateQR() {
       const text = urlInput.value.trim();
-      if (!text) { urlInput.focus(); pulseInvalid(); return; }
+      if (!text) { 
+        urlInput.focus(); 
+        pulseInvalid(); 
+        emptyState.classList.remove("hidden");
+        resultArea.classList.add("hidden");
+        return; 
+      }
 
-      qrPreview.innerHTML = "";
+      try {
+        qrPreview.innerHTML = "";
 
-      // PREVIEW SMALL (240px)
-      qrCodePreview = new QRCodeStyling(await buildOptions(240));
-      qrCodePreview.append(qrPreview);
+        // Preview: use canvas for fastest and most reliable rendering
+        const opts = await buildOptions(240, "canvas");
+        qrCodePreview = new QRCodeStyling(opts);
+        qrCodePreview.append(qrPreview);
 
-      emptyState.classList.add("hidden");
-      resultArea.classList.remove("hidden");
+        emptyState.classList.add("hidden");
+        resultArea.classList.remove("hidden");
+      } catch (err) {
+        console.error("Lỗi tạo mã QR:", err);
+      }
     }
 
     function downloadBlob(blob, filename) {
@@ -431,30 +475,49 @@
     }
 
     async function downloadPNG() {
-      if (!qrCodePreview) return;
-      // HD RENDER (1000px)
-      const hd = new QRCodeStyling(await buildOptions(1000));
-      const blob = await hd.getRawData("png");
-      downloadBlob(blob, "qrcode.png");
+      try {
+        downloadPngBtn.disabled = true;
+        const hd = new QRCodeStyling(await buildOptions(1000, "canvas"));
+        const blob = await hd.getRawData("png");
+        if (blob) {
+          downloadBlob(blob, "qrcode-hd.png");
+        }
+      } catch (err) {
+        console.error("Lỗi xuất PNG:", err);
+      } finally {
+        downloadPngBtn.disabled = false;
+      }
     }
 
     async function downloadSVG() {
-      if (!qrCodePreview) return;
-      // HD RENDER (1000px)
-      const hd = new QRCodeStyling(await buildOptions(1000));
-      const blob = await hd.getRawData("svg");
-      downloadBlob(blob, "qrcode.svg");
+      try {
+        downloadSvgBtn.disabled = true;
+        const hd = new QRCodeStyling(await buildOptions(1000, "svg"));
+        const blob = await hd.getRawData("svg");
+        if (blob) {
+          downloadBlob(blob, "qrcode.svg");
+        }
+      } catch (err) {
+        console.error("Lỗi xuất SVG:", err);
+      } finally {
+        downloadSvgBtn.disabled = false;
+      }
     }
 
     async function openFullscreen() {
-      if (!qrCodePreview) return;
-      const hd = new QRCodeStyling(await buildOptions(1000));
-      const blob = await hd.getRawData("png");
-      const url = URL.createObjectURL(blob);
-      fullscreenImg.src = url;
-      fullscreenImg.dataset.blobUrl = url;
-      fullscreenModal.classList.remove("hidden");
-      document.body.style.overflow = "hidden";
+      try {
+        const hd = new QRCodeStyling(await buildOptions(1000, "canvas"));
+        const blob = await hd.getRawData("png");
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          fullscreenImg.src = url;
+          fullscreenImg.dataset.blobUrl = url;
+          fullscreenModal.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
+        }
+      } catch (err) {
+        console.error("Lỗi mở fullscreen:", err);
+      }
     }
 
     function closeFullscreen() {
@@ -467,7 +530,9 @@
     }
 
     function regenIfReady() {
-      if (!resultArea.classList.contains("hidden")) generateQR();
+      if (!resultArea.classList.contains("hidden")) {
+        generateQR();
+      }
     }
 
     // ===== Events =====
@@ -478,6 +543,7 @@
       qrCodePreview = null;
       resultArea.classList.add("hidden");
       emptyState.classList.remove("hidden");
+      urlInput.focus();
     });
 
     downloadPngBtn.addEventListener("click", downloadPNG);
@@ -500,11 +566,9 @@
       regenIfReady();
     });
 
-    // Generate initially on load if input has value
-    window.addEventListener("DOMContentLoaded", () => {
-      if (urlInput.value.trim()) {
-        generateQR();
-      }
+    // Auto-render initial QR on load
+    window.addEventListener("load", () => {
+      generateQR();
     });
   </script>
 </body>
