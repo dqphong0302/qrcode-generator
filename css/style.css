@@ -88,6 +88,259 @@ html.dark {
 }
 
 /* --------------------------------------------------------------------------
+   2b. Utility Classes (moved from inline styles)
+   -------------------------------------------------------------------------- */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.w-full { width: 100%; }
+
+.gap-2 { gap: 0.5rem; }
+
+.mb-0 { margin-bottom: 0; }
+
+.hint-text {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.68rem;
+  color: var(--text-subtle);
+}
+
+.section-block { margin-bottom: 0.75rem; }
+
+/* Form grid: 2 equal columns (shapes, sliders) */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+/* Header actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Input row: label + auto-update hint */
+.input-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.auto-hint {
+  font-size: 0.65rem;
+  color: var(--text-subtle);
+}
+
+/* Gradient / transparency row */
+.gradient-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+}
+
+.select-compact {
+  width: auto;
+  padding: 0.25rem 1.5rem 0.25rem 0.5rem;
+}
+
+.gradient-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.transparent-check {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.transparent-check input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.transparent-check span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Logo upload row & danger link button */
+.logo-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.link-danger {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--danger);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.file-input {
+  padding: 0.5rem 0.6rem;
+  width: 100%;
+}
+
+/* Slider rows - stacked vertically */
+.slider-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.slider-label {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.slider-label.w-60 { width: 60px; }
+.slider-label.w-70 { width: 70px; }
+
+.slider-value {
+  font-size: 0.72rem;
+  font-weight: 700;
+  width: 30px;
+  text-align: right;
+}
+
+/* Preview stage header & tags */
+.preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.preview-head-left {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--success);
+  display: inline-block;
+}
+
+.preview-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.preview-tags {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.preview-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card-subtle);
+  color: var(--text-muted);
+}
+
+/* Empty state */
+.empty-state {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+  margin: auto 0;
+}
+
+.empty-icon { font-size: 1.5rem; margin-bottom: 0.25rem; }
+.empty-title { font-size: 0.75rem; font-weight: 700; }
+.empty-sub { font-size: 0.7rem; color: var(--text-subtle); margin-top: 0.25rem; }
+
+/* Result area & QR frame compositor */
+.result-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 260px;
+}
+
+.qr-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.2s;
+  max-width: 100%;
+}
+
+.banner-badge {
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 1rem;
+  width: 100%;
+  color: #fff;
+  font-size: 0.75rem;
+}
+
+.banner-top {
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+  margin-bottom: 0.25rem;
+}
+
+.banner-bottom {
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+  margin-top: 0.25rem;
+}
+
+/* Export buttons */
+.download-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.copy-wrap { margin-top: 0.5rem; }
+.btn-block { width: 100%; }
+
+/* Footer links */
+.footer-links {
+  display: flex;
+  gap: 1rem;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
    2. Reset & Base Styles
    -------------------------------------------------------------------------- */
 *, *::before, *::after {
@@ -117,6 +370,25 @@ a {
 button, input, select {
   font-family: inherit;
   font-size: inherit;
+}
+
+button {
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--primary-light);
+}
+
+/* Accessible keyboard focus */
+.btn:focus-visible,
+.type-pill:focus-visible,
+.nav-tab:focus-visible,
+.palette-btn:focus-visible,
+.btn-theme:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 /* --------------------------------------------------------------------------
@@ -174,6 +446,7 @@ button, input, select {
   font-weight: 800;
   font-size: 1rem;
   line-height: 1.2;
+  display: block;
 }
 
 .brand-sub {
@@ -186,6 +459,15 @@ button, input, select {
 .main-wrapper {
   padding: 1.5rem 0 2.5rem 0;
   flex: 1;
+}
+
+/* Vertically center content on tall desktop screens */
+@media (min-width: 992px) and (min-height: 880px) {
+  .main-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
 .app-grid {
@@ -290,16 +572,16 @@ button, input, select {
   color: var(--text-main);
 }
 
-/* Content Type Pill Bar */
+/* Content Type Pill Bar - even 3x2 grid */
 .type-pills {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.4rem;
   margin-bottom: 1rem;
 }
 
 .type-pill {
-  padding: 0.45rem 0.8rem;
+  padding: 0.45rem 0.4rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   background-color: var(--bg-input);
@@ -309,7 +591,9 @@ button, input, select {
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
+  white-space: nowrap;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -342,6 +626,127 @@ button, input, select {
   border-top: 1px solid var(--border-subtle);
 }
 
+/* Right panel tabs (Preview / History) */
+.right-tabs {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  margin-bottom: 0.75rem;
+}
+
+.history-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  background-color: var(--primary);
+  color: #fff;
+}
+
+/* History grid */
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+}
+
+.history-item {
+  position: relative;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--bg-card-subtle);
+}
+
+.history-item img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: #fff;
+}
+
+.history-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.history-time {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.history-badge {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--primary);
+  background-color: rgba(2, 132, 199, 0.1);
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+}
+
+.history-actions {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.history-item:hover .history-actions {
+  opacity: 1;
+}
+
+.history-btn {
+  width: 1.7rem;
+  height: 1.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  font-size: 0.75rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  transition: all 0.15s;
+}
+
+.history-btn:hover {
+  border-color: var(--primary-border);
+  color: var(--primary);
+}
+
+.history-btn.danger:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.history-empty {
+  text-align: center;
+  padding: 1.75rem 0.5rem;
+}
+
+.history-clear {
+  margin-top: 0.75rem;
+}
+
 .tabs-nav {
   display: flex;
   gap: 0.35rem;
@@ -367,6 +772,8 @@ button, input, select {
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .nav-tab:hover {
@@ -391,17 +798,25 @@ html.dark .nav-tab.active {
   box-shadow: 0 3px 14px rgba(56, 189, 248, 0.25);
 }
 
-/* Tabs Content Box - Fixed Rectangle Height */
+/* Tabs Content Box - auto height on mobile, fixed on desktop */
 .tabs-content-box {
-  min-height: 205px;
-  height: 205px;
   margin-top: 0.85rem;
   display: flex;
   flex-direction: column;
 }
 
+@media (min-width: 992px) {
+  .tabs-content-box {
+    min-height: 264px;
+    height: 264px;
+  }
+
+  .tab-panel {
+    height: 100%;
+  }
+}
+
 .tab-panel {
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -414,18 +829,12 @@ html.dark .nav-tab.active {
 /* --------------------------------------------------------------------------
    5. Customization Controls (Colors, Palettes, Sliders)
    -------------------------------------------------------------------------- */
-/* Palette Chips */
+/* Palette Chips - always 2 rows of 4 */
 .palette-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.4rem;
   margin-bottom: 0.75rem;
-}
-
-@media (min-width: 640px) {
-  .palette-grid {
-    grid-template-columns: repeat(8, 1fr);
-  }
 }
 
 .palette-btn {
@@ -487,6 +896,29 @@ html.dark .nav-tab.active {
   justify-content: space-between;
 }
 
+.is-dimmed {
+  opacity: 0.5;
+}
+
+/* Frame tab color row */
+.frame-color-row {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-card-subtle);
+}
+
+.frame-color-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .color-picker-label {
   font-size: 0.65rem;
   font-weight: 700;
@@ -516,32 +948,6 @@ input[type="color"] {
 input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
 input[type="color"]::-webkit-color-swatch { border: none; border-radius: 8px; }
 
-/* Preset Icons */
-.preset-icons-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 0.75rem;
-}
-
-.preset-icon-btn {
-  padding: 0.35rem 0.65rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-card-subtle);
-  font-size: 0.72rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.preset-icon-btn:hover {
-  border-color: var(--primary);
-}
-
 /* Custom Select & Range */
 .select-field {
   width: 100%;
@@ -554,10 +960,38 @@ input[type="color"]::-webkit-color-swatch { border: none; border-radius: 8px; }
   font-weight: 600;
   outline: none;
   cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+/* Custom chevron only for real <select> elements */
+select.select-field {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  background-size: 0.8rem;
+}
+
+.select-field:hover {
+  border-color: var(--primary-border);
 }
 
 .select-field:focus {
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.select-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.select-field option {
+  background-color: var(--bg-card);
+  color: var(--text-main);
 }
 
 input[type="range"] {
@@ -675,8 +1109,9 @@ input[type="range"] {
 }
 
 #qrPreview {
-  width: 230px;
-  height: 230px;
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -714,6 +1149,37 @@ input[type="range"] {
   align-items: center;
   justify-content: center;
   padding: 1rem;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.modal-close {
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.modal-hint {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.7rem;
+  color: #94a3b8;
 }
 
 .modal-backdrop.hidden {
@@ -796,5 +1262,31 @@ html.dark .toast {
 @media (min-width: 640px) {
   .footer-inner {
     flex-direction: row;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   9. Small Screen Adjustments
+   -------------------------------------------------------------------------- */
+@media (max-width: 639px) {
+  .card {
+    padding: 1.15rem;
+  }
+
+  .nav-tab {
+    font-size: 0.68rem;
+    padding: 0.45rem 0.2rem;
+    gap: 0.25rem;
+  }
+
+  .gradient-row {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .brand-sub {
+    display: none;
   }
 }

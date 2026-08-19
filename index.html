@@ -6,10 +6,10 @@
   <title>QR Generator Pro - Trình Tạo Mã QR Đẹp, Thân Thiện & Chuyên Nghiệp | phongdang.io.vn</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
 
-  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <!-- Fonts via Google Fonts CDN -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 
   <!-- Main Design System & Stylesheet -->
   <link rel="stylesheet" href="./css/style.css">
@@ -38,17 +38,12 @@
         </div>
         <div>
           <span class="brand-title">QR Generator Pro</span>
-          <span class="brand-sub">Tạo mã QR tùy biến chuẩn in ấn</span>
+          <span class="brand-sub">Tạo mã QR tùy biến</span>
         </div>
       </a>
 
       <!-- Right Header Actions -->
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <a href="https://phongdang.io.vn" target="_blank" style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); display: none; align-items: center; gap: 0.25rem;">
-          <span>phongdang.io.vn</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-        </a>
-
+      <div class="header-actions">
         <!-- Theme Switcher -->
         <button id="themeToggle" class="btn-theme">
           <span id="themeIcon">☀️</span>
@@ -61,16 +56,16 @@
   <!-- Fullscreen Modal -->
   <div id="fullscreenModal" class="modal-backdrop hidden">
     <div id="modalBackdrop" class="modal-box">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <span style="font-size: 0.85rem; font-weight: 700; color: white;">🔍 Xem Trước HD (1000×1000 px)</span>
-        <button id="closeFullscreenBtn" style="border-radius: var(--radius-md); background: rgba(255,255,255,0.1); padding: 0.25rem 0.6rem; font-size: 0.75rem; font-weight: 700; color: white; border: none; cursor: pointer;">
+      <div class="modal-head">
+        <span class="modal-title">🔍 Xem Trước HD (1000×1000 px)</span>
+        <button id="closeFullscreenBtn" class="modal-close">
           Đóng ✕
         </button>
       </div>
       <div class="modal-content">
         <img id="fullscreenImg" alt="QR Fullscreen" class="modal-img" />
       </div>
-      <div style="margin-top: 0.5rem; text-align: center; font-size: 0.7rem; color: #94a3b8;">Nhấn ra ngoài hoặc bấm ESC để đóng</div>
+      <div class="modal-hint">Nhấn ra ngoài hoặc bấm ESC để đóng</div>
     </div>
   </div>
 
@@ -111,9 +106,9 @@
             <div class="input-container-box">
               <!-- URL / Text Input (Default) -->
               <div id="typeBlockUrl">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                  <label id="inputLabel" class="label-title" style="margin-bottom: 0;">Đường dẫn Website (URL)</label>
-                  <span style="font-size: 0.65rem; color: var(--text-subtle);">Tự động cập nhật</span>
+                <div class="input-head">
+                  <label id="inputLabel" class="label-title mb-0">Đường dẫn Website (URL)</label>
+                  <span class="auto-hint">Tự động cập nhật</span>
                 </div>
                 <div id="urlWrap" class="input-box">
                   <input id="urlInput" type="text" placeholder="https://phongdang.io.vn" value="https://phongdang.io.vn" class="input-field" />
@@ -169,7 +164,7 @@
               <!-- Tab 1: Colors & Palettes -->
               <div id="tabPanelColors" class="tab-panel">
                 <!-- 8 Quick Palette Chips -->
-                <div style="margin-bottom: 0.75rem;">
+                <div class="section-block">
                   <span class="label-title">Bảng phối màu chuyên nghiệp (1-Click)</span>
                   <div class="palette-grid">
                     <button type="button" class="palette-btn" onclick="setPalette('#0f172a', '#0f172a', '#FFFFFF', 'solid', '#0f172a')">
@@ -217,7 +212,7 @@
                     <input type="color" id="colorInput" value="#0284C7" />
                   </div>
 
-                  <div id="color2Container" class="color-picker-card" style="opacity: 0.5;">
+                  <div id="color2Container" class="color-picker-card is-dimmed">
                     <div>
                       <span class="color-picker-label">Gradient 2</span>
                       <span id="color2HexLabel" class="color-hex">#4F46E5</span>
@@ -243,26 +238,26 @@
                 </div>
 
                 <!-- Gradient Type & Transparent Toggle -->
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.6rem; font-size: 0.75rem;">
-                  <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span style="font-size: 0.72rem; color: var(--text-muted);">Kiểu tô:</span>
-                    <select id="colorTypeSelect" class="select-field" style="width: auto; padding: 0.25rem 0.5rem;">
+                <div class="gradient-row">
+                  <div class="flex items-center gap-2">
+                    <span class="gradient-label">Kiểu tô:</span>
+                    <select id="colorTypeSelect" class="select-field select-compact">
                       <option value="solid" selected>Đơn sắc (Solid)</option>
                       <option value="linear">Gradient Tuyến Tính</option>
                       <option value="radial">Gradient Tỏa Tròn</option>
                     </select>
                   </div>
 
-                  <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
-                    <input type="checkbox" id="bgTransparentCheck" style="width: 14px; height: 14px; accent-color: var(--primary); cursor: pointer;">
-                    <span style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted);">Nền trong suốt</span>
+                  <label class="transparent-check">
+                    <input type="checkbox" id="bgTransparentCheck">
+                    <span>Nền trong suốt</span>
                   </label>
                 </div>
               </div>
 
               <!-- Tab 2: Frame & Banner -->
               <div id="tabPanelFrame" class="tab-panel hidden">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.6rem;">
+                <div class="form-grid-2">
                   <div>
                     <label class="label-title">Kiểu khung viền</label>
                     <select id="frameStyleSelect" class="select-field">
@@ -277,51 +272,51 @@
                     <label class="label-title">Chữ hiển thị</label>
                     <input id="frameTextInput" type="text" placeholder="Nhập chữ (ví dụ: Quét mã, Website...)" value="" class="select-field" />
                   </div>
+                </div>
 
-                  <div>
-                    <label class="label-title">Màu sắc khung</label>
-                    <div class="color-picker-card" style="padding: 0.35rem 0.6rem;">
-                      <span id="frameColorHexLabel" class="color-hex">#0284C7</span>
-                      <input type="color" id="frameColorInput" value="#0284C7" />
-                    </div>
+                <div class="frame-color-row">
+                  <span class="label-title mb-0">Màu sắc khung</span>
+                  <div class="frame-color-control">
+                    <span id="frameColorHexLabel" class="color-hex">#0284C7</span>
+                    <input type="color" id="frameColorInput" value="#0284C7" />
                   </div>
                 </div>
               </div>
 
               <!-- Tab 3: Logo & Custom Upload -->
               <div id="tabPanelLogo" class="tab-panel hidden">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                  <span class="label-title" style="margin-bottom: 0;">Tải logo từ máy tính</span>
-                  <button id="removeLogoBtn" type="button" class="hidden" style="font-size: 0.7rem; font-weight: 700; color: var(--danger); background: none; border: none; cursor: pointer;">
+                <div class="logo-head">
+                  <span class="label-title mb-0">Tải logo từ máy tính</span>
+                  <button id="removeLogoBtn" type="button" class="link-danger hidden">
                     ✕ Gỡ logo
                   </button>
                 </div>
 
                 <!-- Upload Logo Box -->
-                <div style="margin-bottom: 0.75rem;">
-                  <input type="file" id="logoInput" accept="image/*" class="select-field" style="padding: 0.5rem 0.6rem; width: 100%;" />
-                  <span style="font-size: 0.68rem; color: var(--text-subtle); display: block; margin-top: 0.35rem;">
+                <div class="section-block">
+                  <input type="file" id="logoInput" accept="image/*" class="select-field file-input" />
+                  <span class="hint-text">
                     Định dạng hỗ trợ: PNG, JPG, SVG, WebP. Tự động căn giữa tâm mã QR.
                   </span>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; padding-top: 0.25rem;">
-                  <div style="display: flex; align-items: center; gap: 0.4rem;">
-                    <span class="label-title" style="width: 60px; margin: 0;">Kích cỡ:</span>
+                <div class="slider-grid">
+                  <div class="slider-row">
+                    <span class="label-title slider-label w-60">Kích cỡ:</span>
                     <input id="logoSize" type="range" min="10" max="35" value="22">
-                    <span id="logoSizeLabel" style="font-size: 0.72rem; font-weight: 700; width: 30px; text-align: right;">22%</span>
+                    <span id="logoSizeLabel" class="slider-value">22%</span>
                   </div>
-                  <div style="display: flex; align-items: center; gap: 0.4rem;">
-                    <span class="label-title" style="width: 70px; margin: 0;">Khoảng đệm:</span>
+                  <div class="slider-row">
+                    <span class="label-title slider-label w-70">Khoảng đệm:</span>
                     <input id="logoMargin" type="range" min="0" max="20" value="6">
-                    <span id="logoMarginLabel" style="font-size: 0.72rem; font-weight: 700; width: 30px; text-align: right;">6px</span>
+                    <span id="logoMarginLabel" class="slider-value">6px</span>
                   </div>
                 </div>
               </div>
 
               <!-- Tab 4: Shapes & Dots -->
               <div id="tabPanelShapes" class="tab-panel hidden">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+                <div class="form-grid-2">
                   <div>
                     <label class="label-title">Kiểu hạt (Dots Shape)</label>
                     <select id="dotsStyle" class="select-field">
@@ -367,46 +362,65 @@
         <div class="card">
           
           <div class="card-body">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
-              <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--success); display: inline-block;"></span>
-                <span style="font-size: 0.75rem; font-weight: 700;">Xem Trước Trực Tiếp</span>
+            <div class="right-tabs" role="tablist">
+              <button type="button" class="nav-tab right-tab active" data-rpanel="preview" role="tab" aria-selected="true">Xem trước</button>
+              <button type="button" class="nav-tab right-tab" data-rpanel="history" role="tab" aria-selected="false">Lịch sử <span id="historyCount" class="history-count">0</span></button>
+            </div>
+
+            <div id="rpanelPreview" class="right-panel">
+              <div class="preview-head">
+                <div class="preview-head-left">
+                  <span class="status-dot"></span>
+                  <span class="preview-title">Xem Trước Trực Tiếp</span>
+                </div>
+                <div class="preview-tags">
+                  <span class="preview-tag">HD 1000px</span>
+                  <span class="preview-tag">SVG</span>
+                </div>
               </div>
-              <div style="display: flex; gap: 0.3rem;">
-                <span style="font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); background: var(--bg-card-subtle); color: var(--text-muted);">HD 1000px</span>
-                <span style="font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); background: var(--bg-card-subtle); color: var(--text-muted);">SVG</span>
+
+              <!-- Empty State -->
+              <div id="emptyState" class="empty-state hidden">
+                <div class="empty-icon">🧩</div>
+                <div class="empty-title">Chưa có mã QR</div>
+                <div class="empty-sub">Nhập nội dung để hiển thị mã.</div>
+              </div>
+
+              <!-- Result Area -->
+              <div id="resultArea" class="result-area">
+                <div id="qrCard" class="preview-card w-full">
+
+                  <!-- Frame Wrapper Visual Canvas -->
+                  <div id="qrFrameWrapper" class="qr-frame">
+                    <div id="topBannerBadge" class="banner-badge banner-top hidden"></div>
+                    <div id="qrPreview"></div>
+                    <div id="bottomBannerBadge" class="banner-badge banner-bottom hidden"></div>
+                  </div>
+
+                  <div class="preview-hint">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                    <span>Nhấn để xem phóng to HD</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Empty State -->
-            <div id="emptyState" class="hidden" style="border: 2px dashed var(--border-color); border-radius: var(--radius-lg); padding: 2rem; text-align: center; margin: auto 0;">
-              <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🧩</div>
-              <div style="font-size: 0.75rem; font-weight: 700;">Chưa có mã QR</div>
-              <div style="font-size: 0.7rem; color: var(--text-subtle); margin-top: 0.25rem;">Nhập nội dung để hiển thị mã.</div>
-            </div>
-
-            <!-- Result Area -->
-            <div id="resultArea" style="display: flex; flex-direction: column; justify-content: center; align-items: center; flex: 1; min-height: 260px;">
-              <div id="qrCard" class="preview-card" style="width: 100%;">
-                
-                <!-- Frame Wrapper Visual Canvas -->
-                <div id="qrFrameWrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.5rem; border-radius: var(--radius-lg); transition: all 0.2s; max-width: 100%;">
-                  <div id="topBannerBadge" class="hidden" style="font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.3rem 1rem; border-top-left-radius: var(--radius-md); border-top-right-radius: var(--radius-md); width: 100%; color: white; font-size: 0.75rem; margin-bottom: 0.25rem;"></div>
-                  <div id="qrPreview"></div>
-                  <div id="bottomBannerBadge" class="hidden" style="font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.35rem 1rem; border-bottom-left-radius: var(--radius-md); border-bottom-right-radius: var(--radius-md); width: 100%; color: white; font-size: 0.75rem; margin-top: 0.25rem;"></div>
-                </div>
-
-                <div class="preview-hint">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
-                  <span>Nhấn để xem phóng to HD</span>
-                </div>
+            <div id="rpanelHistory" class="right-panel hidden">
+              <div id="historyEmpty" class="history-empty">
+                <div class="empty-icon">🗂️</div>
+                <div class="empty-title">Chưa có lịch sử</div>
+                <div class="empty-sub">Ảnh QR bạn tạo sẽ tự động lưu vào lịch sử máy.</div>
               </div>
+              <div id="historyGrid" class="history-grid"></div>
+              <button id="clearHistoryBtn" class="btn btn-secondary btn-block history-clear hidden" type="button">
+                <span>🗑 Xóa toàn bộ lịch sử</span>
+              </button>
             </div>
           </div>
 
           <!-- Right Card Footer (Export & Copy) -->
           <div class="card-footer">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <div class="download-grid">
               <button id="downloadPngBtn" class="btn btn-download-png">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 <span>Tải PNG (HD)</span>
@@ -417,8 +431,8 @@
               </button>
             </div>
 
-            <div style="margin-top: 0.5rem;">
-              <button id="copyImageBtn" class="btn btn-secondary" style="width: 100%;">
+            <div class="copy-wrap">
+              <button id="copyImageBtn" class="btn btn-secondary btn-block">
                 <span>📋 Sao chép ảnh QR</span>
               </button>
             </div>
@@ -433,16 +447,25 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-inner">
-      <div>© 2025–2026 QR Generator Pro — <a href="https://phongdang.io.vn" style="font-weight: 700; color: var(--primary);">phongdang.io.vn</a></div>
-      <div style="display: flex; gap: 1rem; font-weight: 600;">
-        <a href="https://qr.phongdang.io.vn">qr.phongdang.io.vn</a>
+      <div>© 2026–2027 QR Generator Pro</div>
+      <div class="footer-links">
+        <a href="https://phongdang.io.vn" target="_blank">phongdang.io.vn</a>
         <a href="https://github.com/dqphong0302/qrcode-generator" target="_blank">GitHub</a>
       </div>
     </div>
   </footer>
 
   <!-- Scripts -->
-  <script src="./assets/qr-code-styling.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.0/lib/qr-code-styling.js"></script>
+  <script src="./js/modules/core.js"></script>
+  <script src="./js/modules/theme.js"></script>
+  <script src="./js/modules/toast.js"></script>
+  <script src="./js/modules/content-type.js"></script>
+  <script src="./js/modules/palette.js"></script>
+  <script src="./js/modules/qr-engine.js"></script>
+  <script src="./js/modules/frame.js"></script>
+  <script src="./js/modules/export.js"></script>
+  <script src="./js/modules/history.js"></script>
   <script src="./js/app.js"></script>
 </body>
 </html>

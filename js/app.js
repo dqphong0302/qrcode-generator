@@ -1,688 +1,110 @@
-/**
- * ============================================================================
- * QR Generator Pro - Application Logic (app.js)
- * Modular, clean, and easily customizable JavaScript architecture.
- * ============================================================================
- */
-
-(function () {
-  "use strict";
-
-  /* --------------------------------------------------------------------------
-     1. DOM Element References
-     -------------------------------------------------------------------------- */
-  const DOM = {
-    // Theme
-    themeToggle: document.getElementById("themeToggle"),
-    themeIcon: document.getElementById("themeIcon"),
-    themeLabel: document.getElementById("themeLabel"),
-
-    // Toast
-    toast: document.getElementById("toast"),
-    toastMsg: document.getElementById("toastMsg"),
-    toastIcon: document.getElementById("toastIcon"),
-
-    // Content Types
-    typePills: document.querySelectorAll(".type-pill"),
-    typeBlockUrl: document.getElementById("typeBlockUrl"),
-    typeBlockWifi: document.getElementById("typeBlockWifi"),
-    typeBlockPhone: document.getElementById("typeBlockPhone"),
-    typeBlockEmail: document.getElementById("typeBlockEmail"),
-    inputLabel: document.getElementById("inputLabel"),
-
-    // Inputs
-    urlInput: document.getElementById("urlInput"),
-    urlWrap: document.getElementById("urlWrap"),
-    clearUrlBtn: document.getElementById("clearUrlBtn"),
-    wifiSsid: document.getElementById("wifiSsid"),
-    wifiPass: document.getElementById("wifiPass"),
-    phoneInput: document.getElementById("phoneInput"),
-    emailInput: document.getElementById("emailInput"),
-
-    // Customization Tabs
-    navTabs: document.querySelectorAll(".nav-tab"),
-    tabPanels: {
-      colors: document.getElementById("tabPanelColors"),
-      frame: document.getElementById("tabPanelFrame"),
-      logo: document.getElementById("tabPanelLogo"),
-      shapes: document.getElementById("tabPanelShapes")
-    },
-
-    // Colors
-    colorTypeSelect: document.getElementById("colorTypeSelect"),
-    colorInput: document.getElementById("colorInput"),
-    colorHexLabel: document.getElementById("colorHexLabel"),
-    color2Input: document.getElementById("color2Input"),
-    color2HexLabel: document.getElementById("color2HexLabel"),
-    color2Container: document.getElementById("color2Container"),
-    cornerColorInput: document.getElementById("cornerColorInput"),
-    cornerColorHexLabel: document.getElementById("cornerColorHexLabel"),
-    bgColorInput: document.getElementById("bgColorInput"),
-    bgColorHexLabel: document.getElementById("bgColorHexLabel"),
-    bgTransparentCheck: document.getElementById("bgTransparentCheck"),
-
-    // Frame
-    frameStyleSelect: document.getElementById("frameStyleSelect"),
-    frameTextInput: document.getElementById("frameTextInput"),
-    frameColorInput: document.getElementById("frameColorInput"),
-    frameColorHexLabel: document.getElementById("frameColorHexLabel"),
-    qrFrameWrapper: document.getElementById("qrFrameWrapper"),
-    topBannerBadge: document.getElementById("topBannerBadge"),
-    bottomBannerBadge: document.getElementById("bottomBannerBadge"),
-
-    // Logo
-    logoInput: document.getElementById("logoInput"),
-    logoSize: document.getElementById("logoSize"),
-    logoSizeLabel: document.getElementById("logoSizeLabel"),
-    logoMargin: document.getElementById("logoMargin"),
-    logoMarginLabel: document.getElementById("logoMarginLabel"),
-    removeLogoBtn: document.getElementById("removeLogoBtn"),
-
-    // Shapes
-    dotsStyle: document.getElementById("dotsStyle"),
-    cornersStyle: document.getElementById("cornersStyle"),
-
-    // Actions & Preview
-    generateBtn: document.getElementById("generateBtn"),
-    clearBtn: document.getElementById("clearBtn"),
-    copyImageBtn: document.getElementById("copyImageBtn"),
-    emptyState: document.getElementById("emptyState"),
-    resultArea: document.getElementById("resultArea"),
-    qrPreview: document.getElementById("qrPreview"),
-    qrCard: document.getElementById("qrCard"),
-    downloadPngBtn: document.getElementById("downloadPngBtn"),
-    downloadSvgBtn: document.getElementById("downloadSvgBtn"),
-
-    // Modal
-    fullscreenModal: document.getElementById("fullscreenModal"),
-    modalBackdrop: document.getElementById("modalBackdrop"),
-    closeFullscreenBtn: document.getElementById("closeFullscreenBtn"),
-    fullscreenImg: document.getElementById("fullscreenImg")
-  };
-
-  /* --------------------------------------------------------------------------
-     3. State Management
-     -------------------------------------------------------------------------- */
-  const State = {
-    contentType: "url",
-    currentLogoData: null,
-    qrCodePreview: null
-  };
-
-  /* --------------------------------------------------------------------------
-     4. Theme Module
-     -------------------------------------------------------------------------- */
-  const Theme = {
-    init() {
-      const saved = localStorage.getItem("qr_theme") || "dark";
-      this.apply(saved);
-      DOM.themeToggle.addEventListener("click", () => {
-        const isDark = document.documentElement.classList.contains("dark");
-        this.apply(isDark ? "light" : "dark");
-      });
-    },
-
-    apply(theme) {
-      const isDark = theme === "dark";
-      document.documentElement.classList.toggle("dark", isDark);
-      document.documentElement.classList.toggle("light", !isDark);
-      DOM.themeIcon.textContent = isDark ? "☀️" : "🌙";
-      DOM.themeLabel.textContent = isDark ? "Light" : "Dark";
-      localStorage.setItem("qr_theme", theme);
-    }
-  };
-
-  /* --------------------------------------------------------------------------
-     5. Toast Notification Module
-     -------------------------------------------------------------------------- */
-  const Toast = {
-    timer: null,
-    show(message = "Thành công!", icon = "✅") {
-      if (this.timer) clearTimeout(this.timer);
-      DOM.toastMsg.textContent = message;
-      DOM.toastIcon.textContent = icon;
-      DOM.toast.classList.add("show");
-      this.timer = setTimeout(() => {
-        DOM.toast.classList.remove("show");
-      }, 2500);
-    }
-  };
-
-  /* --------------------------------------------------------------------------
-     6. Content Type Handler
-     -------------------------------------------------------------------------- */
-  const ContentType = {
-    init() {
-      DOM.typePills.forEach(pill => {
-        pill.addEventListener("click", () => {
-          DOM.typePills.forEach(p => p.classList.remove("active"));
-          pill.classList.add("active");
-          State.contentType = pill.dataset.type;
-          this.updateUI();
-          QREngine.generate();
-        });
-      });
-    },
-
-    updateUI() {
-      // Hide all type blocks
-      DOM.typeBlockUrl.classList.add("hidden");
-      DOM.typeBlockWifi.classList.add("hidden");
-      DOM.typeBlockPhone.classList.add("hidden");
-      DOM.typeBlockEmail.classList.add("hidden");
-
-      switch (State.contentType) {
-        case "url":
-          DOM.typeBlockUrl.classList.remove("hidden");
-          DOM.inputLabel.textContent = "Đường dẫn Website (URL)";
-          DOM.urlInput.placeholder = "https://phongdang.io.vn";
-          break;
-        case "wifi":
-          DOM.typeBlockWifi.classList.remove("hidden");
-          break;
-        case "phone":
-          DOM.typeBlockPhone.classList.remove("hidden");
-          break;
-        case "email":
-          DOM.typeBlockEmail.classList.remove("hidden");
-          break;
-        case "text":
-          DOM.typeBlockUrl.classList.remove("hidden");
-          DOM.inputLabel.textContent = "Nội dung văn bản / Ghi chú";
-          DOM.urlInput.placeholder = "Nhập nội dung văn bản bất kỳ...";
-          break;
-        case "vietqr":
-          DOM.typeBlockUrl.classList.remove("hidden");
-          DOM.inputLabel.textContent = "Đường dẫn VietQR / Thanh toán Napas";
-          DOM.urlInput.placeholder = "https://img.vietqr.io/image/970415-123456789-compact.png";
-          break;
-      }
-    },
-
-    getText() {
-      switch (State.contentType) {
-        case "wifi": {
-          const ssid = (DOM.wifiSsid.value || "").trim();
-          const pass = (DOM.wifiPass.value || "").trim();
-          const type = pass ? "WPA" : "nopass";
-          return `WIFI:S:${ssid};T:${type};P:${pass};;`;
-        }
-        case "phone": {
-          const phone = (DOM.phoneInput.value || "").trim();
-          return phone ? `tel:${phone}` : "tel:0901234567";
-        }
-        case "email": {
-          const email = (DOM.emailInput.value || "").trim();
-          return email ? `mailto:${email}` : "mailto:contact@phongdang.io.vn";
-        }
-        default:
-          return (DOM.urlInput.value || "").trim() || "https://phongdang.io.vn";
-      }
-    }
-  };
-
-  /* --------------------------------------------------------------------------
-     7. Palette Module
-     -------------------------------------------------------------------------- */
-  const Palette = {
-    set(dotColor, dot2Color, bgColor, type, cornerColor) {
-      DOM.colorInput.value = dotColor;
-      DOM.colorHexLabel.textContent = dotColor.toUpperCase();
-
-      DOM.color2Input.value = dot2Color;
-      DOM.color2HexLabel.textContent = dot2Color.toUpperCase();
-
-      DOM.bgColorInput.value = bgColor;
-      DOM.bgColorHexLabel.textContent = bgColor.toUpperCase();
-      DOM.bgTransparentCheck.checked = false;
-
-      DOM.cornerColorInput.value = cornerColor;
-      DOM.cornerColorHexLabel.textContent = cornerColor.toUpperCase();
-
-      DOM.colorTypeSelect.value = type;
-      this.updateColorState();
-      QREngine.generate();
-    },
-
-    updateColorState() {
-      const isGradient = DOM.colorTypeSelect.value !== "solid";
-      DOM.color2Input.disabled = !isGradient;
-      DOM.color2Container.style.opacity = isGradient ? "1" : "0.5";
-    }
-  };
-
-  // Expose palette helpers to window for inline onclicks
-  window.setPalette = (d1, d2, bg, type, corner) => Palette.set(d1, d2, bg, type, corner);
-
-  /* --------------------------------------------------------------------------
-     8. QR Code Engine (Generation & Config)
-     -------------------------------------------------------------------------- */
-  const QREngine = {
-    buildOptions(size, renderType = "canvas") {
-      const text = ContentType.getText();
-      const dotColor = DOM.colorInput.value || "#0284C7";
-      const dot2Color = DOM.color2Input.value || "#4F46E5";
-      const cornerColor = DOM.cornerColorInput.value || dotColor;
-      const isTransparent = DOM.bgTransparentCheck.checked;
-      const bgColor = isTransparent ? "transparent" : (DOM.bgColorInput.value || "#FFFFFF");
-      const dotType = DOM.dotsStyle.value || "dots";
-      const cornerType = DOM.cornersStyle.value || "extra-rounded";
-      const colorType = DOM.colorTypeSelect.value;
-
-      let dotsOptions = { type: dotType, color: dotColor };
-      if (colorType === "linear" || colorType === "radial") {
-        dotsOptions.gradient = {
-          type: colorType,
-          rotation: colorType === "linear" ? 45 : 0,
-          colorStops: [
-            { offset: 0, color: dotColor },
-            { offset: 1, color: dot2Color }
-          ]
-        };
-      }
-
-      const logoPercent = Number(DOM.logoSize.value) || 22;
-      const marginPx = Number(DOM.logoMargin.value) || 6;
-      const imageSize = Math.max(0.10, Math.min(0.35, logoPercent / 100));
-
-      const options = {
-        width: size,
-        height: size,
-        type: renderType,
-        data: text,
-        margin: size >= 600 ? 16 : 8,
-        qrOptions: { errorCorrectionLevel: State.currentLogoData ? "H" : "Q" },
-        dotsOptions: dotsOptions,
-        cornersSquareOptions: { type: cornerType, color: cornerColor },
-        cornersDotOptions: { type: (cornerType === "square" ? "square" : "dot"), color: cornerColor },
-        backgroundOptions: { color: bgColor }
-      };
-
-      if (State.currentLogoData) {
-        options.image = State.currentLogoData;
-        options.imageOptions = {
-          crossOrigin: "anonymous",
-          margin: size >= 600 ? Math.round(marginPx * 1.5) : marginPx,
-          imageSize: imageSize,
-          hideBackgroundDots: true
-        };
-      }
-
-      return options;
-    },
-
-    async generate() {
-      const text = ContentType.getText();
-      if (!text) {
-        DOM.urlInput.focus();
-        DOM.urlWrap.classList.add("ring-2", "ring-rose-500/70");
-        setTimeout(() => DOM.urlWrap.classList.remove("ring-2", "ring-rose-500/70"), 550);
-        DOM.emptyState.classList.remove("hidden");
-        DOM.resultArea.classList.add("hidden");
-        return;
-      }
-
-      try {
-        DOM.qrPreview.innerHTML = "";
-        const opts = this.buildOptions(230, "canvas");
-        State.qrCodePreview = new QRCodeStyling(opts);
-        State.qrCodePreview.append(DOM.qrPreview);
-
-        DOM.emptyState.classList.add("hidden");
-        DOM.resultArea.classList.remove("hidden");
-        Frame.updateUI();
-      } catch (err) {
-        console.error("Lỗi tạo mã QR:", err);
-      }
-    }
-  };
-
-  /* --------------------------------------------------------------------------
-     9. Frame & CTA Compositor Module
-     -------------------------------------------------------------------------- */
-  const Frame = {
-    updateUI() {
-      const style = DOM.frameStyleSelect.value;
-      const text = (DOM.frameTextInput.value || "").trim();
-      const color = DOM.frameColorInput.value || "#0284C7";
-
-      DOM.topBannerBadge.classList.add("hidden");
-      DOM.bottomBannerBadge.classList.add("hidden");
-      DOM.qrFrameWrapper.style.border = "none";
-      DOM.qrFrameWrapper.style.backgroundColor = "transparent";
-
-      if (style === "bottom-badge") {
-        if (text) {
-          DOM.bottomBannerBadge.classList.remove("hidden");
-          DOM.bottomBannerBadge.textContent = text;
-          DOM.bottomBannerBadge.style.backgroundColor = color;
-        }
-        DOM.qrFrameWrapper.style.border = `3px solid ${color}`;
-        DOM.qrFrameWrapper.style.backgroundColor = DOM.bgTransparentCheck.checked ? "transparent" : DOM.bgColorInput.value;
-      } else if (style === "top-banner") {
-        if (text) {
-          DOM.topBannerBadge.classList.remove("hidden");
-          DOM.topBannerBadge.textContent = text;
-          DOM.topBannerBadge.style.backgroundColor = color;
-        }
-        DOM.qrFrameWrapper.style.border = `3px solid ${color}`;
-        DOM.qrFrameWrapper.style.backgroundColor = DOM.bgTransparentCheck.checked ? "transparent" : DOM.bgColorInput.value;
-      } else if (style === "scan-me") {
-        if (text) {
-          DOM.bottomBannerBadge.classList.remove("hidden");
-          DOM.bottomBannerBadge.textContent = text;
-          DOM.bottomBannerBadge.style.backgroundColor = color;
-        }
-        DOM.qrFrameWrapper.style.border = `2px dashed ${color}`;
-      }
-    },
-
-    async getCompositeCanvas(targetSize = 1000) {
-      const qrStyling = new QRCodeStyling(QREngine.buildOptions(targetSize, "canvas"));
-      const blob = await qrStyling.getRawData("png");
-      const qrImg = await new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.src = URL.createObjectURL(blob);
-      });
-
-      const frameStyle = DOM.frameStyleSelect.value;
-      if (frameStyle === "none") {
-        const canvas = document.createElement("canvas");
-        canvas.width = targetSize;
-        canvas.height = targetSize;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(qrImg, 0, 0);
-        return canvas;
-      }
-
-      const frameText = (DOM.frameTextInput.value || "").trim().toUpperCase();
-      const frameColor = DOM.frameColorInput.value || "#0284C7";
-      const isTransparent = DOM.bgTransparentCheck.checked;
-      const bgColor = isTransparent ? "transparent" : (DOM.bgColorInput.value || "#FFFFFF");
-
-      const bannerHeight = frameText ? Math.round(targetSize * 0.16) : 0;
-      const totalWidth = targetSize + 40;
-      const totalHeight = targetSize + bannerHeight + 40;
-
-      const canvas = document.createElement("canvas");
-      canvas.width = totalWidth;
-      canvas.height = totalHeight;
-      const ctx = canvas.getContext("2d");
-
-      if (!isTransparent) {
-        ctx.fillStyle = bgColor;
-        ctx.roundRect(10, 10, totalWidth - 20, totalHeight - 20, 24);
-        ctx.fill();
-      }
-
-      ctx.lineWidth = 14;
-      ctx.strokeStyle = frameColor;
-      ctx.stroke();
-
-      if (frameStyle === "top-banner") {
-        if (frameText) {
-          ctx.fillStyle = frameColor;
-          ctx.beginPath();
-          ctx.roundRect(10, 10, totalWidth - 20, bannerHeight, [24, 24, 0, 0]);
-          ctx.fill();
-
-          ctx.fillStyle = "#FFFFFF";
-          ctx.font = `bold ${Math.round(bannerHeight * 0.42)}px Inter, sans-serif`;
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText(frameText, totalWidth / 2, 10 + bannerHeight / 2);
-        }
-
-        ctx.drawImage(qrImg, 20, 20 + bannerHeight, targetSize, targetSize);
-      } else {
-        ctx.drawImage(qrImg, 20, 20, targetSize, targetSize);
-
-        if (frameText) {
-          ctx.fillStyle = frameColor;
-          ctx.beginPath();
-          ctx.roundRect(10, totalHeight - bannerHeight - 10, totalWidth - 20, bannerHeight, [0, 0, 24, 24]);
-          ctx.fill();
-
-          ctx.fillStyle = "#FFFFFF";
-          ctx.font = `bold ${Math.round(bannerHeight * 0.42)}px Inter, sans-serif`;
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText(frameText, totalWidth / 2, totalHeight - bannerHeight / 2 - 10);
-        }
-      }
-
-      return canvas;
-    }
-  };
-
-  /* --------------------------------------------------------------------------
-     10. Export & Utilities Module
-     -------------------------------------------------------------------------- */
-  const Export = {
-    downloadBlob(blob, filename) {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    },
-
-    async downloadPNG() {
-      try {
-        DOM.downloadPngBtn.disabled = true;
-        const canvas = await Frame.getCompositeCanvas(1000);
-        canvas.toBlob((blob) => {
-          if (blob) {
-            this.downloadBlob(blob, `qrcode-pro-${Date.now()}.png`);
-            Toast.show("Đã tải ảnh PNG HD thành công!", "📥");
-          }
-        }, "image/png");
-      } catch (err) {
-        console.error("Lỗi xuất PNG:", err);
-      } finally {
-        DOM.downloadPngBtn.disabled = false;
-      }
-    },
-
-    async downloadSVG() {
-      try {
-        DOM.downloadSvgBtn.disabled = true;
-        const hd = new QRCodeStyling(QREngine.buildOptions(1000, "svg"));
-        const blob = await hd.getRawData("svg");
-        if (blob) {
-          this.downloadBlob(blob, `qrcode-pro-${Date.now()}.svg`);
-          Toast.show("Đã tải vector SVG thành công!", "📐");
-        }
-      } catch (err) {
-        console.error("Lỗi xuất SVG:", err);
-      } finally {
-        DOM.downloadSvgBtn.disabled = false;
-      }
-    },
-
-    async copyImage() {
-      try {
-        DOM.copyImageBtn.disabled = true;
-        const canvas = await Frame.getCompositeCanvas(1000);
-        canvas.toBlob(async (blob) => {
-          if (blob && navigator.clipboard && window.ClipboardItem) {
-            await navigator.clipboard.write([
-              new ClipboardItem({ "image/png": blob })
-            ]);
-            Toast.show("Đã sao chép ảnh QR vào bộ nhớ tạm!", "📋");
-          } else {
-            Toast.show("Trình duyệt không hỗ trợ sao chép ảnh trực tiếp", "ℹ️");
-          }
-        }, "image/png");
-      } catch (err) {
-        console.error("Lỗi sao chép ảnh:", err);
-        Toast.show("Không thể sao chép ảnh", "⚠️");
-      } finally {
-        DOM.copyImageBtn.disabled = false;
-      }
-    },
-
-    async openFullscreen() {
-      try {
-        const canvas = await Frame.getCompositeCanvas(1000);
-        DOM.fullscreenImg.src = canvas.toDataURL("image/png");
-        DOM.fullscreenModal.classList.remove("hidden");
-        document.body.style.overflow = "hidden";
-      } catch (err) {
-        console.error("Lỗi mở fullscreen:", err);
-      }
-    },
-
-    closeFullscreen() {
-      DOM.fullscreenModal.classList.add("hidden");
-      document.body.style.overflow = "";
-      DOM.fullscreenImg.src = "";
-    }
-  };
-
-  /* --------------------------------------------------------------------------
-     11. Main App Initialization & Events
-     -------------------------------------------------------------------------- */
-  function initApp() {
-    Theme.init();
-    ContentType.init();
-
-    // Tab Navigation
-    DOM.navTabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        DOM.navTabs.forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
-
-        const tabKey = tab.dataset.tab;
-        Object.keys(DOM.tabPanels).forEach(key => {
-          if (key === tabKey) {
-            DOM.tabPanels[key].classList.remove("hidden");
-          } else {
-            DOM.tabPanels[key].classList.add("hidden");
-          }
-        });
-      });
-    });
-
-    // Color pickers & type
-    DOM.colorTypeSelect.addEventListener("change", () => {
-      Palette.updateColorState();
-      QREngine.generate();
-    });
-
-    DOM.colorInput.addEventListener("input", (e) => {
-      DOM.colorHexLabel.textContent = e.target.value.toUpperCase();
-      QREngine.generate();
-    });
-    DOM.color2Input.addEventListener("input", (e) => {
-      DOM.color2HexLabel.textContent = e.target.value.toUpperCase();
-      QREngine.generate();
-    });
-    DOM.cornerColorInput.addEventListener("input", (e) => {
-      DOM.cornerColorHexLabel.textContent = e.target.value.toUpperCase();
-      QREngine.generate();
-    });
-    DOM.bgColorInput.addEventListener("input", (e) => {
-      DOM.bgColorHexLabel.textContent = e.target.value.toUpperCase();
-      QREngine.generate();
-    });
-    DOM.bgTransparentCheck.addEventListener("change", () => QREngine.generate());
-
-    // Frame inputs
-    DOM.frameStyleSelect.addEventListener("change", () => Frame.updateUI());
-    DOM.frameTextInput.addEventListener("input", () => Frame.updateUI());
-    DOM.frameColorInput.addEventListener("input", (e) => {
-      DOM.frameColorHexLabel.textContent = e.target.value.toUpperCase();
-      Frame.updateUI();
-    });
-
-    // Logo Upload & Sliders
-    DOM.logoInput.addEventListener("change", (e) => {
-      if (e.target.files && e.target.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          State.currentLogoData = evt.target.result;
-          DOM.removeLogoBtn.classList.remove("hidden");
-          QREngine.generate();
-        };
-        reader.readAsDataURL(e.target.files[0]);
-      }
-    });
-
-    DOM.removeLogoBtn.addEventListener("click", () => {
-      State.currentLogoData = null;
-      DOM.logoInput.value = "";
-      DOM.removeLogoBtn.classList.add("hidden");
-      QREngine.generate();
-    });
-
-    DOM.logoSize.addEventListener("input", (e) => {
-      DOM.logoSizeLabel.textContent = `${e.target.value}%`;
-      QREngine.generate();
-    });
-
-    DOM.logoMargin.addEventListener("input", (e) => {
-      DOM.logoMarginLabel.textContent = `${e.target.value}px`;
-      QREngine.generate();
-    });
-
-    // Shapes
-    DOM.dotsStyle.addEventListener("change", () => QREngine.generate());
-    DOM.cornersStyle.addEventListener("change", () => QREngine.generate());
-
-    // Input text & Clear
-    DOM.urlInput.addEventListener("input", () => QREngine.generate());
-    DOM.urlInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") QREngine.generate();
-    });
-
-    if (DOM.clearUrlBtn) {
-      DOM.clearUrlBtn.addEventListener("click", () => {
-        DOM.urlInput.value = "";
-        DOM.urlInput.focus();
-        QREngine.generate();
-      });
-    }
-
-    [DOM.wifiSsid, DOM.wifiPass, DOM.phoneInput, DOM.emailInput].forEach(inp => {
-      if (inp) inp.addEventListener("input", () => QREngine.generate());
-    });
-
-    // Action Buttons
-    DOM.generateBtn.addEventListener("click", () => QREngine.generate());
-    DOM.clearBtn.addEventListener("click", () => {
-      DOM.urlInput.value = "https://phongdang.io.vn";
-      State.currentLogoData = null;
-      DOM.logoInput.value = "";
-      DOM.removeLogoBtn.classList.add("hidden");
-      DOM.frameStyleSelect.value = "none";
-      DOM.frameTextInput.value = "";
-      Palette.set('#0284C7', '#0369A1', '#FFFFFF', 'solid', '#0284C7');
-      Toast.show("Đã đặt lại cấu hình mặc định", "🔄");
-    });
-
-    DOM.downloadPngBtn.addEventListener("click", () => Export.downloadPNG());
-    DOM.downloadSvgBtn.addEventListener("click", () => Export.downloadSVG());
-    DOM.copyImageBtn.addEventListener("click", () => Export.copyImage());
-
-    // Modal Zoom
-    DOM.qrCard.addEventListener("click", () => Export.openFullscreen());
-    DOM.closeFullscreenBtn.addEventListener("click", (e) => { e.stopPropagation(); Export.closeFullscreen(); });
-    DOM.modalBackdrop.addEventListener("click", (e) => { if (e.target === DOM.modalBackdrop) Export.closeFullscreen(); });
-    window.addEventListener("keydown", (e) => { if (e.key === "Escape") Export.closeFullscreen(); });
-
-    // Initial QR Render
-    QREngine.generate();
+/* Application wiring. Feature behavior lives in js/modules/. */
+(function (App) {
+  const { DOM, State, DEFAULTS } = App;
+
+  function bindColorPickers() {
+    [
+      [DOM.colorInput, DOM.colorHexLabel], [DOM.color2Input, DOM.color2HexLabel],
+      [DOM.cornerColorInput, DOM.cornerColorHexLabel], [DOM.bgColorInput, DOM.bgColorHexLabel]
+    ].forEach(([input, label]) => input.addEventListener("input", event => {
+      label.textContent = event.target.value.toUpperCase();
+      App.QREngine.schedule();
+    }));
   }
 
-  // Run on DOM ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initApp);
-  } else {
-    initApp();
+  function bindTabs() {
+    DOM.navTabs.forEach(tab => tab.addEventListener("click", () => {
+      DOM.navTabs.forEach(item => item.classList.toggle("active", item === tab));
+      Object.entries(DOM.tabPanels).forEach(([key, panel]) => panel.classList.toggle("hidden", key !== tab.dataset.tab));
+    }));
   }
-})();
+
+  function bindRightTabs() {
+    DOM.rightTabs.forEach(tab => tab.addEventListener("click", () => {
+      DOM.rightTabs.forEach(item => item.classList.toggle("active", item === tab));
+      DOM.rpanelPreview.classList.toggle("hidden", tab.dataset.rpanel !== "preview");
+      DOM.rpanelHistory.classList.toggle("hidden", tab.dataset.rpanel !== "history");
+    }));
+  }
+
+  function reset() {
+    clearTimeout(App.QREngine.pendingTimer);
+    App.QREngine.pendingTimer = null;
+    State.contentType = "url";
+    DOM.typePills.forEach(pill => pill.classList.toggle("active", pill.dataset.type === "url"));
+    App.ContentType.updateUI();
+
+    [DOM.wifiSsid, DOM.wifiPass, DOM.phoneInput, DOM.emailInput].forEach(input => { input.value = ""; });
+    DOM.urlInput.value = DEFAULTS.url;
+    State.currentLogoData = null;
+    DOM.logoInput.value = "";
+    DOM.removeLogoBtn.classList.add("hidden");
+    DOM.logoSize.value = DEFAULTS.logoSize;
+    DOM.logoSizeLabel.textContent = `${DEFAULTS.logoSize}%`;
+    DOM.logoMargin.value = DEFAULTS.logoMargin;
+    DOM.logoMarginLabel.textContent = `${DEFAULTS.logoMargin}px`;
+    DOM.frameStyleSelect.value = DEFAULTS.frameStyle;
+    DOM.frameTextInput.value = "";
+    DOM.frameColorInput.value = DEFAULTS.frameColor;
+    DOM.frameColorHexLabel.textContent = DEFAULTS.frameColor;
+    DOM.dotsStyle.value = DEFAULTS.dotsStyle;
+    DOM.cornersStyle.value = DEFAULTS.cornersStyle;
+    DOM.navTabs.forEach(tab => tab.classList.toggle("active", tab.dataset.tab === "colors"));
+    Object.entries(DOM.tabPanels).forEach(([key, panel]) => panel.classList.toggle("hidden", key !== "colors"));
+    App.Palette.set(DEFAULTS.dotColor, DEFAULTS.dot2Color, DEFAULTS.bgColor, DEFAULTS.colorType, DEFAULTS.cornerColor);
+    App.Toast.show("Đã đặt lại cấu hình mặc định", "🔄");
+  }
+
+  function bindEvents() {
+    App.Theme.init();
+    App.ContentType.init();
+    App.History.init();
+    bindColorPickers();
+    bindTabs();
+    bindRightTabs();
+
+    DOM.colorTypeSelect.addEventListener("change", () => { App.Palette.updateColorState(); App.QREngine.generate(); });
+    DOM.bgTransparentCheck.addEventListener("change", () => App.QREngine.schedule());
+    DOM.frameStyleSelect.addEventListener("change", App.Frame.updateUI.bind(App.Frame));
+    DOM.frameTextInput.addEventListener("input", App.Frame.updateUI.bind(App.Frame));
+    DOM.frameColorInput.addEventListener("input", event => {
+      DOM.frameColorHexLabel.textContent = event.target.value.toUpperCase();
+      App.Frame.updateUI();
+    });
+
+    DOM.logoInput.addEventListener("change", event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = event => { State.currentLogoData = event.target.result; DOM.removeLogoBtn.classList.remove("hidden"); App.QREngine.generate(); };
+      reader.readAsDataURL(file);
+    });
+    DOM.removeLogoBtn.addEventListener("click", () => { State.currentLogoData = null; DOM.logoInput.value = ""; DOM.removeLogoBtn.classList.add("hidden"); App.QREngine.generate(); });
+    DOM.logoSize.addEventListener("input", event => { DOM.logoSizeLabel.textContent = `${event.target.value}%`; App.QREngine.schedule(); });
+    DOM.logoMargin.addEventListener("input", event => { DOM.logoMarginLabel.textContent = `${event.target.value}px`; App.QREngine.schedule(); });
+    DOM.dotsStyle.addEventListener("change", () => App.QREngine.generate());
+    DOM.cornersStyle.addEventListener("change", () => App.QREngine.generate());
+    DOM.urlInput.addEventListener("input", () => App.QREngine.schedule());
+    DOM.urlInput.addEventListener("keydown", event => { if (event.key === "Enter") App.QREngine.generate(); });
+    DOM.clearUrlBtn.addEventListener("click", () => { DOM.urlInput.value = ""; DOM.urlInput.focus(); App.QREngine.generate(); });
+    [DOM.wifiSsid, DOM.wifiPass, DOM.phoneInput, DOM.emailInput].forEach(input => input.addEventListener("input", () => App.QREngine.schedule()));
+
+    DOM.generateBtn.addEventListener("click", () => App.QREngine.generate());
+    DOM.clearBtn.addEventListener("click", reset);
+    DOM.downloadPngBtn.addEventListener("click", () => App.Export.downloadPNG());
+    DOM.downloadSvgBtn.addEventListener("click", () => App.Export.downloadSVG());
+    DOM.copyImageBtn.addEventListener("click", () => App.Export.copyImage());
+    DOM.qrCard.addEventListener("click", () => App.Export.openFullscreen());
+    DOM.closeFullscreenBtn.addEventListener("click", event => { event.stopPropagation(); App.Export.closeFullscreen(); });
+    DOM.modalBackdrop.addEventListener("click", event => { if (event.target === DOM.modalBackdrop) App.Export.closeFullscreen(); });
+    window.addEventListener("keydown", event => { if (event.key === "Escape") App.Export.closeFullscreen(); });
+  }
+
+  function init() {
+    bindEvents();
+    App.QREngine.generate();
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})(window.QRApp);
