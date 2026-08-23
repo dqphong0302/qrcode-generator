@@ -16,6 +16,21 @@
   <title>QR Generator Pro - Trình Tạo Mã QR Đẹp, Thân Thiện & Chuyên Nghiệp | phongdang.io.vn</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
 
+  <!-- Ngăn nhấp nháy theme: áp dụng theme đã lưu trước khi paint -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('pd_theme');
+        if (t !== 'light' && t !== 'dark') {
+          t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        var isDark = t === 'dark';
+        document.documentElement.classList.toggle('dark', isDark);
+        document.documentElement.classList.toggle('light', !isDark);
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- Fonts via Google Fonts CDN -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
