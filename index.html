@@ -44,11 +44,8 @@
 <body data-pdui-profile="tool">
   <a class="pd-skip-link" href="#main-content">Bỏ qua đến nội dung chính</a>
 
-  <!-- Toast Notification -->
-  <div id="toast" class="toast">
-    <span id="toastIcon">✅</span>
-    <span id="toastMsg">Đã sao chép vào bộ nhớ tạm!</span>
-  </div>
+  <!-- PDUI.Toast dynamically creates #pd-toast via pdui.js -->
+  <script src="./vendor/pdui/pdui.js"></script>
 
   <!-- Header / Topbar -->
   <header class="header pd-header">
@@ -72,9 +69,9 @@
       <!-- Right Header Actions -->
       <div class="header-actions pd-header__actions">
         <!-- Theme Switcher -->
-        <button id="themeToggle" class="btn-theme">
-          <span id="themeIcon">☀️</span>
-          <span id="themeLabel">Light</span>
+        <button id="themeToggle" class="btn-theme" data-pd-theme-toggle>
+          <span id="themeIcon" data-pd-theme-icon>☀️</span>
+          <span id="themeLabel" data-pd-theme-label>Light</span>
         </button>
       </div>
     </div>

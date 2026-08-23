@@ -1141,37 +1141,7 @@ input[type="range"] {
   padding: 0.5rem;
 }
 
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 1.25rem;
-  right: 1.25rem;
-  z-index: 110;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-lg);
-  background-color: #0f172a;
-  color: #ffffff;
-  box-shadow: var(--shadow-floating);
-  font-size: 0.75rem;
-  font-weight: 600;
-  transform: translateY(5rem);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-
-html.dark .toast {
-  background-color: #ffffff;
-  color: #0f172a;
-}
-
-.toast.show {
-  transform: translateY(0);
-  opacity: 1;
-}
+/* PDUI.Toast (vendored pdui.css) handles toast styling and animation. */
 
 /* Footer */
 .footer {

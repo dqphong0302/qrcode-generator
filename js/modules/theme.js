@@ -1,28 +1,22 @@
+// QR Theme — thin adapter wrapping PDUI.Theme (vendored pdui.js).
+// PDUI.Theme handles: localStorage(pd_theme), html class, icon/label via
+// data-pd-theme-icon/data-pd-theme-label attributes, and dispatches
+// pdui:themechange. The button already has data-pd-theme-toggle.
+// QR-specific: toggle also sets .light class and syncs DOM refs for
+// backward-compat with modules that read App.DOM.themeIcon.
 (function (App) {
-  // Khóa theme dùng chung PDUI (pd_theme); di trú từ khóa cũ "qr_theme" nếu có.
-  const STORAGE_KEY = "pd_theme";
-  const LEGACY_KEY = "qr_theme";
-
   App.Theme = {
     init() {
-      let saved = localStorage.getItem(STORAGE_KEY);
-      if (saved !== "dark" && saved !== "light") {
-        const legacy = localStorage.getItem(LEGACY_KEY);
-        saved = (legacy === "dark" || legacy === "light") ? legacy : App.DEFAULTS.theme;
-      }
-      this.apply(saved);
-      App.DOM.themeToggle.addEventListener("click", () => {
-        const isDark = document.documentElement.classList.contains("dark");
-        this.apply(isDark ? "light" : "dark");
-      });
+      this.syncDOM();
+      // pdui:themechange fires after PDUI.Theme flips the class — reliable order.
+      document.addEventListener("pdui:themechange", () => this.syncDOM());
     },
-    apply(theme) {
-      const isDark = theme === "dark";
-      document.documentElement.classList.toggle("dark", isDark);
+    syncDOM() {
+      const isDark = document.documentElement.classList.contains("dark");
+      if (App.DOM.themeIcon) App.DOM.themeIcon.textContent = isDark ? "☀️" : "🌙";
+      if (App.DOM.themeLabel) App.DOM.themeLabel.textContent = isDark ? "Light" : "Dark";
+      // QR legacy: some modules check html.light
       document.documentElement.classList.toggle("light", !isDark);
-      App.DOM.themeIcon.textContent = isDark ? "☀️" : "🌙";
-      App.DOM.themeLabel.textContent = isDark ? "Light" : "Dark";
-      localStorage.setItem(STORAGE_KEY, theme);
     }
   };
 })(window.QRApp);

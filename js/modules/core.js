@@ -20,7 +20,6 @@ window.QRApp = (() => {
 
   const DOM = {
     themeToggle: $("themeToggle"), themeIcon: $("themeIcon"), themeLabel: $("themeLabel"),
-    toast: $("toast"), toastMsg: $("toastMsg"), toastIcon: $("toastIcon"),
     typePills: document.querySelectorAll(".type-pill"),
     typeBlockUrl: $("typeBlockUrl"), typeBlockWifi: $("typeBlockWifi"),
     typeBlockPhone: $("typeBlockPhone"), typeBlockEmail: $("typeBlockEmail"), inputLabel: $("inputLabel"),

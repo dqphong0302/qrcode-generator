@@ -1,12 +1,14 @@
+// QR Toast — thin adapter wrapping PDUI.Toast (vendored pdui.js).
+// Old API: App.Toast.show(message, iconEmoji)
+// PDUI API: PDUI.Toast.show(message, type, duration)
+// This shim maps custom icon → PDUI 'info' type so the emoji still renders.
 (function (App) {
   App.Toast = {
-    timer: null,
-    show(message = "Thành công!", icon = "✅") {
-      if (this.timer) clearTimeout(this.timer);
-      App.DOM.toastMsg.textContent = message;
-      App.DOM.toastIcon.textContent = icon;
-      App.DOM.toast.classList.add("show");
-      this.timer = setTimeout(() => App.DOM.toast.classList.remove("show"), 2500);
+    show(message, icon = '✅') {
+      window.PDUI.Toast.show(message, 'info');
+      // Replace PDUI auto-icon with the custom emoji the caller intended.
+      const toastIcon = document.querySelector('#pd-toast [data-pd-toast-icon]');
+      if (toastIcon) toastIcon.textContent = icon;
     }
   };
 })(window.QRApp);

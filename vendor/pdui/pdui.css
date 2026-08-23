@@ -1,4 +1,4 @@
-/*! PhongDang UI v1.1.0 */
+/*! PhongDang UI v1.2.0 */
 /* source: pdui-tokens.css */
 /* PhongDang UI Design System — canonical tokens */
 :root {
@@ -347,6 +347,16 @@ body[data-pdui-profile="portal"] .pd-container { max-width: var(--container-port
   background: var(--bg-card);
   color: var(--text-main);
   box-shadow: var(--shadow-floating);
+  transform: translateY(120%) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--transition-smooth), opacity var(--transition-smooth);
+}
+
+.pd-toast--visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .pd-modal { position: fixed; inset: 0; z-index: 900; display: grid; place-items: center; padding: var(--space-4); background: rgba(2, 6, 23, 0.72); backdrop-filter: blur(6px); }
