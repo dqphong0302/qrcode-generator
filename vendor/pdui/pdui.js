@@ -111,6 +111,6 @@
     }
   };
 
-  window.PDUI = { Theme, Toast, Modal, Tabs, version: '1.0.0' };
+  window.PDUI = { Theme, Toast, Modal, Tabs, version: '1.1.0' };
   document.addEventListener('DOMContentLoaded', () => { Theme.init(); Modal.init(); Tabs.init(); });
 })(window, document);

@@ -1,15 +1,15 @@
 {
   "name": "PhongDang UI Design System",
-  "version": "1.0.0",
-  "builtAt": "2026-08-22T17:14:00.267Z",
-  "sourceDigest": "3e35a333d8d81fb73646f79b3f1f05f35dfa89fe29c46745dc483c29ebf323d3",
+  "version": "1.1.0",
+  "builtAt": "2026-08-23T11:03:31.452Z",
+  "sourceDigest": "b9e04fa21f26676185f979142e12e361025266e477e92f70a43276d0de205f1a",
   "assets": {
     "pdui.css": {
-      "sha256": "78c2fb4d95bd5003f1652f6fa8697dd9e686eb8a718a80b806c0ec25a6d046fa",
+      "sha256": "e8ccc7e691df8c89ff96f41fd3a57c3888f4abcb2db86f10250c413164a7a349",
       "bytes": 12439
     },
     "pdui.js": {
-      "sha256": "80a16a9b222b77aba5f22c1402e468f7185cb5e1ad88394cd186f0f1f2bd91d6",
+      "sha256": "5dbc518b46715cc7239e7a11a9b6533ca1629ef0dc79fdc5af871c70f6ee8f79",
       "bytes": 5173
     }
   }

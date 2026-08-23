@@ -25,15 +25,15 @@
       qrOptions: { errorCorrectionLevel: ERROR_LEVELS.has(qr.errorCorrectionLevel) ? qr.errorCorrectionLevel : "Q" },
       dotsOptions: {
         type: DOT_TYPES.has(dots.type) ? dots.type : "dots",
-        color: color(dots.color, "#0284C7")
+        color: color(dots.color, "#1e40af")
       },
       cornersSquareOptions: {
         type: CORNER_TYPES.has(square.type) ? square.type : "extra-rounded",
-        color: color(square.color, "#0284C7")
+        color: color(square.color, "#1e40af")
       },
       cornersDotOptions: {
         type: cornerDot.type === "square" ? "square" : "dot",
-        color: color(cornerDot.color, "#0284C7")
+        color: color(cornerDot.color, "#1e40af")
       },
       backgroundOptions: { color: color(background.color, "#FFFFFF") }
     };
@@ -43,7 +43,7 @@
         safe.dotsOptions.gradient = {
           type: dots.gradient.type,
           rotation: Math.max(0, Math.min(360, Number(dots.gradient.rotation) || 0)),
-          colorStops: stops.map((stop, index) => ({ offset: index, color: color(stop?.color, index ? "#4F46E5" : "#0284C7") }))
+          colorStops: stops.map((stop, index) => ({ offset: index, color: color(stop?.color, index ? "#4F46E5" : "#1e40af") }))
         };
       }
     }

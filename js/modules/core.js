@@ -5,15 +5,15 @@ window.QRApp = (() => {
   const DEFAULTS = {
     theme: "dark",
     url: "https://phongdang.io.vn",
-    dotColor: "#0284C7",
+    dotColor: "#1e40af",
     dot2Color: "#4F46E5",
-    cornerColor: "#0284C7",
+    cornerColor: "#1e40af",
     bgColor: "#FFFFFF",
     colorType: "solid",
     dotsStyle: "dots",
     cornersStyle: "extra-rounded",
     frameStyle: "none",
-    frameColor: "#0284C7",
+    frameColor: "#1e40af",
     logoSize: 22,
     logoMargin: 6
   };

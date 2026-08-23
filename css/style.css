@@ -360,7 +360,7 @@ button {
   width: 36px;
   height: 36px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #0284c7, #4f46e5);
+  background: linear-gradient(135deg, var(--primary), var(--accent-indigo));
   color: white;
   display: flex;
   align-items: center;
@@ -534,7 +534,7 @@ button {
 }
 
 .type-pill.active {
-  background: linear-gradient(135deg, #0284c7, #4f46e5);
+  background: linear-gradient(135deg, var(--primary), var(--accent-indigo));
   color: #ffffff !important;
   border-color: transparent;
   box-shadow: 0 3px 12px rgba(2, 132, 199, 0.3);
@@ -724,7 +724,7 @@ button {
 
 html.dark .nav-tab.active {
   background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(129, 140, 248, 0.22));
-  color: #38bdf8;
+  color: var(--primary);
   border-color: rgba(56, 189, 248, 0.45);
   box-shadow: 0 3px 14px rgba(56, 189, 248, 0.25);
 }
@@ -959,7 +959,7 @@ input[type="range"] {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #0284c7, #4f46e5);
+  background: linear-gradient(135deg, var(--primary), var(--accent-indigo));
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
 }

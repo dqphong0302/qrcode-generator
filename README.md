@@ -1,6 +1,6 @@
 # ⚡ QR Generator Pro
 
-> UI nền tảng: **PhongDang UI (PDUI) v1.0.0** · profile `tool` · manifest tại `vendor/pdui/pdui-manifest.json`.
+> UI nền tảng: **PhongDang UI (PDUI) v1.1.0** · profile `tool` · manifest tại `vendor/pdui/pdui-manifest.json`.
 
 <div align="center">
 
