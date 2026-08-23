@@ -1,5 +1,7 @@
 # ⚡ QR Generator Pro
 
+> UI nền tảng: **PhongDang UI (PDUI) v1.0.0** · profile `tool` · manifest tại `vendor/pdui/pdui-manifest.json`.
+
 <div align="center">
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)

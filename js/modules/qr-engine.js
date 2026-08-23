@@ -5,7 +5,7 @@
     pendingTimer: null,
     schedule() {
       clearTimeout(this.pendingTimer);
-      this.pendingTimer = setTimeout(() => this.generate(), 80);
+      this.pendingTimer = setTimeout(() => this.generate(), 180);
     },
     buildOptions(size, renderType = "canvas") {
       const dotColor = DOM.colorInput.value || DEFAULTS.dotColor;
@@ -66,7 +66,7 @@
         DOM.emptyState.classList.add("hidden");
         DOM.resultArea.classList.remove("hidden");
         App.Frame.updateUI();
-        if (App.History) App.History.record();
+        if (App.History) App.History.scheduleRecord();
       } catch (error) {
         console.error("Lỗi tạo mã QR:", error);
       }

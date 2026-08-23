@@ -2,9 +2,86 @@
   const { DOM, State } = App;
   const KEY = "qr_history";
   const MAX = 12;
+  let recordTimer = null;
+  const MAX_IMAGE_DATA_LENGTH = 3_000_000;
+  const DOT_TYPES = new Set(["square", "dots", "rounded", "classy", "classy-rounded", "extra-rounded"]);
+  const CORNER_TYPES = new Set(["square", "dot", "extra-rounded"]);
+  const ERROR_LEVELS = new Set(["L", "M", "Q", "H"]);
+
+  function color(value, fallback) {
+    return typeof value === "string" && (/^#[0-9a-f]{6}$/i.test(value) || value === "transparent") ? value : fallback;
+  }
+
+  function sanitizeOptions(value) {
+    if (!value || typeof value !== "object" || typeof value.data !== "string") return null;
+    const dots = value.dotsOptions && typeof value.dotsOptions === "object" ? value.dotsOptions : {};
+    const square = value.cornersSquareOptions && typeof value.cornersSquareOptions === "object" ? value.cornersSquareOptions : {};
+    const cornerDot = value.cornersDotOptions && typeof value.cornersDotOptions === "object" ? value.cornersDotOptions : {};
+    const background = value.backgroundOptions && typeof value.backgroundOptions === "object" ? value.backgroundOptions : {};
+    const qr = value.qrOptions && typeof value.qrOptions === "object" ? value.qrOptions : {};
+    const safe = {
+      data: value.data.slice(0, 8192),
+      margin: Math.max(0, Math.min(64, Number(value.margin) || 8)),
+      qrOptions: { errorCorrectionLevel: ERROR_LEVELS.has(qr.errorCorrectionLevel) ? qr.errorCorrectionLevel : "Q" },
+      dotsOptions: {
+        type: DOT_TYPES.has(dots.type) ? dots.type : "dots",
+        color: color(dots.color, "#0284C7")
+      },
+      cornersSquareOptions: {
+        type: CORNER_TYPES.has(square.type) ? square.type : "extra-rounded",
+        color: color(square.color, "#0284C7")
+      },
+      cornersDotOptions: {
+        type: cornerDot.type === "square" ? "square" : "dot",
+        color: color(cornerDot.color, "#0284C7")
+      },
+      backgroundOptions: { color: color(background.color, "#FFFFFF") }
+    };
+    if (dots.gradient && typeof dots.gradient === "object" && ["linear", "radial"].includes(dots.gradient.type)) {
+      const stops = Array.isArray(dots.gradient.colorStops) ? dots.gradient.colorStops.slice(0, 2) : [];
+      if (stops.length === 2) {
+        safe.dotsOptions.gradient = {
+          type: dots.gradient.type,
+          rotation: Math.max(0, Math.min(360, Number(dots.gradient.rotation) || 0)),
+          colorStops: stops.map((stop, index) => ({ offset: index, color: color(stop?.color, index ? "#4F46E5" : "#0284C7") }))
+        };
+      }
+    }
+    if (typeof value.image === "string" && /^data:image\/(?:png|jpeg|webp);base64,/i.test(value.image) && value.image.length <= MAX_IMAGE_DATA_LENGTH) {
+      const imageOptions = value.imageOptions && typeof value.imageOptions === "object" ? value.imageOptions : {};
+      safe.image = value.image;
+      safe.imageOptions = {
+        crossOrigin: "anonymous",
+        margin: Math.max(0, Math.min(30, Number(imageOptions.margin) || 0)),
+        imageSize: Math.max(0.1, Math.min(0.35, Number(imageOptions.imageSize) || 0.22)),
+        hideBackgroundDots: imageOptions.hideBackgroundDots !== false
+      };
+    }
+    return safe;
+  }
+
+  function sanitizeItem(item, index) {
+    if (!item || typeof item !== "object") return null;
+    const opts = sanitizeOptions(item.opts);
+    if (!opts || typeof item.thumb !== "string" || !/^data:image\/png;base64,/i.test(item.thumb) || item.thumb.length > 500_000) return null;
+    return {
+      id: typeof item.id === "string" && /^[a-zA-Z0-9_-]{1,80}$/.test(item.id) ? item.id : `restored-${index}`,
+      ts: Number.isFinite(Number(item.ts)) ? Number(item.ts) : Date.now(),
+      data: JSON.stringify(opts),
+      thumb: item.thumb,
+      opts,
+      label: ["WiFi", "SĐT", "Email", "Văn bản", "VietQR", "URL"].includes(item.label) ? item.label : "URL"
+    };
+  }
 
   const list = (() => {
-    try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; }
+    try {
+      const parsed = JSON.parse(localStorage.getItem(KEY));
+      return Array.isArray(parsed) ? parsed.slice(0, MAX).map(sanitizeItem).filter(Boolean) : [];
+    } catch {
+      localStorage.removeItem(KEY);
+      return [];
+    }
   })();
 
   function persist() {
@@ -54,17 +131,32 @@
       const el = document.createElement("div");
       el.className = "history-item";
       el.dataset.id = item.id;
-      el.innerHTML = `
-        <img src="${item.thumb}" alt="QR lịch sử" loading="lazy">
-        <div class="history-meta">
-          <span class="history-time">${formatTime(item.ts)}</span>
-          <span class="history-badge">${item.label}</span>
-        </div>
-        <div class="history-actions">
-          <button type="button" class="history-btn" data-act="view" title="Xem phóng to">👁</button>
-          <button type="button" class="history-btn" data-act="download" title="Tải lại PNG">⬇</button>
-          <button type="button" class="history-btn danger" data-act="delete" title="Xóa">✕</button>
-        </div>`;
+      const image = document.createElement("img");
+      image.src = item.thumb;
+      image.alt = "QR lịch sử";
+      image.loading = "lazy";
+      const meta = document.createElement("div");
+      meta.className = "history-meta";
+      const time = document.createElement("span");
+      time.className = "history-time";
+      time.textContent = formatTime(item.ts);
+      const badge = document.createElement("span");
+      badge.className = "history-badge";
+      badge.textContent = item.label;
+      meta.append(time, badge);
+      const actions = document.createElement("div");
+      actions.className = "history-actions";
+      [["view", "Xem phóng to", "👁", ""], ["download", "Tải lại PNG", "⬇", ""], ["delete", "Xóa", "✕", "danger"]]
+        .forEach(([act, title, text, extraClass]) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `history-btn ${extraClass}`.trim();
+          button.dataset.act = act;
+          button.title = title;
+          button.textContent = text;
+          actions.appendChild(button);
+        });
+      el.append(image, meta, actions);
       frag.appendChild(el);
     });
     DOM.historyGrid.appendChild(frag);
@@ -72,6 +164,13 @@
 
   App.History = {
     list,
+    scheduleRecord() {
+      clearTimeout(recordTimer);
+      recordTimer = setTimeout(() => {
+        recordTimer = null;
+        this.record();
+      }, 500);
+    },
     init() {
       render();
       DOM.historyGrid.addEventListener("click", async event => {
@@ -100,6 +199,8 @@
         }
       });
       DOM.clearHistoryBtn.addEventListener("click", () => {
+        clearTimeout(recordTimer);
+        recordTimer = null;
         list.length = 0;
         persist();
         render();

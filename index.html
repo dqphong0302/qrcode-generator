@@ -22,10 +22,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 
   <!-- Main Design System & Stylesheet -->
+  <link rel="stylesheet" href="./vendor/pdui/pdui.css">
   <link rel="stylesheet" href="./css/style.css">
 </head>
 
-<body>
+<body data-pdui-profile="tool">
+  <a class="pd-skip-link" href="#main-content">Bỏ qua đến nội dung chính</a>
 
   <!-- Toast Notification -->
   <div id="toast" class="toast">
@@ -34,11 +36,11 @@
   </div>
 
   <!-- Header / Topbar -->
-  <header class="header">
-    <div class="container header-inner">
+  <header class="header pd-header">
+    <div class="container header-inner pd-container pd-header__inner">
       <!-- Brand Logo -->
-      <a href="https://phongdang.io.vn" class="brand-link">
-        <div class="brand-icon">
+      <a href="https://phongdang.io.vn" class="brand-link pd-brand">
+        <div class="brand-icon pd-brand__icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="7"></rect>
             <rect x="14" y="3" width="7" height="7"></rect>
@@ -47,13 +49,13 @@
           </svg>
         </div>
         <div>
-          <span class="brand-title">QR Generator Pro</span>
-          <span class="brand-sub">Tạo mã QR tùy biến</span>
+          <span class="brand-title pd-brand__title">QR Generator Pro</span>
+          <span class="brand-sub pd-brand__subtitle">Tạo mã QR tùy biến</span>
         </div>
       </a>
 
       <!-- Right Header Actions -->
-      <div class="header-actions">
+      <div class="header-actions pd-header__actions">
         <!-- Theme Switcher -->
         <button id="themeToggle" class="btn-theme">
           <span id="themeIcon">☀️</span>
@@ -80,7 +82,8 @@
   </div>
 
   <!-- Main Content Area -->
-  <main class="main-wrapper">
+  <main id="main-content" class="main-wrapper pd-main">
+    <h1 class="pd-sr-only">QR Generator Pro</h1>
     <div class="container app-grid">
 
       <!-- Left Column: Controls & Tabs -->
@@ -121,7 +124,7 @@
                   <span class="auto-hint">Tự động cập nhật</span>
                 </div>
                 <div id="urlWrap" class="input-box">
-                  <input id="urlInput" type="text" placeholder="https://phongdang.io.vn" value="https://phongdang.io.vn" class="input-field" />
+                  <input id="urlInput" type="text" maxlength="8192" placeholder="https://phongdang.io.vn" value="https://phongdang.io.vn" class="input-field" />
                   <button id="clearUrlBtn" type="button" class="btn-icon-clear" title="Xóa nội dung">✕</button>
                 </div>
               </div>
@@ -130,24 +133,24 @@
               <div id="typeBlockWifi" class="wifi-grid hidden">
                 <div>
                   <label class="label-title">Tên WiFi (SSID)</label>
-                  <input id="wifiSsid" type="text" placeholder="Tên mạng WiFi" class="input-field select-field" />
+                  <input id="wifiSsid" type="text" maxlength="256" placeholder="Tên mạng WiFi" class="input-field select-field" />
                 </div>
                 <div>
                   <label class="label-title">Mật khẩu WiFi</label>
-                  <input id="wifiPass" type="text" placeholder="Mật khẩu (nếu có)" class="input-field select-field" />
+                  <input id="wifiPass" type="text" maxlength="256" placeholder="Mật khẩu (nếu có)" class="input-field select-field" />
                 </div>
               </div>
 
               <!-- Phone Input -->
               <div id="typeBlockPhone" class="hidden">
                 <label class="label-title">Số điện thoại liên hệ</label>
-                <input id="phoneInput" type="tel" placeholder="0901234567" class="input-field select-field" />
+                <input id="phoneInput" type="tel" maxlength="40" placeholder="0901234567" class="input-field select-field" />
               </div>
 
               <!-- Email Input -->
               <div id="typeBlockEmail" class="hidden">
                 <label class="label-title">Địa chỉ Email</label>
-                <input id="emailInput" type="email" placeholder="contact@phongdang.io.vn" class="input-field select-field" />
+                <input id="emailInput" type="email" maxlength="320" placeholder="contact@phongdang.io.vn" class="input-field select-field" />
               </div>
             </div>
 
@@ -177,35 +180,35 @@
                 <div class="section-block">
                   <span class="label-title">Bảng phối màu chuyên nghiệp (1-Click)</span>
                   <div class="palette-grid">
-                    <button type="button" class="palette-btn" onclick="setPalette('#0f172a', '#0f172a', '#FFFFFF', 'solid', '#0f172a')">
+                    <button type="button" class="palette-btn" data-dot="#0f172a" data-dot2="#0f172a" data-bg="#FFFFFF" data-color-type="solid" data-corner="#0f172a">
                       <div class="palette-dots"><span class="palette-dot" style="background: #0f172a;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
                       <span class="palette-name">Classic</span>
                     </button>
-                    <button type="button" class="palette-btn" onclick="setPalette('#0284C7', '#0369A1', '#FFFFFF', 'solid', '#0284C7')">
+                    <button type="button" class="palette-btn" data-dot="#0284C7" data-dot2="#0369A1" data-bg="#FFFFFF" data-color-type="solid" data-corner="#0284C7">
                       <div class="palette-dots"><span class="palette-dot" style="background: #0284c7;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
                       <span class="palette-name">Doanh nghiệp</span>
                     </button>
-                    <button type="button" class="palette-btn" onclick="setPalette('#005BAA', '#005BAA', '#FFFFFF', 'solid', '#005BAA')">
+                    <button type="button" class="palette-btn" data-dot="#005BAA" data-dot2="#005BAA" data-bg="#FFFFFF" data-color-type="solid" data-corner="#005BAA">
                       <div class="palette-dots"><span class="palette-dot" style="background: #005baa;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
                       <span class="palette-name">VietQR</span>
                     </button>
-                    <button type="button" class="palette-btn" onclick="setPalette('#4F46E5', '#7C3AED', '#FFFFFF', 'linear', '#4F46E5')">
+                    <button type="button" class="palette-btn" data-dot="#4F46E5" data-dot2="#7C3AED" data-bg="#FFFFFF" data-color-type="linear" data-corner="#4F46E5">
                       <div class="palette-dots"><span class="palette-dot" style="background: #4f46e5;"></span><span class="palette-dot" style="background: #7c3aed;"></span></div>
                       <span class="palette-name">Tech Indigo</span>
                     </button>
-                    <button type="button" class="palette-btn" onclick="setPalette('#059669', '#10B981', '#FFFFFF', 'linear', '#059669')">
+                    <button type="button" class="palette-btn" data-dot="#059669" data-dot2="#10B981" data-bg="#FFFFFF" data-color-type="linear" data-corner="#059669">
                       <div class="palette-dots"><span class="palette-dot" style="background: #059669;"></span><span class="palette-dot" style="background: #10b981;"></span></div>
                       <span class="palette-name">Emerald</span>
                     </button>
-                    <button type="button" class="palette-btn" onclick="setPalette('#B45309', '#78350F', '#FFFFFF', 'linear', '#B45309')">
+                    <button type="button" class="palette-btn" data-dot="#B45309" data-dot2="#78350F" data-bg="#FFFFFF" data-color-type="linear" data-corner="#B45309">
                       <div class="palette-dots"><span class="palette-dot" style="background: #b45309;"></span><span class="palette-dot" style="background: #78350f;"></span></div>
                       <span class="palette-name">Royal Gold</span>
                     </button>
-                    <button type="button" class="palette-btn" onclick="setPalette('#E11D48', '#FB7185', '#FFFFFF', 'linear', '#E11D48')">
+                    <button type="button" class="palette-btn" data-dot="#E11D48" data-dot2="#FB7185" data-bg="#FFFFFF" data-color-type="linear" data-corner="#E11D48">
                       <div class="palette-dots"><span class="palette-dot" style="background: #e11d48;"></span><span class="palette-dot" style="background: #fb7185;"></span></div>
                       <span class="palette-name">Rose Ruby</span>
                     </button>
-                    <button type="button" class="palette-btn" onclick="setPalette('#0891B2', '#0284C7', '#FFFFFF', 'linear', '#0891B2')">
+                    <button type="button" class="palette-btn" data-dot="#0891B2" data-dot2="#0284C7" data-bg="#FFFFFF" data-color-type="linear" data-corner="#0891B2">
                       <div class="palette-dots"><span class="palette-dot" style="background: #0891b2;"></span><span class="palette-dot" style="background: #0284c7;"></span></div>
                       <span class="palette-name">Ocean Cyan</span>
                     </button>
@@ -280,7 +283,7 @@
 
                   <div>
                     <label class="label-title">Chữ hiển thị</label>
-                    <input id="frameTextInput" type="text" placeholder="Nhập chữ (ví dụ: Quét mã, Website...)" value="" class="select-field" />
+                    <input id="frameTextInput" type="text" maxlength="80" placeholder="Nhập chữ (ví dụ: Quét mã, Website...)" value="" class="select-field" />
                   </div>
                 </div>
 
@@ -304,9 +307,9 @@
 
                 <!-- Upload Logo Box -->
                 <div class="section-block">
-                  <input type="file" id="logoInput" accept="image/*" class="select-field file-input" />
+                  <input type="file" id="logoInput" accept="image/png,image/jpeg,image/webp" class="select-field file-input" />
                   <span class="hint-text">
-                    Định dạng hỗ trợ: PNG, JPG, SVG, WebP. Tự động căn giữa tâm mã QR.
+                    Định dạng hỗ trợ: PNG, JPG, WebP (tối đa 2 MB). Tự động căn giữa tâm mã QR.
                   </span>
                 </div>
 
@@ -455,20 +458,22 @@
   </main>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-inner">
+  <footer class="footer pd-footer">
+    <div class="container footer-inner pd-container pd-footer__inner">
       <div class="footer-copy">
-        © 2026 <strong>QR Generator Pro</strong> • <span>Một công cụ thuộc hệ sinh thái</span> <a href="https://phongdang.io.vn" target="_blank" class="footer-domain">Phong Đặng</a>
+        © 2026 <strong>QR Generator Pro</strong> • <span>Một công cụ thuộc hệ sinh thái</span> <a href="https://phongdang.io.vn" target="_blank" rel="noopener noreferrer" class="footer-domain">Phong Đặng</a>
       </div>
-      <div class="footer-links">
-        <a href="https://phongdang.io.vn" target="_blank" class="footer-link">🌐 phongdang.io.vn</a>
-        <a href="https://github.com/dqphong0302" target="_blank" class="footer-link">💻 GitHub</a>
+      <div class="footer-links pd-footer__links">
+        <a href="https://phongdang.io.vn" target="_blank" rel="noopener noreferrer" class="footer-link">🌐 phongdang.io.vn</a>
+        <a href="https://github.com/dqphong0302" target="_blank" rel="noopener noreferrer" class="footer-link">💻 GitHub</a>
       </div>
     </div>
   </footer>
 
   <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.0/lib/qr-code-styling.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.0/lib/qr-code-styling.js"
+          integrity="sha384-CmyeuVswNwyj9cav73bIOAMURUzyaS6baDIy8CIRCDxrXZ2AKbbJbnoNh26KjXJw"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="./js/modules/core.js"></script>
   <script src="./js/modules/theme.js"></script>
   <script src="./js/modules/toast.js"></script>

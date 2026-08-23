@@ -1,6 +1,10 @@
 (function (App) {
   const { DOM, State, DEFAULTS } = App;
 
+  function escapeWifiField(value) {
+    return value.replace(/([\\;,:"])/g, "\\$1");
+  }
+
   App.ContentType = {
     init() {
       DOM.typePills.forEach(pill => pill.addEventListener("click", () => {
@@ -35,7 +39,7 @@
         case "wifi": {
           const ssid = DOM.wifiSsid.value.trim();
           const pass = DOM.wifiPass.value.trim();
-          return `WIFI:S:${ssid};T:${pass ? "WPA" : "nopass"};P:${pass};;`;
+          return `WIFI:S:${escapeWifiField(ssid)};T:${pass ? "WPA" : "nopass"};P:${escapeWifiField(pass)};;`;
         }
         case "phone": return DOM.phoneInput.value.trim() ? `tel:${DOM.phoneInput.value.trim()}` : "tel:0901234567";
         case "email": return DOM.emailInput.value.trim() ? `mailto:${DOM.emailInput.value.trim()}` : "mailto:contact@phongdang.io.vn";

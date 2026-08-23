@@ -24,6 +24,4 @@
       DOM.color2Container.classList.toggle("is-dimmed", !isGradient);
     }
   };
-
-  window.setPalette = (...args) => App.Palette.set(...args);
 })(window.QRApp);

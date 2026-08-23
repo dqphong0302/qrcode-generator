@@ -63,6 +63,16 @@
     bindTabs();
     bindRightTabs();
 
+    document.querySelectorAll(".palette-btn").forEach(button => {
+      button.addEventListener("click", () => App.Palette.set(
+        button.dataset.dot,
+        button.dataset.dot2,
+        button.dataset.bg,
+        button.dataset.colorType,
+        button.dataset.corner
+      ));
+    });
+
     DOM.colorTypeSelect.addEventListener("change", () => { App.Palette.updateColorState(); App.QREngine.generate(); });
     DOM.bgTransparentCheck.addEventListener("change", () => App.QREngine.schedule());
     DOM.frameStyleSelect.addEventListener("change", App.Frame.updateUI.bind(App.Frame));
@@ -75,6 +85,12 @@
     DOM.logoInput.addEventListener("change", event => {
       const file = event.target.files?.[0];
       if (!file) return;
+      const allowedTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
+      if (!allowedTypes.has(file.type) || file.size > 2_000_000) {
+        DOM.logoInput.value = "";
+        App.Toast.show("Logo phải là PNG, JPG hoặc WebP và không vượt quá 2 MB", "⚠️");
+        return;
+      }
       const reader = new FileReader();
       reader.onload = event => { State.currentLogoData = event.target.result; DOM.removeLogoBtn.classList.remove("hidden"); App.QREngine.generate(); };
       reader.readAsDataURL(file);
