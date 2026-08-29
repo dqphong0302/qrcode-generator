@@ -50,7 +50,7 @@ Hỗ trợ tạo QR tức thì, đa dạng định dạng dữ liệu, đổi m�
 * **Khung mắt góc (Corners):** Vuông (Square), Chấm Tròn (Dot), Bo Viền Tròn (Extra Rounded).
 
 ### 6. 💾 Lịch Sử Tạo Mã & Quản Lý Thông Minh
-* Tự động lưu các mã QR đã tạo vào trình duyệt (`LocalStorage`).
+* Tự động lưu các mã QR đã tạo vào trình duyệt (`localStorage`).
 * Xem lại danh sách, click để tải lại cấu hình hoặc xem nhanh thumbnail.
 * Nút xóa toàn bộ lịch sử tiện lợi.
 
@@ -84,7 +84,7 @@ qr/
 │   ├── README.md               # Hướng dẫn kiến trúc JS module
 │   └── modules/
 │       ├── core.js             # State quản lý chung, cấu hình mặc định & DOM refs
-│       ├── theme.js            # Quản lý Light/Dark theme & lưu trữ LocalStorage
+│       ├── theme.js            # Quản lý Light/Dark theme & lưu trữ localStorage
 │       ├── toast.js            # Hệ thống thông báo toast notification
 │       ├── content-type.js     # Xử lý các định dạng dữ liệu (URL, WiFi, VietQR, Phone, Email, Text)
 │       ├── palette.js          # Quản lý 8 bảng màu và chế độ gradient
