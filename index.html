@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi">
 <head>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-NGG3TMNVXV"></script>
@@ -22,7 +22,7 @@
       try {
         var t = localStorage.getItem('pd_theme');
         if (t !== 'light' && t !== 'dark') {
-          t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          t = 'light';
         }
         var isDark = t === 'dark';
         document.documentElement.classList.toggle('dark', isDark);
@@ -34,7 +34,7 @@
   <!-- Fonts via Google Fonts CDN -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 
   <!-- Main Design System & Stylesheet -->
   <link rel="stylesheet" href="./vendor/pdui/pdui.css">
@@ -70,8 +70,7 @@
       <div class="header-actions pd-header__actions">
         <!-- Theme Switcher -->
         <button id="themeToggle" class="btn-theme" data-pd-theme-toggle>
-          <span id="themeIcon" data-pd-theme-icon>☀️</span>
-          <span id="themeLabel" data-pd-theme-label>Light</span>
+          <span id="themeIcon" data-pd-theme-icon></span>
         </button>
       </div>
     </div>
@@ -81,9 +80,9 @@
   <div id="fullscreenModal" class="modal-backdrop hidden">
     <div id="modalBackdrop" class="modal-box">
       <div class="modal-head">
-        <span class="modal-title">🔍 Xem Trước HD (1000×1000 px)</span>
+        <span class="modal-title">Xem Trước HD (1000×1000 px)</span>
         <button id="closeFullscreenBtn" class="modal-close">
-          Đóng ✕
+          Đóng
         </button>
       </div>
       <div class="modal-content">
@@ -107,22 +106,22 @@
               <span class="label-title">Loại nội dung</span>
               <div class="type-pills">
                 <button type="button" class="type-pill active" data-type="url">
-                  <span>🔗</span><span>Link / Web</span>
+                  <span><svg class="pd-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><span>Link / Web</span>
                 </button>
                 <button type="button" class="type-pill" data-type="wifi">
-                  <span>📶</span><span>WiFi</span>
+                  <span><svg class="pd-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.86a10 10 0 0 1 14 0M8.5 16.43a5 5 0 0 1 7 0"/></svg></span><span>WiFi</span>
                 </button>
                 <button type="button" class="type-pill" data-type="vietqr">
-                  <span>💳</span><span>VietQR</span>
+                  <span><svg class="pd-icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></svg></span><span>VietQR</span>
                 </button>
                 <button type="button" class="type-pill" data-type="phone">
-                  <span>📞</span><span>Số ĐT</span>
+                  <span><svg class="pd-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span>Số ĐT</span>
                 </button>
                 <button type="button" class="type-pill" data-type="email">
-                  <span>✉️</span><span>Email</span>
+                  <span><svg class="pd-icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><span>Email</span>
                 </button>
                 <button type="button" class="type-pill" data-type="text">
-                  <span>📝</span><span>Văn bản</span>
+                  <span><svg class="pd-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.38 3.62a1 1 0 0 1 3 3L7.37 18.64a2 2 0 0 1-.86.5l-2.87.84a.5.5 0 0 1-.62-.62l.84-2.87a2 2 0 0 1 .5-.86z"/></svg></span><span>Văn bản</span>
                 </button>
               </div>
             </div>
@@ -137,7 +136,7 @@
                 </div>
                 <div id="urlWrap" class="input-box">
                   <input id="urlInput" type="text" maxlength="8192" placeholder="https://phongdang.io.vn" value="https://phongdang.io.vn" class="input-field" />
-                  <button id="clearUrlBtn" type="button" class="btn-icon-clear" title="Xóa nội dung">✕</button>
+                  <button id="clearUrlBtn" type="button" class="btn-icon-clear" title="Xóa nội dung"><svg class="pd-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
                 </div>
               </div>
 
@@ -170,16 +169,16 @@
             <div class="tabs-header">
               <div class="tabs-nav">
                 <button type="button" class="nav-tab active" data-tab="colors">
-                  <span>🎨 Màu sắc</span>
+                  <span>Màu sắc</span>
                 </button>
                 <button type="button" class="nav-tab" data-tab="frame">
-                  <span>🖼️ Khung viền</span>
+                  <span>Khung viền</span>
                 </button>
                 <button type="button" class="nav-tab" data-tab="logo">
-                  <span>🌟 Logo</span>
+                  <span>Logo</span>
                 </button>
                 <button type="button" class="nav-tab" data-tab="shapes">
-                  <span>⚙️ Hình dáng</span>
+                  <span>Hình dáng</span>
                 </button>
               </div>
             </div>
@@ -192,20 +191,20 @@
                 <div class="section-block">
                   <span class="label-title">Bảng phối màu chuyên nghiệp (1-Click)</span>
                   <div class="palette-grid">
-                    <button type="button" class="palette-btn" data-dot="#0f172a" data-dot2="#0f172a" data-bg="#FFFFFF" data-color-type="solid" data-corner="#0f172a">
-                      <div class="palette-dots"><span class="palette-dot" style="background: #0f172a;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
+                    <button type="button" class="palette-btn" data-dot="#1c1917" data-dot2="#1c1917" data-bg="#FFFFFF" data-color-type="solid" data-corner="#1c1917">
+                      <div class="palette-dots"><span class="palette-dot" style="background: #1c1917;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #d9cfc3;"></span></div>
                       <span class="palette-name">Classic</span>
                     </button>
-                    <button type="button" class="palette-btn" data-dot="#1e40af" data-dot2="#1e3a8a" data-bg="#FFFFFF" data-color-type="solid" data-corner="#1e40af">
-                      <div class="palette-dots"><span class="palette-dot" style="background: #1e40af;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
+                    <button type="button" class="palette-btn" data-dot="#1d4f91" data-dot2="#173f75" data-bg="#FFFFFF" data-color-type="solid" data-corner="#1d4f91">
+                      <div class="palette-dots"><span class="palette-dot" style="background: #1d4f91;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #d9cfc3;"></span></div>
                       <span class="palette-name">Doanh nghiệp</span>
                     </button>
                     <button type="button" class="palette-btn" data-dot="#005BAA" data-dot2="#005BAA" data-bg="#FFFFFF" data-color-type="solid" data-corner="#005BAA">
-                      <div class="palette-dots"><span class="palette-dot" style="background: #005baa;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #cbd5e1;"></span></div>
+                      <div class="palette-dots"><span class="palette-dot" style="background: #005baa;"></span><span class="palette-dot" style="background: #ffffff; border: 1px solid #d9cfc3;"></span></div>
                       <span class="palette-name">VietQR</span>
                     </button>
-                    <button type="button" class="palette-btn" data-dot="#4F46E5" data-dot2="#7C3AED" data-bg="#FFFFFF" data-color-type="linear" data-corner="#4F46E5">
-                      <div class="palette-dots"><span class="palette-dot" style="background: #4f46e5;"></span><span class="palette-dot" style="background: #7c3aed;"></span></div>
+                    <button type="button" class="palette-btn" data-dot="#1d4f91" data-dot2="#7C3AED" data-bg="#FFFFFF" data-color-type="linear" data-corner="#1d4f91">
+                      <div class="palette-dots"><span class="palette-dot" style="background: #1d4f91;"></span><span class="palette-dot" style="background: #7c3aed;"></span></div>
                       <span class="palette-name">Tech Indigo</span>
                     </button>
                     <button type="button" class="palette-btn" data-dot="#059669" data-dot2="#10B981" data-bg="#FFFFFF" data-color-type="linear" data-corner="#059669">
@@ -220,8 +219,8 @@
                       <div class="palette-dots"><span class="palette-dot" style="background: #e11d48;"></span><span class="palette-dot" style="background: #fb7185;"></span></div>
                       <span class="palette-name">Rose Ruby</span>
                     </button>
-                    <button type="button" class="palette-btn" data-dot="#0891B2" data-dot2="#1e40af" data-bg="#FFFFFF" data-color-type="linear" data-corner="#0891B2">
-                      <div class="palette-dots"><span class="palette-dot" style="background: #0891b2;"></span><span class="palette-dot" style="background: #1e40af;"></span></div>
+                    <button type="button" class="palette-btn" data-dot="#0891B2" data-dot2="#1d4f91" data-bg="#FFFFFF" data-color-type="linear" data-corner="#0891B2">
+                      <div class="palette-dots"><span class="palette-dot" style="background: #0891b2;"></span><span class="palette-dot" style="background: #1d4f91;"></span></div>
                       <span class="palette-name">Ocean Cyan</span>
                     </button>
                   </div>
@@ -232,25 +231,25 @@
                   <div class="color-picker-card">
                     <div>
                       <span class="color-picker-label">Màu mã QR</span>
-                      <span id="colorHexLabel" class="color-hex">#1e40af</span>
+                      <span id="colorHexLabel" class="color-hex">#1d4f91</span>
                     </div>
-                    <input type="color" id="colorInput" value="#1e40af" />
+                    <input type="color" id="colorInput" value="#1d4f91" />
                   </div>
 
                   <div id="color2Container" class="color-picker-card is-dimmed">
                     <div>
                       <span class="color-picker-label">Gradient 2</span>
-                      <span id="color2HexLabel" class="color-hex">#4F46E5</span>
+                      <span id="color2HexLabel" class="color-hex">#1d4f91</span>
                     </div>
-                    <input type="color" id="color2Input" value="#4F46E5" disabled />
+                    <input type="color" id="color2Input" value="#1d4f91" disabled />
                   </div>
 
                   <div class="color-picker-card">
                     <div>
                       <span class="color-picker-label">Mắt góc</span>
-                      <span id="cornerColorHexLabel" class="color-hex">#1e40af</span>
+                      <span id="cornerColorHexLabel" class="color-hex">#1d4f91</span>
                     </div>
-                    <input type="color" id="cornerColorInput" value="#1e40af" />
+                    <input type="color" id="cornerColorInput" value="#1d4f91" />
                   </div>
 
                   <div class="color-picker-card">
@@ -302,8 +301,8 @@
                 <div class="frame-color-row">
                   <span class="label-title mb-0">Màu sắc khung</span>
                   <div class="frame-color-control">
-                    <span id="frameColorHexLabel" class="color-hex">#1e40af</span>
-                    <input type="color" id="frameColorInput" value="#1e40af" />
+                    <span id="frameColorHexLabel" class="color-hex">#1d4f91</span>
+                    <input type="color" id="frameColorInput" value="#1d4f91" />
                   </div>
                 </div>
               </div>
@@ -313,7 +312,7 @@
                 <div class="logo-head">
                   <span class="label-title mb-0">Tải logo từ máy tính</span>
                   <button id="removeLogoBtn" type="button" class="link-danger hidden">
-                    ✕ Gỡ logo
+                    Gỡ logo
                   </button>
                 </div>
 
@@ -371,10 +370,10 @@
           <div class="card-footer">
             <div class="btn-grid">
               <button id="generateBtn" class="btn btn-primary">
-                <span>✨ Cập Nhật QR</span>
+                <span>Cập Nhật QR</span>
               </button>
               <button id="clearBtn" class="btn btn-secondary">
-                <span>✕ Đặt lại mặc định</span>
+                <span>Đặt lại mặc định</span>
               </button>
             </div>
           </div>
@@ -406,7 +405,7 @@
 
               <!-- Empty State -->
               <div id="emptyState" class="empty-state hidden">
-                <div class="empty-icon">🧩</div>
+                <div class="empty-icon"><svg class="pd-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.39 4.39a1 1 0 0 0 1.68-.47 2.5 2.5 0 1 1 3.01 3.01 1 1 0 0 0-.47 1.68l1.68 1.68a2.41 2.41 0 0 1 0 3.41l-1.61 1.61a1 1 0 0 1-1.7-.42 2.5 2.5 0 1 0-3 3 1 1 0 0 1 .43 1.7l-1.61 1.61a2.41 2.41 0 0 1-3.41 0l-1.68-1.68a1 1 0 0 0-1.68.47 2.5 2.5 0 1 1-3.01-3.01 1 1 0 0 0 .47-1.68l-1.68-1.68a2.41 2.41 0 0 1 0-3.41L4.36 8.6a1 1 0 0 1 1.7.42 2.5 2.5 0 1 0 3-3 1 1 0 0 1-.43-1.7l1.61-1.61a2.41 2.41 0 0 1 3.41 0z"/></svg></div>
                 <div class="empty-title">Chưa có mã QR</div>
                 <div class="empty-sub">Nhập nội dung để hiển thị mã.</div>
               </div>
@@ -432,13 +431,13 @@
 
             <div id="rpanelHistory" class="right-panel hidden">
               <div id="historyEmpty" class="history-empty">
-                <div class="empty-icon">🗂️</div>
+                <div class="empty-icon"><svg class="pd-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg></div>
                 <div class="empty-title">Chưa có lịch sử</div>
                 <div class="empty-sub">Ảnh QR bạn tạo sẽ tự động lưu vào lịch sử máy.</div>
               </div>
               <div id="historyGrid" class="history-grid"></div>
               <button id="clearHistoryBtn" class="btn btn-secondary btn-block history-clear hidden" type="button">
-                <span>🗑 Xóa toàn bộ lịch sử</span>
+                <span>Xóa toàn bộ lịch sử</span>
               </button>
             </div>
           </div>
@@ -458,7 +457,7 @@
 
             <div class="copy-wrap">
               <button id="copyImageBtn" class="btn btn-secondary btn-block">
-                <span>📋 Sao chép ảnh QR</span>
+                <span>Sao chép ảnh QR</span>
               </button>
             </div>
           </div>
@@ -471,13 +470,13 @@
 
   <!-- Footer -->
   <footer class="footer pd-footer">
+      <p class="pd-eco-line">Hệ sinh thái của ThS. Đặng Quốc Phong: <a href="https://phongdang.io.vn" target="_blank" rel="noopener noreferrer">phongdang.io.vn</a> · <a href="https://classtools.vn" target="_blank" rel="noopener noreferrer">classtools.vn</a></p>
     <div class="container footer-inner pd-container pd-footer__inner">
       <div class="footer-copy">
         © 2026 <strong>QR Generator Pro</strong> • <span>Một công cụ thuộc hệ sinh thái</span> <a href="https://phongdang.io.vn" target="_blank" rel="noopener noreferrer" class="footer-domain">Phong Đặng</a>
       </div>
       <div class="footer-links pd-footer__links">
-        <a href="https://phongdang.io.vn" target="_blank" rel="noopener noreferrer" class="footer-link">🌐 phongdang.io.vn</a>
-        <a href="https://github.com/dqphong0302" target="_blank" rel="noopener noreferrer" class="footer-link">💻 GitHub</a>
+        <a href="https://github.com/dqphong0302" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
       </div>
     </div>
   </footer>

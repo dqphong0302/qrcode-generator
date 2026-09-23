@@ -13,7 +13,6 @@
     },
     syncDOM() {
       const isDark = document.documentElement.classList.contains("dark");
-      if (App.DOM.themeIcon) App.DOM.themeIcon.textContent = isDark ? "☀️" : "🌙";
       if (App.DOM.themeLabel) App.DOM.themeLabel.textContent = isDark ? "Light" : "Dark";
       // QR legacy: some modules check html.light
       document.documentElement.classList.toggle("light", !isDark);
